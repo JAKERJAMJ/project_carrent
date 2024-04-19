@@ -1,0 +1,73 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.register-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 25px;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    max-width: 600px; /* ปรับขนาดตามที่ต้องการ */
+    border-radius: 20px;
+}
+.register-container .register-title {
+    font-size: 25px;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+#passwordError {
+    color: green; /* สีที่ต้องการเมื่อรหัสผ่านตรงกัน */
+}
+#passwordStrength {
+    margin-top: 10px;
+    color: aliceblue;
+    border-radius: 15px;
+    padding: 5px;
+    font-size: 15px;
+}
+
+/* register-done */
+
+.register-done {
+    display: none; /* ปิดการแสดงผลเริ่มต้น */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    border-radius: 20px;
+    box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: white;
+    width: 400px;
+    text-align: center;
+}
+.register-done .img-success {
+    width: 200px;
+}
+.register-done .to-signin{
+    padding: 20px;
+    background-color: rgb(9, 195, 9);
+    border-radius: 10px;
+    text-decoration: none;
+    color: aliceblue;
+}
+
+.register-done .to-signin:hover {
+    background-color: rgb(0, 167, 0);
+    cursor: pointer;
+    transition: color 0.3s, background-color 0.3s;
+}
+.register-done .to-signin a {
+    color: aliceblue;
+    text-decoration: none;
+}
+

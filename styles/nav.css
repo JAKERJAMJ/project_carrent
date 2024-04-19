@@ -1,0 +1,53 @@
+/* nav.php */
+.header {
+    padding: 17px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    width: auto;
+    border-radius: 20px;
+    margin: 10px;
+}
+
+.header .logo {
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    width: 150px;
+}
+.navbar ul li {
+    display: inline-block;
+    color: rgb(115, 115, 115);
+}
+
+.navbar ul li a {
+    position: relative;
+    margin: .5rem;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.navbar ul li a::before {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    background-color: #dbdbdb;
+    bottom: -2px;
+    transition: all ease 1s;
+}
+
+.navbar ul li a.active::before,
+.navbar ul li a:hover::before {
+    width: 100%;
+}
+.nav__link {
+    color: rgb(126, 125, 125); /* สีของตัวหนังสือที่ต้องการ */
+    /* เพิ่มคุณสมบัติอื่น ๆ ตามต้องการ */
+}
+
+/* ถ้าคุณต้องการเปลี่ยนสีเมื่อเม้าส์ไปชี้ที่ลิงก์ */
+.nav__link:hover {
+    color: rgb(81, 100, 197); /* สีที่คุณต้องการเมื่อเม้าส์ชี้ที่ลิงก์ */
+}

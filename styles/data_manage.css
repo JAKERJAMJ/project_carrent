@@ -1,0 +1,68 @@
+.datamanage-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    justify-content: center;
+  }
+  .button-carrent, .button-packet, .button-driver {
+    margin-top: 10px;
+  }
+  .btn-carrent{
+    background-color: #ffffff;
+    color: #616161;
+    border: 1px solid rgb(109, 109, 109);
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+  .btn-carrent:hover {
+    background-color: #8db7ff;
+    color: rgb(255, 255, 255);
+    border: 1px solid rgb(111, 133, 248);
+  }
+  .btn-packet {
+    background-color: #ffffff;
+    color: #616161;
+    border: 1px solid rgb(109, 109, 109);
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;  
+  }
+  .btn-packet:hover {
+    background-color: pink;
+    color: white;
+    border: 1px solid rgb(255, 175, 175);
+  }
+  .btn-driver {
+    background-color: #ffffff;
+    color: #616161;
+    border: 1px solid rgb(109, 109, 109);
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;  
+  }
+  .btn-driver:hover {
+    background-color: rgb(255, 161, 127);
+    color: white;
+    border: 1px solid rgb(255, 207, 158);
+  }

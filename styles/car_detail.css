@@ -1,0 +1,156 @@
+.right-align-button {
+    float: right;
+    margin-right: 20px;
+}
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f1f1f1;
+    padding: 50px;
+    border: 1px solid #ccc;
+    z-index: 9999;
+}
+.detailbox{
+  width: 300px;
+	padding: 10px;
+	font-size: 16px;
+}
+.AddPicture{
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f1f1f1;
+  padding: 50px;
+  border: 1px solid #ccc;
+  z-index: 9999;
+}
+#back {
+  margin-top: 10px;
+}
+#carpicture {
+  width: 300px;
+}
+.main-picture img {
+  width: 600px;
+  max-width: 100%;
+}
+.container-none {
+  display: flex;
+  padding: 20px;
+  margin-top: 30px;
+  align-items: center;
+  justify-content: center;
+}
+.container-none .forget{
+  background-color: #fd6d62;
+  padding: 25px;
+  border-radius: 60px;
+  box-shadow: 0 0 5px rgb(72, 72, 72);
+  transition: all 0.3s;
+  color: #e6e6e6;
+}
+.container-none .forget:hover{
+  box-shadow: none;
+}
+.head-detail{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.head-detail .title-detail{
+  padding: 10px;
+  font-size: 30px;
+}
+.head-detail .update-picture{
+  margin-bottom: 20px;
+}
+.detail {
+  display: flex;
+  justify-content: center;
+}
+.detail .detail-carpicture {
+  display: flex;
+  justify-content: center; /* จัดภาพให้อยู่ตรงกลางของคอนเทนเนอร์ */
+  max-width: 90%;
+  align-items: center;
+  flex-wrap: wrap; /* อนุญาตให้รายการสามารถห่อไปยังหลายแถวได้ */
+}
+.detail .detail-carpicture img{
+  width: 30%; /* ปรับความกว้างตามที่จำเป็นเพื่อให้สามรูปภาพอยู่ในหนึ่งแถว */
+  height: auto;
+  margin: 0 auto; /* ตั้งระยะขอบให้ภาพอยู่ตรงกลาง */
+}
+.popup-update {
+  display: none;
+  position: fixed;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 3rem;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  text-align: center; /* จัดข้อความตรงกลาง */
+  width: 50%;
+  max-height: 80%;
+  overflow-y: auto;
+  overflow-x: auto;
+  left: 30%;
+  top: 10%;
+  z-index: 99999;
+}
+
+.popup-update .title-box {
+  font-size: 30px;
+  margin-bottom: 2rem;
+}
+
+.popup-update .box {
+  align-items: center;
+  margin-bottom: 1rem; /* ระยะห่างของกล่องข้อความ */
+}
+
+.popup-update .title-box .box label {
+  margin-right: 1rem; /* ระยะห่างของข้อความกับกล่องข้อความ */
+}
+.popup-update .title-box .box .btn-update-car-pic {
+  margin-top: 1rem;
+}
+.popup-edit-car {
+  display: none;
+  position: fixed;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 3rem;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  text-align: center; /* จัดข้อความตรงกลาง */
+  width: 45%;
+  max-height: 80%;
+  overflow-y: auto;
+  overflow-x: auto;
+  left: 30%;
+  top: 10%;
+  z-index: 99999;
+}
+.popup-edit-car .title-edit-car {
+  font-size: 25px;
+}
+.popup-edit-car .box {
+  align-items: center;
+  margin-bottom: 1rem; /* ระยะห่างของกล่องข้อความ */
+}
+.popup-update .box .preview-img img {
+  max-width: 100%; /* กำหนดให้ภาพมีความกว้างสูงสุดเท่ากับขนาดของคอลัมน์ */
+  height: auto; /* กำหนดให้ความสูงของภาพปรับตามอัตราส่วน */
+}
+.popup-update .box .preview-img {
+  margin-top: 2px;
+}
+
