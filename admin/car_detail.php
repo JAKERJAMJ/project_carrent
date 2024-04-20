@@ -1,5 +1,8 @@
-<?php session_start(); ?>
-<?php include '../conDB.php' ?>
+<?php 
+session_start(); 
+require '../conDB.php';
+?>
+
 <!DOCTYPE html>
 <html>
 
