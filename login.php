@@ -50,7 +50,7 @@ session_start();
             if ($email == "admin@admin.com" && $password == "admin1234.") {
                 $_SESSION['admin'] = true;
                 // หากค่าตรงกัน ให้เปลี่ยนเส้นทางไปยังหน้าที่คุณต้องการ (Admin)
-                header("Location: ./admin/admin.php");
+                header("Location: admin.php");
                 exit;
             } else {
                 // หากค่าไม่ตรงกัน สามารถทำอะไรต่อได้ตามต้องการ เช่น แสดงข้อความผิดพลาด

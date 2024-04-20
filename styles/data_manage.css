@@ -66,3 +66,13 @@
     color: white;
     border: 1px solid rgb(255, 207, 158);
   }
+  .bx-chevron-left-circle {
+    font-size: 40px;
+    position: absolute;
+    top: 10px; /* ปรับตำแหน่งตามต้องการ */
+    left: 10px; /* ปรับตำแหน่งตามต้องการ */
+    cursor: pointer;
+  }
+  .bx-chevron-left-circle:hover {
+    color: rgb(85, 85, 251);
+  }
