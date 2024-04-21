@@ -15,11 +15,9 @@
 .top-button .manage-driver {
     font-size: 30px;
 }
-.driver-container {
+.container {
     margin-top: 150px;
-    width: 80%; /* ปรับค่าตามต้องการ */
 }
-
 .add-driver {
     display: none;
     position: fixed;

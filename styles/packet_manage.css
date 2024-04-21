@@ -1,8 +1,3 @@
-body {
-    display: flex;
-    justify-content: center; /* จัดตรงกลางตามแนวนอน */
-    margin: 0;
-}
 .top-button{
     display: flex;
     justify-content: space-between; /* จัดให้รายการอยู่ตรงกลางตามแนวนอนและปุ่มอยู่ด้านขวา */
@@ -15,6 +10,7 @@ body {
     width: 1200px;
     padding: 20px;
     text-align: center;
+    left: 7%;
 }
 .top-button .manage-car{
     font-size: 30px;

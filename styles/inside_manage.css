@@ -1,0 +1,78 @@
+.insidemanage-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    justify-content: center;
+}
+.insidemanage-container .button-manage-carrent, .button-manage-packetrent, .button-manage-member, 
+.button-manage-fix, .button-manage-report {
+    margin-top: 10px;
+}
+.carrent, .packet, .member, .fix, .report {
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
+    background-color: #fff;
+}
+.carrent {
+    border: 2px solid pink;
+}
+.carrent:hover {
+    border: none;
+    background-color: pink;
+    transition: background-color 0.3s ease;
+}
+.packet {
+    border: 2px solid rgb(255, 141, 87);
+}
+.packet:hover {
+    border: none;
+    background-color: rgb(255, 141, 87);
+    transition: background-color 0.3s ease;
+}
+.member {
+    border: 2px solid rgb(116, 255, 122);
+}
+.member:hover {
+    border: none;
+    background-color: rgb(116, 255, 122);
+    transition: background-color 0.3s ease;
+}
+.fix {
+    border: 2px solid rgb(203, 123, 254);
+}
+.fix:hover {
+    border: none;
+    background-color: rgb(203, 123, 254);
+    transition: background-color 0.3s ease;
+}
+.report {
+    border: 2px solid rgb(129, 138, 255);
+}
+.report:hover {
+    border: none;
+    background-color: rgb(129, 138, 255);
+    transition: background-color 0.3s ease;
+}
+.bx-chevron-left-circle {
+    font-size: 40px;
+    position: absolute;
+    top: 10px; /* ปรับตำแหน่งตามต้องการ */
+    left: 10px; /* ปรับตำแหน่งตามต้องการ */
+    cursor: pointer;
+}
+.bx-chevron-left-circle:hover {
+    color: rgb(58, 58, 58);
+}
+.navbar {
+    max-height: 80px; /* ปรับความสูงตามที่ต้องการ */
+    overflow: hidden; /* ซ่อนส่วนที่เกินความสูง */
+}
