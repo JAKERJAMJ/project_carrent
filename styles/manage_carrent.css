@@ -1,0 +1,122 @@
+.head-carrent {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+.head-carrent .title-carrent {
+    font-size: 40px;
+    padding: 30px;
+    color: rgb(57, 57, 57);
+    background-color: aliceblue;
+    width: 50%;
+    text-align: center;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.2);
+}
+.head-carrent .btn-carrent {
+    padding: 20px;
+}
+.btn-carrent .carrent {
+    padding: 5px;
+    background-color: white;
+    width: 250px;
+    border: 2px solid rgb(0, 195, 0);
+    font-size: 20px;
+    color: rgb(0, 195, 0);
+    border-radius: 10px;
+}
+.btn-carrent .carrent:hover {
+    background-color: rgb(0, 195, 0);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+.btn-carrent .returncar {
+    padding: 5px;
+    background-color: white;
+    width: 250px;
+    border: 2px solid rgb(30, 109, 255);
+    font-size: 20px;
+    color: rgb(30, 109, 255);
+    border-radius: 10px;
+}
+.btn-carrent .returncar:hover {
+    background-color: rgb(30, 109, 255);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+.head-carrent .add-carrent {
+    display: flex;
+    padding: 20px;
+    width: 100%;
+    justify-content: flex-end;
+}
+.add-carrent .rent {
+    padding: 5px;
+    background-color: white;
+    width: 220px;
+    border: 2px solid rgb(255, 142, 5);
+    font-size: 20px;
+    color: rgb(255, 142, 5);
+    border-radius: 10px;
+    right: 10%;
+}
+.add-carrent .rent:hover {
+    background-color: rgb(255, 142, 5);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+.body-carrent {
+    padding: 20px;
+}
+.body-carrent .title-body {
+    font-size: 40px;
+    margin-left: 30px;
+}
+.body-carrent .table-view-carrent  {
+    padding: 30px;
+}
+.table-view-carrent table {
+    font-size: 16px;
+    text-align: center;
+    vertical-align: middle;
+}
+.carrent-popup {
+    display: none;
+    position: fixed;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 3rem;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    text-align: center; /* จัดข้อความตรงกลาง */
+    width: 40%;
+    max-height: 80%;
+    overflow-y: auto;
+    overflow-x: auto;
+    left: 30%;
+    top: 10%;
+    z-index: 99999;
+}
+.carrent-popup .carrent-title {
+    margin-top: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+.carrent-popup .box {
+    align-items: center;
+    margin-bottom: 1rem; /* ระยะห่างของกล่องข้อความ */
+}
+.carrent-popup .box label {
+    margin-right: 1rem; /* ระยะห่างของข้อความกับกล่องข้อความ */
+}
+.carrent-popup .box input[type="text"] {
+    padding: 0.5rem; /* การเพิ่ม padding สำหรับ input */
+    border: 1px solid #ccc; /* เส้นขอบ input */
+    border-radius: 5px; /* การกำหนดขอบโค้ง */
+    
+    margin-top: 2px;
+}
