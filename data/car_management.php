@@ -57,12 +57,11 @@ if (!isset($_SESSION['admin'])) {
                         <div class="card-body">
                             <h5 class="card-title text-success"><?= $row['car_name'] ?></h5>
                             <p class="card-text">
-                                ID : <?= $row['car_id'] ?><br>
                                 ยี่ห้อรถ : <?= $row['car_brand'] ?><br>
-                                ป้ายทะเบียนรถ : <?= $row['car_numplate'] ?>
+                                ราคา : <?= $row['car_price']?> บาท
                             </p>
                             <a href="car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
-                            <button type="button" class="btn btn-outline-danger" onclick="deleteCar(<?= $row['car_id'] ?>)">ยกเลิกการใช้งาน</button>
+                            <button type="button" class="btn btn-outline-warning" onclick="deleteCar(<?= $row['car_id'] ?>)">ยกเลิกการใช้งาน</button>
                         </div>
 
                     </div>

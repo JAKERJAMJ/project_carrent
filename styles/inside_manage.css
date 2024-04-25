@@ -26,15 +26,16 @@
     border: 2px solid pink;
 }
 .carrent:hover {
-    border: none;
+    
     background-color: pink;
     transition: background-color 0.3s ease;
+    border: 2px solid pink;
 }
 .packet {
     border: 2px solid rgb(255, 141, 87);
 }
 .packet:hover {
-    border: none;
+    border: 2px solid rgb(255, 141, 87);
     background-color: rgb(255, 141, 87);
     transition: background-color 0.3s ease;
 }
@@ -42,7 +43,7 @@
     border: 2px solid rgb(116, 255, 122);
 }
 .member:hover {
-    border: none;
+    border: 2px solid rgb(116, 255, 122);
     background-color: rgb(116, 255, 122);
     transition: background-color 0.3s ease;
 }
@@ -50,7 +51,7 @@
     border: 2px solid rgb(203, 123, 254);
 }
 .fix:hover {
-    border: none;
+    border: 2px solid rgb(203, 123, 254);
     background-color: rgb(203, 123, 254);
     transition: background-color 0.3s ease;
 }
@@ -58,7 +59,7 @@
     border: 2px solid rgb(129, 138, 255);
 }
 .report:hover {
-    border: none;
+    border: 2px solid rgb(129, 138, 255);
     background-color: rgb(129, 138, 255);
     transition: background-color 0.3s ease;
 }

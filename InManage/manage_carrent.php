@@ -1,31 +1,13 @@
 <?php
 session_start();
-require '../conDB.php';
 
 if (!isset($_SESSION['admin'])) {
     echo "<script>alert('กรุณาเข้าสู่ระบบ'); window.location.href='../login.php';</script>";
     exit;
 }
 
-if (isset($_POST['search'])) {
-    $Memberpassport = $_POST['Memberpassport'];
-    $sql = "SELECT * FROM member WHERE Memberpassport = '$Memberpassport'";
-    $result = mysqli_query($con, $sql);
-
-    $response = ['found' => false];
-    if (mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        $response = [
-            'found' => true,
-            'memberName' => $row['Membername'] . " " . $row['Memberlastname'],
-            'memberID' => $row['MemberID']
-        ];
-    }
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit;
-}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,6 +54,7 @@ if (isset($_POST['search'])) {
         <div class="title-body">
             การเช่ารถ
         </div>
+
         <div class="table-view-carrent">
             <table class="table table-bordered">
                 <tr>
@@ -92,32 +75,68 @@ if (isset($_POST['search'])) {
         </div>
     </div>
 
-
-
-    <div class="carrent-popup" id="AddRent">
-        <div class="carrent-title">
-            การเช่ารถ
+    <div class="carrent-popup" id="Search">
+        <button type="button" class="close" aria-label="Close" onclick="CloseSearchPopup()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="search-title">
+            ค้นหาสมาชิก
         </div>
         <div class="search-member" id="SearchMember">
             <form action="manage_carrent.php" method="post">
                 <div class="box">
                     <label for="Memberpassport">เลขบัตรประจำตัวประชาชน:</label>
                     <input type="text" id="Memberpassport" name="Memberpassport">
-                    <button type="button" class="search" onclick="searchMember()">ค้นหา</button>
+                    <button type="submit" class="search" name="search" id="search" onclick="ShowAddDetailPopup()">ค้นหา</button>
                 </div>
             </form>
         </div>
+    </div>
+    <?php
+    require '../conDB.php';
+    $search_result = null; // เพิ่มบรรทัดนี้เพื่อกำหนดค่าเริ่มต้นให้ $search_result เป็น null
 
-        <div class="detail-rent" id="DetailRent">
+    if (isset($_POST['search'])) {
+        $Memberpassport = $_POST['Memberpassport'];
+
+        $sql = "SELECT * FROM member WHERE Memberpassport = '$Memberpassport'";
+        $result = mysqli_query($con, $sql);
+
+        if ($result) {
+            // เมื่อค้นหาเจอข้อมูล ให้กำหนดค่าให้กับ $search_result
+            $search_result = mysqli_fetch_assoc($result);
+
+            if ($search_result) {
+                echo "
+                <script>
+                    document.getElementById('Membername').value = '" . $search_result['Membername'] . " " . $search_result['Memberlastname'] . "';
+                    document.getElementById('MemberID').value = '" . $search_result['MemberID'] . "';
+                </script>
+            ";
+            } else {
+                echo "<script>alert('ไม่พบข้อมูลสมาชิก');</script>";
+            }
+        }
+    }
+    ?>
+
+
+    <?php if ($search_result) : ?>
+
+        <div class="Adddetail" id="AddDetail">
+            <div class="carrent-title">
+                การเช่ารถ
+            </div>
             <form action="manage_carrent.php" method="post">
                 <div class="box">
                     <label for='Membername'>ชื่อผู้เช่า:</label><br>
-                    <input class="form-control" type='text' id='Membername' name='Membername' value='<?php echo $memberName; ?>'><br>
-                    <input type='hidden' id='MemberID' name='MemberID' value='<?php echo $memberID; ?>'>
+                    <input class="form-control" type='text' id='Membername' name='Membername' value='<?php echo $search_result['Membername'] . " " . $search_result['Memberlastname']; ?>'><br>
+                    <input type='hidden' id='MemberID' name='MemberID' value='<?php echo $search_result['MemberID']; ?>'>
                 </div>
                 <div class="box">
                     <p>รถที่ต้องการเช่า</p>
                     <select name="car_id" id="car_id" class="form-select" onchange="updateRentalRate()">
+                        <option selected>เลือกรถที่ต้องการเช่า</option>
                         <?php
                         require '../conDB.php';
                         $sql = "SELECT * FROM car ORDER BY car_id";
@@ -131,22 +150,49 @@ if (isset($_POST['search'])) {
                 </div>
                 <div class="box">
                     <label for="RentalDate">วันที่ต้องการเช่า:</label><br>
-                    <input class="form-control" type="date" id="RentalDate" name="RentalDate" onchange="calculateTotal()">
+                    <input class="form-control" type="date" id="carrent_date" name="carrent_date" onchange="updateRentalRate()">
                 </div>
                 <div class="box">
                     <label for="ReturnDate">วันที่ส่งคืน:</label><br>
-                    <input class="form-control" type="date" id="ReturnDate" name="ReturnDate" onchange="calculateTotal()">
+                    <input class="form-control" type="date" id="carrent_return" name="carrent_return" onchange="updateRentalRate()">
                 </div>
                 <div class="box">
                     <label for="RentalPrice">ราคาเช่า:</label><br>
-                    <input class="form-control" type='text' id='RentalPrice' name='RentalPrice' readonly>
+                    <input class="form-control" type='text' id='carrent_price' name='carrent_price'>
                 </div>
-                <button>เพิ่ม</button>
-                <button class="closecarrent" onclick="CloseCarrent()">ปิด</button>
+                <button type="submit" name="AddRent" id="AddRent">เพิ่ม</button>
+                <button class="closecarrent" onclick="CloseCarrentPopup()">ปิด</button>
             </form>
         </div>
+    <?php endif; ?>
+    <?php
+    // Include the database connection file
+    require '../conDB.php';
 
-    </div>
+    // Check if the form is submitted
+    if (isset($_POST['AddRent'])) {
+        // Get the values from the form
+        $memberID = $_POST['MemberID'];
+        $carID = $_POST['car_id'];
+        $rentalDate = $_POST['carrent_date'];
+        $returnDate = $_POST['carrent_return'];
+        $rentalPrice = $_POST['carrent_price'];
+
+        // Insert the data into the database
+        $sql = "INSERT INTO carrent (car_id, MemberID, driver_id, carrent_date, carrent_return, carrent_price, carrent_status_id) 
+            VALUES ('$carID', '$memberID', '5', '$rentalDate', '$returnDate', '$rentalPrice', '1')";
+        if (mysqli_query($con, $sql)) {
+            echo "<script>alert('เพิ่มข้อมูลเรียบร้อยแล้ว');</script>";
+        } else {
+            echo "<script>alert('เกิดข้อผิดพลาดในการเพิ่มข้อมูล');</script>";
+        }
+    }
+
+    // Close the database connection
+    mysqli_close($con);
+    ?>
+
+
 
     <script src="../script/manage_carrent.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
