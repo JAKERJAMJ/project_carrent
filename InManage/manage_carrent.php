@@ -66,11 +66,50 @@ if (!isset($_SESSION['admin'])) {
                     <th width="100px">วันที่เริ่มเช่า</th>
                     <th width="120px">วันที่คืนรถ</th>
                     <th width="170px">จำนวนเงิน</th>
-                    <th width="170px">การชำระเงิน</th>
                     <th width="170px">สถานะการเช่า</th>
-                    <th width="200px">Action</th>
+                    <th width="250px">Action</th>
 
                 </tr>
+                <?php
+                require '../conDB.php';
+
+                $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.carrent_date, carrent.carrent_return, carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
+        member.Membername, member.Memberlastname,
+        car.car_name, car.car_price,
+        carrent_status.status_name
+        FROM carrent
+        LEFT JOIN member ON carrent.MemberID = member.MemberID
+        LEFT JOIN car ON carrent.car_id = car.car_id
+        LEFT JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
+        ORDER BY carrent.carrent_id";
+
+                $result = mysqli_query($con, $sql);
+                $counter = 1;
+
+                while ($row = mysqli_fetch_array($result)) {
+                    echo "<tr>";
+                    echo "<td>" . $counter . "</td>";
+                    echo "<td>" . $row['carrent_id'] . "</td>";
+                    echo "<td>" . date('d/m/Y H:i:s', strtotime($row['carrent_timestamp'])) . "</td>"; // Use date function with UNIX timestamp
+                    echo "<td>" . $row['Membername'] . " " . $row['Memberlastname'] . "</td>";
+                    echo "<td>" . $row['car_name'] . "</td>";
+                    echo "<td>" . date('d/m/Y', strtotime($row['carrent_date'])) . "</td>";
+                    echo "<td>" . date('d/m/Y', strtotime($row['carrent_return'])) . "</td>";
+                    echo "<td>" . $row['carrent_price'] . "</td>";
+                    echo "<td><button type='button' class='btn btn-warning'>" . $row['status_name'] . "</button>
+    </td>";
+                    echo "<td>";
+                    echo '<button type="button" class="btn btn-warning btn-sm mr-2">แก้ไข</button>';
+                    echo '&nbsp;&nbsp;&nbsp;';
+                    echo '<button type="button" class="btn btn-danger btn-sm mr-2">ยกเลิก</button>';
+                    echo "</td>";
+                    echo "</tr>";
+
+                    $counter++;
+                }
+
+                mysqli_close($con);
+                ?>
             </table>
         </div>
     </div>
@@ -179,10 +218,10 @@ if (!isset($_SESSION['admin'])) {
         $rentalPrice = $_POST['carrent_price'];
 
         // Insert the data into the database
-        $sql = "INSERT INTO carrent (car_id, MemberID, driver_id, carrent_date, carrent_return, carrent_price, carrent_status_id) 
-            VALUES ('$carID', '$memberID', '5', '$rentalDate', '$returnDate', '$rentalPrice', '1')";
+        $sql = "INSERT INTO carrent (car_id, MemberID, driver_status, driver_id, carrent_date, carrent_return, carrent_price, carrent_status_id) 
+            VALUES ('$carID', '$memberID', 'ไม่ต้องการคนขับ', '5', '$rentalDate', '$returnDate', '$rentalPrice', '1')";
         if (mysqli_query($con, $sql)) {
-            echo "<script>alert('เพิ่มข้อมูลเรียบร้อยแล้ว');</script>";
+            echo "<script>alert('เพิ่มข้อมูลเรียบร้อยแล้ว'); window.location.href = window.location.href;</script>";
         } else {
             echo "<script>alert('เกิดข้อผิดพลาดในการเพิ่มข้อมูล');</script>";
         }

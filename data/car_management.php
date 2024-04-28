@@ -61,7 +61,7 @@ if (!isset($_SESSION['admin'])) {
                                 ราคา : <?= $row['car_price']?> บาท
                             </p>
                             <a href="car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
-                            <button type="button" class="btn btn-outline-warning" onclick="deleteCar(<?= $row['car_id'] ?>)">ยกเลิกการใช้งาน</button>
+                            <button type="button" class="btn btn-outline-danger" onclick="deleteCar(<?= $row['car_id'] ?>)">ยกเลิกการใช้งาน</button>
                         </div>
 
                     </div>
