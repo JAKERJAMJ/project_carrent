@@ -48,6 +48,7 @@ if (!isset($_SESSION['admin'])) {
         </div>
         <div class="add-carrent">
             <button class="rent" name="rent" id="rent" onclick="Carrent()">เช่า</button>
+            <button class="rent" name="rent" id="rent">เช็ครถที่ว่าง</button>
         </div>
     </div>
     <div class="body-carrent">
@@ -158,10 +159,7 @@ if (!isset($_SESSION['admin'])) {
         }
     }
     ?>
-
-
     <?php if ($search_result) : ?>
-
         <div class="Adddetail" id="AddDetail">
             <div class="carrent-title">
                 การเช่ารถ
@@ -208,6 +206,17 @@ if (!isset($_SESSION['admin'])) {
     // Include the database connection file
     require '../conDB.php';
 
+    // Function to check if there's any overlapping rental for a given car within the specified date range
+    function isOverlappingRental($carID, $rentalDate, $returnDate)
+    {
+        global $con;
+        $sql = "SELECT * FROM carrent WHERE car_id = '$carID' AND 
+            ((carrent_date BETWEEN '$rentalDate' AND '$returnDate') OR 
+            (carrent_return BETWEEN '$rentalDate' AND '$returnDate'))";
+        $result = mysqli_query($con, $sql);
+        return mysqli_num_rows($result) > 0;
+    }
+
     // Check if the form is submitted
     if (isset($_POST['AddRent'])) {
         // Get the values from the form
@@ -217,19 +226,113 @@ if (!isset($_SESSION['admin'])) {
         $returnDate = $_POST['carrent_return'];
         $rentalPrice = $_POST['carrent_price'];
 
-        // Insert the data into the database
-        $sql = "INSERT INTO carrent (car_id, MemberID, driver_status, driver_id, carrent_date, carrent_return, carrent_price, carrent_status_id) 
-            VALUES ('$carID', '$memberID', 'ไม่ต้องการคนขับ', '5', '$rentalDate', '$returnDate', '$rentalPrice', '1')";
-        if (mysqli_query($con, $sql)) {
-            echo "<script>alert('เพิ่มข้อมูลเรียบร้อยแล้ว'); window.location.href = window.location.href;</script>";
+        // Check if there's any overlapping rental for the selected car within the specified date range
+        if (isOverlappingRental($carID, $rentalDate, $returnDate)) {
+            $sql = "SELECT car.car_name, carrent_date, carrent_return FROM carrent
+                    INNER JOIN car ON carrent.car_id = car.car_id
+                    WHERE carrent.car_id = '$carID' AND 
+                    ((carrent_date BETWEEN '$rentalDate' AND '$returnDate') OR 
+                    (carrent_return BETWEEN '$rentalDate' AND '$returnDate'))";
+            $result = mysqli_query($con, $sql);
+            if ($result) {
+                $row = mysqli_fetch_assoc($result);
+                $carName = $row['car_name'];
+                $overlappingDates = "$carName มีกำหนดการเช่าในช่วงเวลาตั้งแต่ " . date('d/m/Y', strtotime($row['carrent_date'])) . " ถึง " . date('d/m/Y', strtotime($row['carrent_return'])) . "\\n";
+                echo "<script>alert('มีการเช่ารถในช่วงเวลาที่กำหนดแล้ว\\n$overlappingDates กรุณาเลือกวันหรือรถคันอื่น');</script>";
+                echo "<script>window.location.href = window.location.href;</script>";
+            }
         } else {
-            echo "<script>alert('เกิดข้อผิดพลาดในการเพิ่มข้อมูล');</script>";
+            // Insert the data into the database
+            $sql = "INSERT INTO carrent (car_id, MemberID, driver_status, driver_id, carrent_date, carrent_return, carrent_price, carrent_status_id) 
+            VALUES ('$carID', '$memberID', 'ไม่ต้องการคนขับ', '5', '$rentalDate', '$returnDate', '$rentalPrice', '1')";
+            if (mysqli_query($con, $sql)) {
+                echo "<script>alert('เพิ่มข้อมูลเรียบร้อยแล้ว'); window.location.href = window.location.href;</script>";
+            } else {
+                echo "<script>alert('เกิดข้อผิดพลาดในการเพิ่มข้อมูล');</script>";
+            }
         }
     }
 
     // Close the database connection
     mysqli_close($con);
+
     ?>
+
+
+    <!-- HTML to display the car availability -->
+    <div class="check">
+        <div class="check-title">
+            เช็ควันที่ว่างของรถ
+        </div>
+        <div class="btn-check">
+            <button type="button" >เช็คจากวันที่</button>
+            <button type="button">เช็คจากรถ</button>
+        </div>
+        <div class="check-form" id="CheckFormDate">
+            <form action="" method="post">
+                <div class="box">
+                    <label for="carrent_date">วันที่เช่า:</label>
+                    <input type="date" name="carrent_date" id="carrent_date" required>
+                </div>
+                <div class="box">
+                    <label for="carrent_return">วันที่คืน:</label>
+                    <input type="date" name="carrent_return" id="carrent_return" required>
+                </div>
+                <button type="submit" name="CheckDate">ค้นหา</button>
+            </form>
+            <?php
+            require '../conDB.php';
+
+            // Function to check car availability
+            function checkCarAvailability($startDate, $endDate)
+            {
+                global $con; // Use the global database connection
+                $sql = "SELECT car.car_id, car.car_name, 
+                   (CASE 
+                        WHEN EXISTS (
+                            SELECT 1 FROM carrent 
+                            WHERE carrent.car_id = car.car_id 
+                            AND ((carrent_date <= '$endDate' AND carrent_return >= '$startDate'))
+                        ) THEN 'ไม่ว่าง'
+                        ELSE 'ว่าง'
+                    END) AS availability
+            FROM car";
+                $result = mysqli_query($con, $sql);
+                return $result; // Returns the result of the query
+            }
+
+            // Check if the CheckDate form was submitted
+            if (isset($_POST['CheckDate'])) {
+                $startDate = $_POST['carrent_date'];
+                $endDate = $_POST['carrent_return'];
+                $availableCars = checkCarAvailability($startDate, $endDate);
+            }
+            ?>
+            <?php if (isset($availableCars) && $availableCars) : ?>
+                <div class="table-view-datecheck">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>ชื่อรถ</th>
+                            <th>สถานะ</th>
+                        </tr>
+                        <?php while ($car = mysqli_fetch_assoc($availableCars)) : ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($car['car_name']); ?></td>
+                                <td><?php echo $car['availability']; ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <?php
+    mysqli_close($con);
+    ?>
+
+
+
 
 
 
