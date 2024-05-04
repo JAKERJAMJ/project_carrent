@@ -184,13 +184,45 @@
     align-items: center;
     background-color: #ffffff;
     padding: 3rem;
-    justify-content: center;
+    justify-content: start;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     border-radius: 20px;
     text-align: center; /* จัดข้อความตรงกลาง */
     width: 40%;
     max-height: 80%;
     left: 30%;
-    top: 30%;
+    top: 20%;
     z-index: 99999;
+}
+.check .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
+    background-color: #ffffff;
+    border: #ffffff solid;
+}
+.check .check-title {
+    padding: 10px;
+    font-size: 25px;
+    font-weight: bold;
+}
+.check .ondate, .oncar{
+    background-color: #ffffff;
+    width: 120px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    padding: 10px;
+}
+.check .ondate:hover {
+    background-color: rgb(146, 146, 255);
+    border-color: rgb(146, 146, 255);
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+}
+.check .oncar:hover {
+    background-color: rgb(150, 253, 147);
+    border-color: rgb(150, 253, 147);
+    color: #000000;
+    transition: background-color 0.3s ease;
 }

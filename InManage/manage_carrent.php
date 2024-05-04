@@ -48,7 +48,7 @@ if (!isset($_SESSION['admin'])) {
         </div>
         <div class="add-carrent">
             <button class="rent" name="rent" id="rent" onclick="Carrent()">เช่า</button>
-            <button class="rent" name="rent" id="rent">เช็ครถที่ว่าง</button>
+            <button class="rent" name="rent" id="rent" onclick="CheckDate()">เช็ครถที่ว่าง</button>
         </div>
     </div>
     <div class="body-carrent">
@@ -260,16 +260,17 @@ if (!isset($_SESSION['admin'])) {
 
 
     <!-- HTML to display the car availability -->
-    <div class="check">
+    <div class="check" id="CheckDate">
+        <button type="button" class="close" aria-label="Close" onclick="CloseCheckPopup(event)">
+            <span aria-hidden="true">&times;</span>
+        </button>
         <div class="check-title">
             เช็ควันที่ว่างของรถ
         </div>
-        <div class="btn-check">
-            <button type="button" >เช็คจากวันที่</button>
-            <button type="button">เช็คจากรถ</button>
-        </div>
+        <button type="button" class="ondate">เช็คจากวันที่</button>
+        <button type="button" class="oncar">เช็คตารางรถ</button>
         <div class="check-form" id="CheckFormDate">
-            <form action="" method="post">
+            <form action="manage_carrent.php" method="post">
                 <div class="box">
                     <label for="carrent_date">วันที่เช่า:</label>
                     <input type="date" name="carrent_date" id="carrent_date" required>
@@ -306,6 +307,16 @@ if (!isset($_SESSION['admin'])) {
                 $startDate = $_POST['carrent_date'];
                 $endDate = $_POST['carrent_return'];
                 $availableCars = checkCarAvailability($startDate, $endDate);
+
+                // Show selected dates
+                $startDateThai = date('d/m/Y', strtotime($startDate));
+                $endDateThai = date('d/m/Y', strtotime($endDate));
+
+                // Show selected dates
+                echo '<div class="selected-dates">';
+                echo '<p>วันที่เช่า: ' . $startDateThai . '</p>';
+                echo '<p>วันที่คืน: ' . $endDateThai . '</p>';
+                echo '</div>';
             }
             ?>
             <?php if (isset($availableCars) && $availableCars) : ?>

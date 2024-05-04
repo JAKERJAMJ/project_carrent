@@ -38,3 +38,21 @@ function updateRentalRate() {
     }
 }
 
+function CheckDate() {
+    var popup = document.getElementById('CheckDate');
+
+    popup.style.display = 'block';
+}
+function CloseCheckPopup(event) {
+    var popup = document.getElementById('CheckDate');
+    var clickedElement = event.target;
+
+    // ตรวจสอบว่าองค์ประกอบที่คลิกไม่ใช่ปุ่มที่เกี่ยวข้องกับการค้นหา รวมถึงปุ่มค้นหาและองค์ประกอบในฟอร์ม
+    if (!clickedElement.closest('.check-form') && clickedElement.type !== 'submit' && clickedElement.type !== 'date' && clickedElement.name !== 'CheckDate') {
+        popup.style.display = 'none';
+    }
+}
+
+
+
+
