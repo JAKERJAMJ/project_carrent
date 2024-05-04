@@ -55,7 +55,13 @@ if (!isset($_SESSION['admin'])) {
         <div class="title-body">
             การเช่ารถ
         </div>
-
+        <div class="search-container">
+            <form action="" method="GET">
+                <input type="date" name="start_date" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>">
+                <button type="submit">ค้นหา</button>
+                <a href="manage_carrent.php">ล้างค้นหา</a>
+            </form>
+        </div>
         <div class="table-view-carrent">
             <table class="table table-bordered">
                 <tr>
@@ -74,20 +80,45 @@ if (!isset($_SESSION['admin'])) {
                 <?php
                 require '../conDB.php';
 
+                // ตั้งค่าจำนวนข้อมูลต่อหน้า
+                $limit = 15;
+                $page = isset($_GET['page']) ? $_GET['page'] : 1;
+                $start = ($page - 1) * $limit;
+
+                // เพิ่มเงื่อนไขสำหรับวันที่เริ่มเช่าถ้ามีการค้นหา
+                $whereClause = "";
+                if (!empty($_GET['start_date'])) {
+                    $startDate = $_GET['start_date'];
+                    $whereClause = " WHERE carrent.carrent_date = '$startDate'";
+                }
+
                 $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.carrent_date, carrent.carrent_return, carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
-        member.Membername, member.Memberlastname,
-        car.car_name, car.car_price,
-        carrent_status.status_name
-        FROM carrent
-        LEFT JOIN member ON carrent.MemberID = member.MemberID
-        LEFT JOIN car ON carrent.car_id = car.car_id
-        LEFT JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
-        ORDER BY carrent.carrent_id";
+                        member.Membername, member.Memberlastname,
+                        car.car_name, car.car_price,
+                        carrent_status.status_name
+                        FROM carrent
+                        LEFT JOIN member ON carrent.MemberID = member.MemberID
+                        LEFT JOIN car ON carrent.car_id = car.car_id
+                        LEFT JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
+                        $whereClause
+                        ORDER BY carrent.carrent_id
+                        LIMIT $start, $limit";
 
                 $result = mysqli_query($con, $sql);
-                $counter = 1;
 
-                while ($row = mysqli_fetch_array($result)) {
+                // การคำนวณจำนวนหน้าทั้งหมดต้องแก้ไขเพื่อตรงกับการค้นหา
+                $countSql = "SELECT COUNT(*) AS total FROM carrent $whereClause";
+                $countResult = mysqli_query($con, $countSql);
+                $countRow = mysqli_fetch_assoc($countResult);
+                $total = $countRow['total'];
+                $pages = ceil($total / $limit);
+
+                mysqli_close($con);
+                ?>
+
+                <?php
+                $counter = $start + 1; // เริ่มต้นการนับจากข้อมูลของหน้าปัจจุบัน
+                while ($row = mysqli_fetch_assoc($result)) {
                     echo "<tr>";
                     echo "<td>" . $counter . "</td>";
                     echo "<td>" . $row['carrent_id'] . "</td>";
@@ -98,7 +129,7 @@ if (!isset($_SESSION['admin'])) {
                     echo "<td>" . date('d/m/Y', strtotime($row['carrent_return'])) . "</td>";
                     echo "<td>" . $row['carrent_price'] . "</td>";
                     echo "<td><button type='button' class='btn btn-warning'>" . $row['status_name'] . "</button>
-    </td>";
+                            </td>";
                     echo "<td>";
                     echo '<button type="button" class="btn btn-warning btn-sm mr-2">แก้ไข</button>';
                     echo '&nbsp;&nbsp;&nbsp;';
@@ -108,10 +139,18 @@ if (!isset($_SESSION['admin'])) {
 
                     $counter++;
                 }
-
                 mysqli_close($con);
                 ?>
             </table>
+            <nav>
+                <ul class="pagination">
+                    <?php for ($i = 1; $i <= $pages; $i++) : ?>
+                        <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                            <a class="page-link" href="?page=<?php echo $i; ?>&start_date=<?php echo $startDate; ?>"><?php echo $i; ?></a>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
         </div>
     </div>
 
