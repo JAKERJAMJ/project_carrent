@@ -78,6 +78,30 @@
 .body-carrent .table-view-carrent  {
     padding: 30px;
 }
+.body-carrent .search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px;
+    font-size: 16px;
+}
+
+.body-carrent .search-container form {
+    display: flex;
+    flex-wrap: wrap; /* ให้สามารถขึ้นบรรทัดใหม่ได้ */
+    align-items: center; /* ให้องค์ประกอบในฟอร์มอยู่ในแนวกลางตามแนวตั้ง */
+    justify-content: space-between; /* จัดระยะห่างระหว่างปุ่มและช่องใส่วันที่ */
+}
+
+.body-carrent .search-container input,
+.body-carrent .search-container button,
+.body-carrent .search-container a {
+    margin-left: 20px;
+}
+.body-carrent .search-container .btn-s {
+    margin-top: 10px;
+    background-color: #ffffff;
+    border-radius: 5px;
+}
 .table-view-carrent table {
     font-size: 16px;
     text-align: center;

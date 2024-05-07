@@ -53,6 +53,16 @@ function CloseCheckPopup(event) {
     }
 }
 
+// function การลบ/ยกเลิกการจอง
+
+// JavaScript function to cancel a car rental
+function cancelCarRental(carRentID) {
+    if (confirm("คุณแน่ใจหรือไม่ที่จะยกเลิกการเช่ารถนี้?")) {
+        // If user confirms the cancellation, send the car rent ID to PHP script for deletion
+        window.location.href = "cancel_rental.php?carrent_id=" + carRentID;
+    }
+}
+
 
 
 

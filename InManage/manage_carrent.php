@@ -57,8 +57,8 @@ if (!isset($_SESSION['admin'])) {
         </div>
         <div class="search-container">
             <form action="" method="GET">
-                <input type="date" name="start_date" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>">
-                <button type="submit">ค้นหา</button>
+                <input class="form-control" type="date" name="start_date" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>">
+                <button type="submit" class="btn-s">ค้นหา</button>
                 <a href="manage_carrent.php">ล้างค้นหา</a>
             </form>
         </div>
@@ -128,12 +128,11 @@ if (!isset($_SESSION['admin'])) {
                     echo "<td>" . date('d/m/Y', strtotime($row['carrent_date'])) . "</td>";
                     echo "<td>" . date('d/m/Y', strtotime($row['carrent_return'])) . "</td>";
                     echo "<td>" . $row['carrent_price'] . "</td>";
-                    echo "<td><button type='button' class='btn btn-warning'>" . $row['status_name'] . "</button>
-                            </td>";
+                    echo "<td><a href='status_carrent.php?id=" . $row['carrent_id'] . "' class='btn btn-warning'>" . $row['status_name'] . "</a></td>";
                     echo "<td>";
                     echo '<button type="button" class="btn btn-warning btn-sm mr-2">แก้ไข</button>';
                     echo '&nbsp;&nbsp;&nbsp;';
-                    echo '<button type="button" class="btn btn-danger btn-sm mr-2">ยกเลิก</button>';
+                    echo '<button type="button" class="btn btn-danger btn-sm mr-2" onclick="cancelCarRental(' . $row['carrent_id'] . ')">ยกเลิก</button>';
                     echo "</td>";
                     echo "</tr>";
 
@@ -312,11 +311,11 @@ if (!isset($_SESSION['admin'])) {
             <form action="manage_carrent.php" method="post">
                 <div class="box">
                     <label for="carrent_date">วันที่เช่า:</label>
-                    <input type="date" name="carrent_date" id="carrent_date" required>
+                    <input class="form-control" type="date" name="carrent_date" id="carrent_date" required>
                 </div>
                 <div class="box">
                     <label for="carrent_return">วันที่คืน:</label>
-                    <input type="date" name="carrent_return" id="carrent_return" required>
+                    <input class="form-control" type="date" name="carrent_return" id="carrent_return" required>
                 </div>
                 <button type="submit" name="CheckDate">ค้นหา</button>
             </form>
