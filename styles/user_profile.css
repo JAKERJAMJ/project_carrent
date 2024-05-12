@@ -1,0 +1,14 @@
+.head-profile {
+    display: flex; 
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    margin-top: 15px;
+}
+.head-profile .title-head {
+    padding: 30px;
+    font-size: 27px;
+    background-color: aliceblue;
+    border-radius: 20px;
+    width: 400px;
+}
