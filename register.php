@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $address = $_POST["Memberaddress"];
     $phone = $_POST["Memberphone"];
 
-    $defaultPic = './img/defult.webp';
+    $defaultPic = '../img/default.webp';
 
     $sql = "INSERT INTO member (MemberID, Membername, Memberlastname, Memberaddress, Memberphone, Memberpassport, Memberpassword, Memberemail, Memberpic) 
     VALUES (NULL, '$name', '$lastname', '$address', '$phone', '$passport', '$password', '$email', '$defaultPic')";

@@ -12,3 +12,53 @@
     border-radius: 20px;
     width: 400px;
 }
+#home {
+    margin-top: 20%;
+}
+#edit {
+    margin-top: 10px;
+}
+#password {
+    margin-top: 10px;
+}
+#body-profile {
+    display: flex;
+    padding: 10px;
+    width: 100%;
+    height: 650px;
+}
+
+.left-side {
+    flex-grow: 1; /* กำหนดให้ฝั่งซ้ายขยายตามพื้นที่ที่พร้อมใช้งาน */
+    align-items: center; /* กำหนดให้ข้อความแนวตั้งตรงกลาง */
+    text-align: center;
+    width: 200px;
+}
+.left-side .profile {
+    align-items: center;
+    justify-content: center;
+    margin-top: 15%;
+}
+.left-side .profile-img {
+   width: 400px;
+   border-radius: 20px;
+}
+.left-side .edit-img {
+    margin-top: 20px;
+    align-items: center;
+    text-align: center;
+    display: flex; /* เพิ่ม */
+    align-items: center; /* เพิ่ม */
+    justify-content: center; /* เพิ่ม */
+}
+.left-side button {
+    margin-top: 20px;
+}
+.right-side {
+    flex-grow: 1;
+    width: 300px; /* กำหนดขนาดคงที่ */
+}
+.right-side button {
+    margin-top: 20px;
+}
+
