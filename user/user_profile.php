@@ -85,7 +85,7 @@ if (!$user) {
             <div class="edit-img">
                 <form action="user_profile.php" method="post" enctype="multipart/form-data" id="upload-form" style="display: none;">
                     <input class="form-control" type="file" name="profile_pic" id="profile_pic" style="display: none; width: 250px;">
-                    <button type="submit" class="btn btn-success" name="update-profile">บันทึกรูปภาพ</button>
+                    <button type="submit" class="btn btn-success" name="update-profile" id="update-profile-btn" disabled>บันทึกรูปภาพ</button>
                 </form>
                 <?php
                 require_once '../conDB.php';
@@ -196,11 +196,13 @@ if (!$user) {
                             </div>
                             <div class="box">
                                 <label>รหัสผ่านใหม่:</label>
-                                <input class="form-control" type="password" name="new_password" required><br>
+                                <input type="password" class="form-control" id="Memberpassword" name="Memberpassword" placeholder="ควรประกอบไปด้วย(a-z), (A-Z), (0-9) และ!@#$%^&*().">
+                                <div id="passwordStrength"></div>
                             </div>
                             <div class="box">
                                 <label>ยืนยัน รหัสผ่านใหม่:</label>
-                                <input class="form-control" type="password" name="confirm_new_password" required><br>
+                                <input type="password" class="form-control" id="confirmPassword">
+                                <div id="PasswordError" style="color: red;"></div>
                             </div>
                             <button class="btn btn-success" type="submit" name="change_password">เปลี่ยนรหัสผ่าน</button>
                         </form>

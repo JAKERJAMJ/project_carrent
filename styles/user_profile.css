@@ -61,4 +61,11 @@
 .right-side button {
     margin-top: 20px;
 }
+#passwordStrength {
+    margin-top: 10px;
+    color: aliceblue;
+    border-radius: 15px;
+    padding: 5px;
+    font-size: 15px;
+}
 
