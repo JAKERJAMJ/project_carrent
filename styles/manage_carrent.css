@@ -1,10 +1,11 @@
-.head-carrent {
+.head-carrent{
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
     padding: 20px;
 }
+
 .head-carrent .title-carrent {
     font-size: 40px;
     padding: 30px;
@@ -15,6 +16,8 @@
     border-radius: 20px;
     margin-bottom: 20px;
     box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.2);
+    /* แก้ไขให้หัวข้ออยู่กึ่งกลาง */
+    margin: auto;
 }
 .head-carrent .btn-carrent {
     padding: 20px;

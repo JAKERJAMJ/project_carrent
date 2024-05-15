@@ -204,8 +204,28 @@ if (!$user) {
                                 <input type="password" class="form-control" id="confirmPassword">
                                 <div id="PasswordError" style="color: red;"></div>
                             </div>
-                            <button class="btn btn-success" type="submit" name="change_password">เปลี่ยนรหัสผ่าน</button>
+                            <button class="btn btn-success" type="submit" name="change_password" id="change_password">เปลี่ยนรหัสผ่าน</button>
                         </form>
+                        <?php
+                        require '../conDB.php';
+
+                        session_start();
+                        $MemberID = $_SESSION['MemberID'];
+
+                        if (isset($_POST['change_password'])) {
+                            $Memberpassword = $_POST['Memberpassword'];
+
+                            $sql = "UPDATE member SET Memberpassword = '$Memberpassword' WHERE MemberID = $MemberID";
+                            $result = mysqli_query($con, $sql);
+
+                            // ตรวจสอบการอัปเดต
+                            if ($result) {
+                                echo "<script>alert('อัพเดตผ่านเสร็จสิ้น'); window.location.href = window.location.href;</script>";
+                            } else {
+                                echo "เกิดข้อผิดพลาดในการอัปเดตข้อมูล: " . mysqli_error($con);
+                            }
+                        }
+                        ?>
                     </div>
                 </div>
             </div>

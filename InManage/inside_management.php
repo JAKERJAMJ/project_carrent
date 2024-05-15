@@ -49,7 +49,7 @@ if (!isset($_SESSION['admin'])) {
             <button class="packet">การจัดการการเช่าแพ็คเกจ</button>
         </div>
         <div class="button-manage-member">
-            <button class="member">การจัดการการสมาชิก</button>
+            <a href="manage_member.php"><button class="member">การจัดการการสมาชิก</button></a>
         </div>
         <div class="button-manage-fix">
             <button class="fix">การจัดการการการซ่อมรถ</button>

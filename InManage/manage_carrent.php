@@ -40,6 +40,7 @@ if (!isset($_SESSION['admin'])) {
     </header>
 
     <div class="head-carrent">
+        <a href="inside_management.php" class="btn btn-outline-dark" style="align-self: flex-start;">กลับ</a>
         <div class="title-carrent">
             <p class="title">การจัดการการเช่ารถ</p>
         </div>
