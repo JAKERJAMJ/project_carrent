@@ -61,6 +61,12 @@ if (!isset($_SESSION['admin'])) {
             $PromptPayQR->amount = $row['carrent_price']; // Set amount from car rent price
             echo '<img src="' . $PromptPayQR->generate() . '">';
             ?>
+            <div class="number-payment">
+                <p>หรือ<br>
+                    เลขบัญชี 06-587-5-6117 ธนาคารกสิกรไทย<br>
+                    ชื่อบัญชี ธนวรรณ คัมภ์บุญยอ
+                </p>
+            </div>
             <div class="file-slip">
                 <form action="" method="post">
                     <label for="">กรุณาใส่ไฟล์รูปภาพ</label>

@@ -23,3 +23,7 @@
     font-size: 25px;
     font-weight: bold;
 }
+.status-container .number-payment {
+    align-items: center;
+    text-align: center;
+}

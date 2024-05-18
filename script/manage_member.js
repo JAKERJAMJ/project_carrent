@@ -85,13 +85,14 @@ document.getElementById("Memberpassword").addEventListener("input", function() {
 
 // function ในการตรวจสอบช่องว่างของการกรอกข้อมูลสมัครสมาชิก
 function validateForm() {
-    let email = document.getElementById("Memberemail").value;
-    let password = document.getElementById("Memberpassword").value;
-    let confirmPassword = document.getElementById("confirmPassword").value;
-    let name = document.getElementById("Membername").value;
-    let lastname = document.getElementById("Memberlastname").value;
-    let address = document.getElementById("Memberaddress").value;
-    let phone = document.getElementById("Memberphone").value;
+    let form = document.getElementById("AddMember"); // เลือกฟอร์มที่มี ID เป็น "AddMember" เท่านั้น
+    let email = form.querySelector("#Memberemail").value;
+    let password = form.querySelector("#Memberpassword").value;
+    let confirmPassword = form.querySelector("#confirmPassword").value;
+    let name = form.querySelector("#Membername").value;
+    let lastname = form.querySelector("#Memberlastname").value;
+    let address = form.querySelector("#Memberaddress").value;
+    let phone = form.querySelector("#Memberphone").value;
 
     if (email === "" || password === "" || confirmPassword === "" || name === "" || lastname === "" || address === "" || phone === "") {
         alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
@@ -100,10 +101,21 @@ function validateForm() {
     return true;
 }
 
-document.querySelector("form").addEventListener("submit", function(e) {
+document.getElementById("AddMember").addEventListener("submit", function(e) { // เช็คเมื่อฟอร์มที่มี ID เป็น "AddMember" ถูกส่ง
     if (!validateForm()) {
         e.preventDefault();
     }
 });
 
+// add member popup
+function AddMember() {
+    var popup = document.getElementById('AddMember');
+
+    popup.style.display = 'block';
+}
+function Cancel() {
+    var popup = document.getElementById('AddMember');
+
+    popup.style.display = 'none';
+}
 

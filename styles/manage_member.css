@@ -37,10 +37,56 @@
     text-align: center; /* จัดให้ข้อมูลภายในตารางอยู่ตรงกลาง */
     vertical-align: middle; /* จัดให้ข้อมูลภายในตารางอยู่ตรงกลางแนวตั้ง */
 }
+.body-member .search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 20px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.body-member .search-container form {
+    display: flex;
+    flex-wrap: wrap; /* ให้สามารถขึ้นบรรทัดใหม่ได้ */
+    align-items: center; /* ให้องค์ประกอบในฟอร์มอยู่ในแนวกลางตามแนวตั้ง */
+    justify-content: space-between; /* จัดระยะห่างระหว่างปุ่มและช่องใส่วันที่ */
+}
+
+.body-member .search-container input,
+.body-member .search-container button,
+.body-member .search-container a {
+    margin-left: 20px;
+}
 #passwordStrength {
     margin-top: 10px;
     color: aliceblue;
     border-radius: 15px;
     padding: 5px;
     font-size: 15px;
+}
+.add-member {
+    display: none;
+    position: fixed;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 3rem;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    text-align: center; /* จัดข้อความตรงกลาง */
+    width: 40%;
+    max-height: 80%;
+    overflow-y: auto;
+    overflow-x: auto;
+    left: 30%;
+    top: 10%;
+    z-index: 99999;
+    
+}
+
+.add-member .title-addmember {
+    font-size: 25px;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
 }
