@@ -17,6 +17,9 @@ session_start();
     <?php
     require 'nav.php';
     ?>
+    <div class="bg-login-container">
+        <img src="./img/login-bg.jpg" alt="" class="bg">
+    </div>
     <div class="signin-container">
         <div class="signin-title"> Sign in </div>
         <div class="signin-body">

@@ -18,6 +18,9 @@ session_start();
     <?php
     require 'nav.php';
     ?>
+    <div class="bg-register-container">
+        <img src="./img/register-bg.jpg" alt="" class="reg-bg">
+    </div>
     <div class="register-container" id="RegisterContainer">
         <div class="register-title"> สมัครสมาชิก </div>
         <div class="register-body">

@@ -3,20 +3,38 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    background-image: url('./img/register-bg.jpg');
+    background-size: cover; /* ปรับขนาดรูปภาพให้เต็มขนาดหน้าจอ */
+}
+
+.bg-register-container{
+    justify-content: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.bg-register-container .reg-bg{
+    width: 100%;
+    height: 140vh;
+    border-radius: 0px;
+
 }
 .register-container {
     display: flex;
     flex-direction: column;
-    position: relative;
-    margin-top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 17%;
+    left: 32%;
     padding: 25px;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
     width: 50%;
-    max-width: 600px; /* ปรับขนาดตามที่ต้องการ */
+    max-width: 600px;
     border-radius: 20px;
+    background-color: rgb(255, 255, 255);
+    z-index: 0; /* ให้กล่องคอนเทนเนอร์อยู่หน้าสุด */
+    justify-content: center;
 }
+
 .register-container .register-title {
     font-size: 25px;
     text-align: center;

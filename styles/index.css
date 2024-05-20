@@ -24,4 +24,35 @@ body {
   font-size: 35px;
   color: rgb(75, 120, 246);
 }
+.custom-slide {
+  width: 80%; /* ปรับขนาดความกว้างของรูปภาพ */
+  height: 400px; /* รักษาสัดส่วนความสูงตามความกว้าง */
+  border-radius: 30px; /* ทำให้ขอบรูปภาพมน */
+  margin: auto; /* ทำให้รูปภาพอยู่ตรงกลาง */
+  display: block; /* ทำให้ margin: auto ทำงาน */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0); /* เพิ่มเงาเพื่อให้รูปภาพโดดเด่น */
+  padding: 10px;
+  
+}
+.carousel-inner {
+  align-items: center;
+  height: 500px;
+}
+.carousel-inner .carousel-item img{
+  width: 900px;
+  height: 450px;
+}
+.carousel-indicators .active {
+  background-color: rgb(98, 98, 99); /* เปลี่ยนสีของ active indicator */
+  width: 15px; /* ปรับขนาด width ของ active indicator */
+  height: 15px; /* ปรับขนาด height ของ active indicator */
+}
+.carousel-indicators button {
+  background-color: rgb(75, 120, 246); /* เปลี่ยนสีของ indicators */
+  border-radius: 50%; /* ทำให้ indicators เป็นวงกลม */
+  width: 12px; /* ปรับขนาด width */
+  height: 12px; /* ปรับขนาด height */
+  border: none; /* เอาขอบออก */
+  margin: 0 5px; /* เพิ่มช่องว่างระหว่าง indicators */
+}
 
