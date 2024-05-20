@@ -1,0 +1,33 @@
+body {
+    overflow-y: auto; /* ทำให้หน้าเว็บเลื่อนได้ในแนวแกนตั้ง (y) เมื่อเนื้อหาเกินขนาดของหน้า */
+}
+.check {
+    display: block;
+    flex-direction: column;
+    position: absolute;
+    align-items: center;
+    text-align: center;
+    top: 15%; /* จัดตำแหน่งของ container ให้อยู่ที่กลางด้านบน */
+    left: 30%; /* จัดตำแหน่งของ container ให้อยู่ที่กลางด้านซ้าย */
+    width: 600px;
+    height: auto;
+    background-color: rgb(255, 255, 255);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 4px rgb(0, 0, 0, 0.2);
+    margin-bottom: 10%;
+}
+.check .check-title {
+    font-size: 25px;
+    text-align: center;
+    padding: 20px;
+}
+.check .check-form {
+    padding: 20px;
+}
+.check-form .box {
+    margin-bottom: 15px;
+}
+.selected-dates {
+    padding: 20px;
+}

@@ -1,24 +1,3 @@
-function ShowAddDetailPopup() {
-    document.getElementById('Search').style.display = 'none';
-    document.getElementById('AddDetail').style.display = 'block';
-}
-
-function CloseSearchPopup() {
-    document.getElementById('Search').style.display = 'none';
-}
-
-function CloseCarrentPopup() {
-    document.getElementById('AddDetail').style.display = 'none';
-}
-
-
-function Carrent() {
-    var popup = document.getElementById('Search');
-
-    popup.style.display = 'block';
-}
-
-
 // คำนวนราคาในการเช่ารถ
 function updateRentalRate() {
     var carId = document.getElementById('car_id').value;
@@ -38,20 +17,7 @@ function updateRentalRate() {
     }
 }
 
-function CheckDate() {
-    var popup = document.getElementById('CheckDate');
 
-    popup.style.display = 'block';
-}
-function CloseCheckPopup(event) {
-    var popup = document.getElementById('CheckDate');
-    var clickedElement = event.target;
-
-    // ตรวจสอบว่าองค์ประกอบที่คลิกไม่ใช่ปุ่มที่เกี่ยวข้องกับการค้นหา รวมถึงปุ่มค้นหาและองค์ประกอบในฟอร์ม
-    if (!clickedElement.closest('.check-form') && clickedElement.type !== 'submit' && clickedElement.type !== 'date' && clickedElement.name !== 'CheckDate') {
-        popup.style.display = 'none';
-    }
-}
 
 // function การลบ/ยกเลิกการจอง
 
@@ -62,6 +28,35 @@ function cancelCarRental(carRentID) {
         window.location.href = "cancel_rental.php?carrent_id=" + carRentID;
     }
 }
+
+function Carrent() {
+    CheckDate();
+}
+
+
+function CloseCheckPopup(event) {
+    var popup = document.getElementById('CheckDate');
+    var clickedElement = event.target;
+
+    // ตรวจสอบว่าองค์ประกอบที่คลิกไม่ใช่ปุ่มที่เกี่ยวข้องกับการค้นหา รวมถึงปุ่มค้นหาและองค์ประกอบในฟอร์ม
+    if (!clickedElement.closest('.check-form') && clickedElement.type !== 'submit' && clickedElement.type !== 'date' && clickedElement.name !== 'CheckDate') {
+        popup.style.display = 'none';
+    }
+}
+
+function CheckDate() {
+    // ปิด popup ที่อาจเปิดอยู่ก่อนหน้านี้
+    CloseCheckPopup(event);
+    
+    var popup = document.getElementById('CheckDate');
+    popup.style.display = 'block';
+}
+
+function Submit() {
+    document.getElementById('CheckDate').style.display = 'block'; // แสดง popup CheckDate เมื่อคลิกปุ่มค้นหา
+}
+
+
 
 
 
