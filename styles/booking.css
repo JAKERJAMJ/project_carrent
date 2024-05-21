@@ -1,0 +1,74 @@
+.head-booking {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px; /* ทำให้รูปภาพอยู่ตรงกลางแนวตั้ง */
+}
+
+.head-booking img {
+    max-width: 40%; /* จัดให้รูปภาพไม่เกินขนาดของ div */
+    max-height: 100%; /* จัดให้รูปภาพไม่เกินขนาดของ div */
+    border-radius: 20px;
+}
+.carrent-popup {
+    display: none;
+    position: fixed;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 3rem;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    text-align: center; /* จัดข้อความตรงกลาง */
+    width: 40%;
+    max-height: 80%;
+    overflow-y: auto;
+    overflow-x: auto;
+    left: 30%;
+    top: 30%;
+    z-index: 99999;
+}
+.carrent-popup .box {
+    align-items: center;
+    margin-bottom: 1rem; /* ระยะห่างของกล่องข้อความ */
+}
+.carrent-popup .box label {
+    margin-right: 1rem; /* ระยะห่างของข้อความกับกล่องข้อความ */
+}
+.carrent-popup .box input[type="text"] {
+    padding: 0.5rem; /* การเพิ่ม padding สำหรับ input */
+    border: 1px solid #ccc; /* เส้นขอบ input */
+    border-radius: 5px; /* การกำหนดขอบโค้ง */
+    margin-top: 2px;
+}
+.carrent-popup .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
+    background-color: #ffffff;
+    border: #ffffff solid;
+}
+.carrent-popup .search-title {
+    margin-top: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.booking-body {
+    display: flex;
+    position: absolute;
+    width: 45%;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+    justify-content: center;
+    align-items: center;
+    left: 28%;
+    margin-top: 20px;
+    border-radius: 20px;
+}
+.btn-back {
+    margin-left: 30px;
+    margin-top: 20px;
+}

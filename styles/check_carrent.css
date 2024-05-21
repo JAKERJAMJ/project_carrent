@@ -2,12 +2,10 @@ body {
     overflow-y: auto; /* ทำให้หน้าเว็บเลื่อนได้ในแนวแกนตั้ง (y) เมื่อเนื้อหาเกินขนาดของหน้า */
 }
 .check {
-    display: block;
     flex-direction: column;
-    position: absolute;
+    position: relative;
     align-items: center;
     text-align: center;
-    top: 15%; /* จัดตำแหน่งของ container ให้อยู่ที่กลางด้านบน */
     left: 30%; /* จัดตำแหน่งของ container ให้อยู่ที่กลางด้านซ้าย */
     width: 600px;
     height: auto;
@@ -15,7 +13,8 @@ body {
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0px 0px 4px rgb(0, 0, 0, 0.2);
-    margin-bottom: 10%;
+    margin-bottom: 50px;
+    margin-top: 70px;
 }
 .check .check-title {
     font-size: 25px;
@@ -30,4 +29,13 @@ body {
 }
 .selected-dates {
     padding: 20px;
+}
+.btn-back {
+    margin-left: 30px;
+    margin-top: 20px;
+}
+.table-view-datecheck table {
+    font-size: 20px;
+    text-align: center;
+    vertical-align: middle;
 }

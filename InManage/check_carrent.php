@@ -37,12 +37,11 @@ if (!isset($_SESSION['admin'])) {
         </nav>
     </header>
 
+    <a href="manage_carrent.php" class="btn btn-outline-dark btn-back">กลับ</a>
     <div class="check" id="CheckDate">
         <div class="check-title">
             เช็ควันที่ว่างของรถ
         </div>
-        <button type="button" class="ondate">เช็คจากวันที่</button>
-        <button type="button" class="oncar">เช็คตารางรถ</button>
         <div class="check-form" id="CheckFormDate">
             <form action="check_carrent.php" method="post">
                 <div class="box">
@@ -95,23 +94,34 @@ if (!isset($_SESSION['admin'])) {
             ?>
             <?php if (isset($availableCars) && $availableCars) : ?>
                 <div class="table-view-datecheck">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered mx-auto">
                         <tr>
                             <th>ชื่อรถ</th>
                             <th>สถานะ</th>
+                            <th>จองรถ</th>
                         </tr>
                         <?php while ($car = mysqli_fetch_assoc($availableCars)) : ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($car['car_name']); ?></td>
-                                <td><?php echo $car['availability']; ?></td>
+                                <?php if ($car['availability'] === 'ว่าง') : ?>
+                                    <td><span class="btn btn-success"><?php echo $car['availability']; ?></span></td>
+                                    <?php
+                                    // สร้างลิงก์ "จองรถ" โดยรวมข้อมูลวันที่เช่าและวันที่คืนในลิงก์ด้วย
+                                    echo '<td><a href="booking_page.php?id=' . $car['car_id'] . '&start_date=' . $startDate . '&end_date=' . $endDate . '" class="btn btn-success">จองรถ</a></td>';
+                                    ?>
+                                <?php else : ?>
+                                    <td><span class="btn btn-danger"><?php echo $car['availability']; ?></span></td>
+                                    <td><button type="button" class="btn btn-danger" disabled>ไม่สามารถจองได้</button></td>
+                                <?php endif; ?>
                             </tr>
                         <?php endwhile; ?>
                     </table>
                 </div>
+
             <?php endif; ?>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
 
 </html>

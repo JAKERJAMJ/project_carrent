@@ -64,7 +64,7 @@ if (!isset($_SESSION['admin'])) {
             </form>
         </div>
         <div class="table-view-carrent">
-            <table class="table table-bordered">
+            <table class="table table-bordered ">
                 <tr>
                     <th width="90px">ลำดับที่</th>
                     <th width="100px">รหัสการเช่า</th>
