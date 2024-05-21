@@ -1,14 +1,30 @@
 .head-booking {
     display: flex;
+    position: relative;
     justify-content: center;
     align-items: center;
-    height: 400px; /* ทำให้รูปภาพอยู่ตรงกลางแนวตั้ง */
+    height: auto; /* ทำให้รูปภาพอยู่ตรงกลางแนวตั้ง */
+    flex-direction: column;
+    padding: 20px;
 }
-
+.head-booking .car-name {
+    display: block;
+    position: relative;
+    font-size: 26px;
+    padding: 20px;
+    background-color: rgb(113, 149, 255);
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
 .head-booking img {
+    display: block;
+    position: relative;
     max-width: 40%; /* จัดให้รูปภาพไม่เกินขนาดของ div */
     max-height: 100%; /* จัดให้รูปภาพไม่เกินขนาดของ div */
     border-radius: 20px;
+}
+.head-booking .btn-search {
+    margin-top: 20px;
 }
 .carrent-popup {
     display: none;
@@ -40,6 +56,7 @@
     border: 1px solid #ccc; /* เส้นขอบ input */
     border-radius: 5px; /* การกำหนดขอบโค้ง */
     margin-top: 2px;
+    margin-bottom: 15px;
 }
 .carrent-popup .close {
     position: absolute;
@@ -55,20 +72,27 @@
     font-weight: bold;
     margin-bottom: 15px;
 }
-.booking-body {
-    display: flex;
-    position: absolute;
-    width: 45%;
-    background-color: #ffffff;
-    padding: 20px;
-    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
-    justify-content: center;
-    align-items: center;
-    left: 28%;
-    margin-top: 20px;
-    border-radius: 20px;
-}
 .btn-back {
     margin-left: 30px;
     margin-top: 20px;
 }
+.booking-body {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 20px; /* เพิ่ม padding เพื่อให้มีระยะห่างของเนื้อหากับขอบ */
+    background-color: #ffffff;
+    top: 30%;
+    width: 40%;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+    left: 30%;
+    border-radius: 25px;
+    margin-bottom: 10%;
+}
+.booking-body .box {
+    padding: 10px;
+}
+.booking-body .box label {
+    margin-bottom: 1rem;
+}
+
