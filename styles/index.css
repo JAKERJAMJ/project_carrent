@@ -55,4 +55,33 @@ body {
   border: none; /* เอาขอบออก */
   margin: 0 5px; /* เพิ่มช่องว่างระหว่าง indicators */
 }
+.footer-index-container {
+  background-color: rgb(144, 192, 220);
+  width: 100%;
+  overflow: hidden; /* ป้องกันการเลื่อนของพื้นที่ที่อยู่นอกเหนือขอบเขต */
+  position: relative;
+}
+.footer-index-container .marquee{
+  color: rgb(255, 255, 255);
+  width: 2000px;
+  height: 200px;
+  font-size: 50px;
+  font-weight: normal;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  /* ปรับเพิ่ม */
+  width: 100%; /* กำหนดความกว้างของข้อความเพื่อให้ข้อความทำให้ความกว้างเท่ากับขนาดของรูปภาพ */
+  text-align: center; /* จัดให้ข้อความอยู่ตรงกลางแนวนอน */
+  padding-top: 60px; /* สร้างช่องว่างด้านบนของข้อความ */
+  padding-bottom: 60px;
+}
+.marquee {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: marquee 8s linear infinite;
+}
 
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}

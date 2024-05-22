@@ -44,6 +44,8 @@
 .about-body {
     display: flex;
     flex-direction: row;
+    position: relative;
+    height: auto;
 }
 .about-body .img-owner {
     padding: 20px;
@@ -89,6 +91,7 @@
     margin-top: 27%;
 }
 .about-footer-container{
+    position: relative;
     padding: 10px;
     display: flex;
     justify-content: center;
