@@ -1,0 +1,166 @@
+.head-body {
+    display: flex;
+    padding: 20px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+.head-body .button {
+    border: 0px solid black;
+    width: 150px;
+    text-align: center;
+    border-radius: 10px;
+    margin-left: 10px;
+    font-size: 20px;
+    padding: 3px;
+    border-color: #e4ff1b;
+    background-color: #fff41b;
+    text-decoration: none; /* ลบเส้นใต้ลิงก์ */
+    color: rgb(8, 8, 8);
+}
+.head-body .button:hover {
+    border-color:#f5ffa9;
+    background-color: #fff986;
+}
+.head-show-package-detail {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-right: 80px;
+}
+.head-show-package-detail .title-show-package-detail {
+    font-size: 30px;
+    padding: 30px;
+    background-color: rgb(137, 255, 204);
+    width: 500px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 3px rgb(0, 0, 0, 0.3);
+}
+.body-container {
+    display: flex;
+    flex-direction: row;
+    border: 2px solid rgb(21, 15, 15);
+    box-shadow: 0px 0px 3px rgba(48, 136, 235, 0.3);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: auto; /* ปรับให้คอนเทนเนอร์อยู่ตรงกลางแนวนอน */
+    margin-top: 2%; /* ปรับให้คอนเทนเนอร์อยู่ตรงกลางแนวตั้ง */
+    border-radius: 10px;
+    width: 80%; /* ตั้งค่าความกว้างตามที่ต้องการ */
+    max-width: 1200px; /* กำหนดความกว้างสูงสุด */
+    padding: 20px;
+}
+.image-container {
+    padding: 20px;
+}
+.body-container .image-container img {
+    width: 500px;
+    border-radius: 10px;
+}
+.detail {
+    display: flex;
+    flex-wrap: wrap;
+}
+.main-picture-pack, .detail-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin-top: 2px;
+}
+.detail .main-picture-pack {
+    padding: 15px;
+    width: 300px;
+    align-items: center;
+}
+.detail .main-picture-pack img {
+    border-radius: 20px;
+    max-width: 60%;
+}
+.detail-info {
+    display: flex;
+    justify-content: center;
+    margin-right: 25px;
+}
+.detail-info .up-info {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 10fr 7fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
+}
+.up-info .packet-name, .id-packet, .main-tourist {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    font-size: 30px;
+}
+.up-info .packet-name {
+    margin-top: 5px;
+    grid-column: 1/-1;
+    background-color: #b7a6f4;
+    font-size: 30px;
+}
+.up-info .main-tourist {
+    grid-column: 1/-1;
+    background-color: rgb(167, 225, 254);
+}
+.detail-info .down-info {
+    margin-top: 10px;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
+}
+.down-info .start-tourist, .end-tourist, .packet-price {
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+}
+.down-info .start-tourist {
+    margin-top: 5px;
+    grid-column: 1;
+    background-color: #84fd80;
+}
+.down-info .end-tourist {
+    margin-top: 5px;
+    grid-column: 2;
+    background-color: #f9ff57;
+}
+.down-info .packet-price {
+    grid-column: 1/-1;
+    background-color: rgb(236, 134, 134);
+}
+.package-rent{
+    border: 0px solid black;
+    display: flex;
+    padding: 20px;
+    justify-content: center;
+    
+}
+.package-rent .button{
+    border: 0px solid black;
+    width: 150px;
+    text-align: center;
+    border-radius: 10px;
+    margin-left: 10px;
+    font-size: 25px;
+    padding: 3px;
+    border-color: #9be9f8;
+    background-color: #acdcfb;
+    text-decoration: none; /* ลบเส้นใต้ลิงก์ */
+    color: rgb(8, 8, 8);
+}
+.package-rent .button:hover{
+    border-color: #9be9f8;
+    background-color: #64c1ff;
+}

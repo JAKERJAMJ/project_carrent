@@ -1,4 +1,13 @@
-.head-carrent{
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Head car rent styles */
+.head-carrent {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -10,106 +19,265 @@
     font-size: 40px;
     padding: 30px;
     color: rgb(57, 57, 57);
-    background-color: aliceblue;
+    background-color: rgb(147, 205, 255);
     width: 50%;
     text-align: center;
     border-radius: 20px;
     margin-bottom: 20px;
-    box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.2);
-    /* แก้ไขให้หัวข้ออยู่กึ่งกลาง */
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
     margin: auto;
 }
+
 .head-carrent .btn-carrent {
     padding: 20px;
 }
-.btn-carrent .carrent {
-    padding: 5px;
-    background-color: white;
+
+.btn-carrent .carrent,
+.btn-carrent .returncar {
+    padding: 10px;
     width: 250px;
-    border: 2px solid rgb(0, 195, 0);
+    border: 2px solid;
     font-size: 20px;
-    color: rgb(0, 195, 0);
     border-radius: 10px;
+    text-align: center;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #ffffff;
 }
+
+.btn-carrent .carrent {
+    border-color: rgb(0, 195, 0);
+    color: rgb(0, 195, 0);
+}
+
 .btn-carrent .carrent:hover {
     background-color: rgb(0, 195, 0);
     color: white;
-    transition: background-color 0.3s ease;
 }
+
 .btn-carrent .returncar {
-    padding: 5px;
-    background-color: white;
-    width: 250px;
-    border: 2px solid rgb(30, 109, 255);
-    font-size: 20px;
+    border-color: rgb(30, 109, 255);
     color: rgb(30, 109, 255);
-    border-radius: 10px;
 }
+
 .btn-carrent .returncar:hover {
     background-color: rgb(30, 109, 255);
     color: white;
-    transition: background-color 0.3s ease;
 }
+
 .head-carrent .add-carrent {
     display: flex;
     padding: 20px;
     width: 100%;
     justify-content: flex-end;
 }
+
 .add-carrent .rent {
-    padding: 5px;
+    padding: 10px;
     background-color: white;
     width: 220px;
     border: 2px solid rgb(255, 142, 5);
     font-size: 20px;
     color: rgb(255, 142, 5);
     border-radius: 10px;
-    right: 10%;
-    align-items: center;
     text-align: center;
     text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
+
 .add-carrent .rent:hover {
     background-color: rgb(255, 142, 5);
     color: white;
-    transition: background-color 0.3s ease;
 }
+
+/* Body car rent styles */
 .body-carrent {
     padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
 }
+
 .body-carrent .title-body {
-    font-size: 40px;
-    margin-left: 30px;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
 }
-.body-carrent .table-view-carrent  {
-    padding: 30px;
-}
+
 .body-carrent .search-container {
     display: flex;
     justify-content: flex-end;
-    margin-right: 20px;
-    font-size: 16px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .body-carrent .search-container form {
     display: flex;
-    flex-wrap: wrap; /* ให้สามารถขึ้นบรรทัดใหม่ได้ */
-    align-items: center; /* ให้องค์ประกอบในฟอร์มอยู่ในแนวกลางตามแนวตั้ง */
-    justify-content: space-between; /* จัดระยะห่างระหว่างปุ่มและช่องใส่วันที่ */
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .body-carrent .search-container input,
+.body-carrent .search-container select,
 .body-carrent .search-container button,
 .body-carrent .search-container a {
-    margin-left: 20px;
-}
-.body-carrent .search-container .btn-s {
-    margin-top: 10px;
-    background-color: #ffffff;
+    margin: 5px;
+    padding: 10px 15px;
     border-radius: 5px;
 }
+
+.body-carrent .search-container input,
+.body-carrent .search-container select {
+    border: 1px solid #ddd;
+    background-color: #fff;
+    flex: 1;
+}
+
+.body-carrent .search-container .btn-s {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.body-carrent .search-container .btn-s:hover {
+    background-color: #0056b3;
+}
+
+.body-carrent .search-container a {
+    background-color: #dc3545;
+    color: #fff;
+    text-decoration: none;
+}
+
+.body-carrent .search-container a:hover {
+    background-color: #c82333;
+}
+
+.body-carrent .table-view-carrent {
+    overflow-x: auto;
+}
+
 .table-view-carrent table {
-    font-size: 16px;
+    width: 100%;
+    border-collapse: collapse;
     text-align: center;
+    font-size: 15px;
     vertical-align: middle;
+}
+
+.table-view-carrent th,
+.table-view-carrent td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.table-view-carrent th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+}
+
+.table-view-carrent tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table-view-carrent tr:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.2s ease;
+}
+
+.table-view-carrent .btn {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.table-view-carrent .btn-warning {
+    background-color: #ffc107;
+    color: #fff;
+}
+
+.table-view-carrent .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.table-view-carrent .btn-warning:hover,
+.table-view-carrent .btn-danger:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+/* Pagination styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.pagination .page-item {
+    margin: 0 5px;
+}
+
+.pagination .page-link {
+    color: #007bff;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .table-view-carrent {
+        padding: 15px;
+    }
+
+    .table-view-carrent table,
+    .table-view-carrent th,
+    .table-view-carrent td {
+        font-size: 12px;
+    }
+
+    .table-view-carrent .btn {
+        font-size: 12px;
+        padding: 3px 5px;
+    }
+
+    .pagination .page-link {
+        padding: 6px 10px;
+    }
+
+    .body-carrent .search-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .body-carrent .search-container form {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .body-carrent .search-container input,
+    .body-carrent .search-container select,
+    .body-carrent .search-container button,
+    .body-carrent .search-container a {
+        width: 100%;
+        margin: 5px 0;
+    }
 }

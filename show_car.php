@@ -44,7 +44,7 @@ require 'conDB.php';
                                 ยี่ห้อรถ : <?= $row['car_brand'] ?><br>
                                 ราคา : <?= $row['car_price']?> บาท <br>
                             </p>
-                            <a href="car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
+                            <a href=show_car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
                             <button type="button" class="btn btn-outline-warning">เช่ารถ</button>
                         </div>
                     </div>

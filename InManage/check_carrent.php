@@ -26,10 +26,10 @@ if (!isset($_SESSION['admin'])) {
                     <a class="navbar-brand" href="../admin.php">Admin Controller</a>
                 </div>
                 <div class="dropdown">
-                    <button class="btn btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         Admin
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"> <!-- เพิ่ม class dropdown-menu-end เพื่อจัดให้ dropdown อยู่ด้านขวาของ Navbar -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="../logout.php">Logout</a></li>
                     </ul>
                 </div>
@@ -107,7 +107,7 @@ if (!isset($_SESSION['admin'])) {
                                     <td><span class="btn btn-success"><?php echo $car['availability']; ?></span></td>
                                     <?php
                                     // สร้างลิงก์ "จองรถ" โดยรวมข้อมูลวันที่เช่าและวันที่คืนในลิงก์ด้วย
-                                    echo '<td><a href="booking_page.php?id=' . $car['car_id'] . '&start_date=' . $startDate . '&end_date=' . $endDate . '" class="btn btn-success">จองรถ</a></td>';
+                                    echo '<td><button class="btn btn-success" onclick="showCheckMember(' . $car['car_id'] . ', \'' . $startDate . '\', \'' . $endDate . '\')">จองรถ</button></td>';
                                     ?>
                                 <?php else : ?>
                                     <td><span class="btn btn-danger"><?php echo $car['availability']; ?></span></td>
@@ -121,6 +121,89 @@ if (!isset($_SESSION['admin'])) {
             <?php endif; ?>
         </div>
     </div>
+
+    <!-- Bootstrap Modal for Member Check -->
+    <div class="modal fade" id="CheckMemberModal" tabindex="-1" aria-labelledby="CheckMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="CheckMemberModalLabel">ตรวจสอบสมาชิก</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="CheckMemberForm" action="check_carrent.php" method="post">
+                        <div class="mb-3">
+                            <label for="Memberpassport" class="form-label">เลขบัตรประจำตัวประชาชน</label>
+                            <input type="text" class="form-control" name="Memberpassport" id="Memberpassport" required>
+                            <input type="hidden" name="car_id" id="car_id">
+                            <input type="hidden" name="carrent_date" id="carrent_date_hidden">
+                            <input type="hidden" name="carrent_return" id="carrent_return_hidden">
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="checkmember">ค้นหาสมาชิก</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Modal for Confirmation -->
+    <div class="modal fade" id="ConfirmMemberModal" tabindex="-1" aria-labelledby="ConfirmMemberModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ConfirmMemberModalLabel">ยืนยันการดำเนินการ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="confirmModalBody">
+                    <!-- The confirmation message will be inserted here by JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" id="confirmButton">ยืนยัน</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+require '../conDB.php';
+
+if (isset($_POST['checkmember'])) {
+    $passport = $_POST['Memberpassport'];
+    $car_id = $_POST['car_id'];
+    $carrent_date = $_POST['carrent_date'];
+    $carrent_return = $_POST['carrent_return'];
+
+    $sql = "SELECT MemberID, Membername, Memberlastname FROM member WHERE Memberpassport = ?";
+    $stmt = $con->prepare($sql);
+    $stmt->bind_param("s", $passport);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $member = $result->fetch_assoc();
+
+    if ($member) {
+        $member_name = $member['Membername'];
+        $member_lastname = $member['Memberlastname'];
+        $member_id = $member['MemberID'];
+
+        // Return the data as a script to show the confirmation modal
+        echo "<script>
+            window.onload = function() {
+                showConfirmMemberModal('พบสมาชิก: $member_name $member_lastname. ต้องการดำเนินการต่อหรือไม่?', function() {
+                    window.location.href = 'booking_page.php?car_id=$car_id&start_date=$carrent_date&end_date=$carrent_return&member_id=$member_id';
+                });
+            };
+        </script>";
+    } else {
+        echo "<script>
+            alert('ไม่พบสมาชิก');
+            window.history.back();
+        </script>";
+    }
+}
+?>
+
+
+    <script src="../script/check.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
 

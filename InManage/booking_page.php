@@ -8,14 +8,53 @@ if (!isset($_SESSION['admin'])) {
 
 require '../conDB.php';
 
-$id = $_GET['id'];
-$sql = "SELECT * FROM car WHERE car_id = '$id'";
-$result = mysqli_query($con, $sql);
-$row = mysqli_fetch_assoc($result);
+if (isset($_GET['car_id']) && isset($_GET['start_date']) && isset($_GET['end_date']) && isset($_GET['member_id'])) {
+    $carId = $_GET['car_id'];
+    $startDate = $_GET['start_date'];
+    $endDate = $_GET['end_date'];
+    $memberID = $_GET['member_id'];
 
-$startDate = $_GET['start_date'];
-$endDate = $_GET['end_date'];
+    // ค้นหาข้อมูลรถ
+    $sql = "SELECT * FROM car WHERE car_id = '$carId'";
+    $result = mysqli_query($con, $sql);
+    $car = mysqli_fetch_assoc($result);
 
+    // ค้นหาข้อมูลสมาชิก
+    $sql = "SELECT * FROM member WHERE MemberID = '$memberID'";
+    $result = mysqli_query($con, $sql);
+    $member = mysqli_fetch_assoc($result);
+
+    // คำนวณจำนวนวันที่เช่า
+    $datetime1 = new DateTime($startDate);
+    $datetime2 = new DateTime($endDate);
+    $interval = $datetime1->diff($datetime2);
+    $days = $interval->days;
+
+    // ตรวจสอบเงื่อนไขการนับวัน
+    if ($days == 0) {
+        $days = 1; // นับวันที่เช่าและคืนในวันเดียวกันเป็น 1 วัน
+    } elseif ($days == 1) {
+        $days = 1; // นับวันที่เช่าและคืนในวันถัดไปเป็น 1 วัน
+    } else {
+        $days += 1; // เพิ่มวันสุดท้ายที่ไม่ได้ถูกนับ
+    }
+
+    // คำนวณราคาเช่าทั้งหมด
+    $totalRentalPrice = $days * $car['car_price'];
+}
+ // ดึงค่า enum ของ carrent_time
+ $enumSql = "SHOW COLUMNS FROM carrent LIKE 'carrent_time'";
+ $enumResult = mysqli_query($con, $enumSql);
+ $enumRow = mysqli_fetch_assoc($enumResult);
+ $enumList = str_replace("'", "", substr($enumRow['Type'], 5, (strlen($enumRow['Type'])-6)));
+ $carRentTimes = explode(",", $enumList);
+
+  // ดึงค่า enum ของ return_time
+  $enumSql = "SHOW COLUMNS FROM carrent LIKE 'return_time'";
+  $enumResult = mysqli_query($con, $enumSql);
+  $enumRow = mysqli_fetch_assoc($enumResult);
+  $enumList = str_replace("'", "", substr($enumRow['Type'], 5, (strlen($enumRow['Type'])-6)));
+  $returnTimes = explode(",", $enumList);
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +80,7 @@ $endDate = $_GET['end_date'];
                     <button class="btn btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         Admin
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"> <!-- เพิ่ม class dropdown-menu-end เพื่อจัดให้ dropdown อยู่ด้านขวาของ Navbar -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="../logout.php">Logout</a></li>
                     </ul>
                 </div>
@@ -50,146 +89,121 @@ $endDate = $_GET['end_date'];
     </header>
     <a href="check_carrent.php" class="btn btn-outline-dark btn-back">กลับ</a>
     <div class="head-booking">
-        <div class="car-name"><?= $row['car_name'] ?></div>
-        <img src="<?= $row['car_picture1'] ?>" alt="รูปภาพรถ">
-        <div class="btn-search">
-            <button type="button" class="btn btn-primary" onclick="OpenSearch()">ค้นหาผู้เช่า</button>
-        </div>
+        <div class="car-name"><?= htmlspecialchars($car['car_name']) ?></div>
+        <img src="<?= htmlspecialchars($car['car_picture1']) ?>" alt="รูปภาพรถ">
     </div>
-    <div class="carrent-popup" id="Search">
-        <button type="button" class="close" aria-label="Close" onclick="CloseSearchPopup()">
-            <span aria-hidden="true">X</span>
-        </button>
-        <div class="search-title">
-            ค้นหาสมาชิก
-        </div>
-        <div class="search-member" id="SearchMember">
-            <form action="booking_page.php?id=<?php echo $row['car_id']; ?>" method="post">
-                <div class="box">
-                    <label for="Memberpassport">เลขบัตรประจำตัวประชาชน:</label>
-                    <input type="text" id="Memberpassport" name="Memberpassport">
-                    <button type="submit" class="btn btn-primary" name="search" id="search" onclick="searchMember('<?php echo $row['car_id']; ?>')">ค้นหา</button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-    <?php
-    require '../conDB.php';
-    $search_result = null; // เพิ่มบรรทัดนี้เพื่อกำหนดค่าเริ่มต้นให้ $search_result เป็น null
-    if (isset($_POST['search'])) {
-        $Memberpassport = $_POST['Memberpassport'];
-        $sql = "SELECT * FROM member WHERE Memberpassport = '$Memberpassport'";
-        $result = mysqli_query($con, $sql);
-        if ($result) {
-            // เมื่อค้นหาเจอข้อมูล ให้กำหนดค่าให้กับ $search_result
-            $search_result = mysqli_fetch_assoc($result);
-            if ($search_result) {
-                echo "
-                <script>
-                    document.getElementById('Membername').value = '" . $search_result['Membername'] . " " . $search_result['Memberlastname'] . "';
-                    document.getElementById('MemberID').value = '" . $search_result['MemberID'] . "';
-                </script>
-            ";
-            } else {
-                echo "<script>alert('ไม่พบข้อมูลสมาชิก');</script>";
-            }
-        }
-    }
-    ?>
-
     <div class="booking-body">
-        <form action="booking_page.php?id=<?php echo $row['car_id']; ?>" method="post">
+        <form action="" method="post">
             <div class="box">
                 <label for="car_name">ชื่อรถ</label>
-                <input class="form-control" type="text" name="car_name" id="car_name" value="<?= $row['car_name'] ?>">
-                <input class="form-control" type="hidden" name="car_id" id="car_id" value="<?= $row['car_id'] ?>">
-                <input class="form-control" type="hidden" name="car_price" id="car_price" value="<?= $row['car_price'] ?>">
+                <input class="form-control" type="text" name="car_name" id="car_name" value="<?= htmlspecialchars($car['car_name']) ?>" readonly>
+                <input class="form-control" type="hidden" name="car_id" id="car_id" value="<?= htmlspecialchars($car['car_id']) ?>">
             </div>
             <div class="box">
                 <label for='Membername'>ชื่อผู้เช่า</label><br>
-                <input class="form-control" type='text' id='Membername' name='Membername' value='<?php echo $search_result['Membername'] . " " . $search_result['Memberlastname']; ?>'><br>
-                <input type='hidden' id='MemberID' name='MemberID' value='<?php echo $search_result['MemberID']; ?>'>
+                <input class="form-control" type='text' id='Membername' name='Membername' value='<?= htmlspecialchars($member['Membername'] . " " . $member['Memberlastname']) ?>' readonly><br>
+                <input type='hidden' id='MemberID' name='MemberID' value='<?= htmlspecialchars($member['MemberID']) ?>'>
             </div>
             <div class="box">
                 <label for="RentalDate">วันที่ต้องการเช่า:</label><br>
-                <input class="form-control" type="date" id="RentalDate" name="RentalDate" onchange="calculateTotal()">
+                <input class="form-control" type="date" id="RentalDate" name="RentalDate" value="<?= htmlspecialchars($startDate) ?>" readonly>
+            </div>
+            <div class="box">
+                <label for="RentalTime">เวลาในการรับรถ (ตามไฟท์บินของท่าน):</label><br>
+                <select class="form-select" id="RentalTime" name="RentalTime">
+                <option selected>กรุณาเลือกเวลาในการรับรถ (ตามไฟท์บินของท่าน)</option>
+                    <?php
+                    foreach ($carRentTimes as $time) {
+                        echo "<option value=\"" . htmlspecialchars($time) . "\">" . htmlspecialchars($time) . "</option>";
+                    }
+                    ?>
+                </select>
             </div>
             <div class="box">
                 <label for="ReturnDate">วันที่ส่งคืน:</label><br>
-                <input class="form-control" type="date" id="ReturnDate" name="ReturnDate" onchange="calculateTotal()">
+                <input class="form-control" type="date" id="ReturnDate" name="ReturnDate" value="<?= htmlspecialchars($endDate) ?>" readonly>
             </div>
             <div class="box">
-                <label for="RentalPrice">ราคาเช่า:</label><br>
-                <input class="form-control" type='text' id='RentalPrice' name='RentalPrice'>
+                <label for="ReturnTime">เวลาในการส่งคืน (ตามไฟท์บินของท่าน):</label><br>
+                <select class="form-select" id="ReturnTime" name="ReturnTime">
+                <option selected>กรุณาเลือกเวลาในการส่งคืน (ตามไฟท์บินของท่าน)</option>
+                    <?php
+                    foreach ($returnTimes as $time) {
+                        echo "<option value=\"" . htmlspecialchars($time) . "\">" . htmlspecialchars($time) . "</option>";
+                    }
+                    ?>
+                </select>
             </div>
             <div class="box">
-                <button class="btn btn-primary" type="submit" name="AddRent" id="AddRent">เพิ่ม</button>
+                <label for="RentalPrice">ราคาเช่าทั้งหมด:</label><br>
+                <input class="form-control" type='text' id='RentalPrice' name='RentalPrice' value='<?= htmlspecialchars($totalRentalPrice) ?>' readonly>
+            </div>
+            <div class="box">
+                <button class="btn btn-primary" type="submit" name="AddRent" id="AddRent">ยืนยันการเช่า</button>
             </div>
         </form>
     </div>
+
     <?php
-    // Include the database connection file
-    require '../conDB.php';
-
-    // Function to check if there's any overlapping rental for a given car within the specified date range
-    function isOverlappingRental($carID, $rentalDate, $returnDate)
-    {
-        global $con;
-        $sql = "SELECT * FROM carrent WHERE car_id = '$carID' AND 
-            ((carrent_date BETWEEN '$rentalDate' AND '$returnDate') OR 
-            (carrent_return BETWEEN '$rentalDate' AND '$returnDate'))";
-        $result = mysqli_query($con, $sql);
-        return mysqli_num_rows($result) > 0;
-    }
-
-    // Check if the form is submitted
     if (isset($_POST['AddRent'])) {
-        // Get the values from the form
         $memberID = $_POST['MemberID'];
         $carID = $_POST['car_id'];
         $rentalDate = $_POST['RentalDate'];
+        $rentalTime = $_POST['RentalTime'];
         $returnDate = $_POST['ReturnDate'];
+        $returnTime = $_POST['ReturnTime'];
         $rentalPrice = $_POST['RentalPrice'];
 
-        // Check if there's any overlapping rental for the selected car within the specified date range
-        if (isOverlappingRental($carID, $rentalDate, $returnDate)) {
-            // Retrieve overlapping rental details for alert message
-            $sql = "SELECT car.car_name, carrent_date, carrent_return FROM carrent
-                INNER JOIN car ON carrent.car_id = car.car_id
-                WHERE carrent.car_id = '$carID' AND 
-                ((carrent_date BETWEEN '$rentalDate' AND '$returnDate') OR 
-                (carrent_return BETWEEN '$rentalDate' AND '$returnDate'))";
-            $result = mysqli_query($con, $sql);
-            if ($result) {
-                $row = mysqli_fetch_assoc($result);
-                $carName = $row['car_name'];
-                $overlappingDates = "$carName มีกำหนดการเช่าในช่วงเวลาตั้งแต่ " . date('d/m/Y', strtotime($row['carrent_date'])) . " ถึง " . date('d/m/Y', strtotime($row['carrent_return'])) . "\\n";
-                echo "<script>alert('มีการเช่ารถในช่วงเวลาที่กำหนดแล้ว\\n$overlappingDates กรุณาเลือกวันหรือรถคันอื่น');</script>";
-                echo "<script>window.location.href = window.location.href;</script>";
-            }
+        $sql = "INSERT INTO carrent (car_id, MemberID, type_carrent, driver_status, driver_id, carrent_date, carrent_time, carrent_return, return_time, carrent_price, carrent_status_id) 
+            VALUES ('$carID', '$memberID', 'เช่ารถส่วนตัว', 'ไม่ต้องการคนขับ', '5', '$rentalDate', '$rentalTime', '$returnDate', '$returnTime', '$rentalPrice', '1')";
+        if (mysqli_query($con, $sql)) {
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+                });
+                </script>";
         } else {
-            // Insert the data into the database if there's no overlapping rental
-            $sql = "INSERT INTO carrent (car_id, MemberID, type_carrent, driver_status, driver_id, carrent_date, carrent_return, carrent_price, carrent_status_id) 
-            VALUES ('$carID', '$memberID', 'เช่ารถส่วนตัว', 'ไม่ต้องการคนขับ', '5', '$rentalDate', '$returnDate', '$rentalPrice', '1')";
-            if (mysqli_query($con, $sql)) {
-                echo "<script>alert('เพิ่มข้อมูลเรียบร้อยแล้ว'); window.location.href = 'manage_carrent.php';</script>";
-            } else {
-                echo "<script>alert('เกิดข้อผิดพลาดในการเพิ่มข้อมูล');</script>";
-            }
+            echo "<script>
+                alert('เกิดข้อผิดพลาดในการเพิ่มข้อมูล: " . mysqli_error($con) . "');
+              </script>";
         }
     }
     ?>
 
-    <?php
-    // Close the database connection
-    mysqli_close($con);
-    ?>
-
-
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">การเช่าสำเร็จ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    เพิ่มข้อมูลเรียบร้อยแล้ว
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="confirmButton">ตกลง</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="../script/booking.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var confirmButton = document.getElementById('confirmButton');
+            confirmButton.addEventListener('click', function() {
+                window.location.href = 'manage_carrent.php';
+            });
+
+            var successModal = document.getElementById('successModal');
+            successModal.addEventListener('hidden.bs.modal', function () {
+                window.location.href = 'manage_carrent.php';
+            });
+        });
+    </script>
 </body>
 
 </html>

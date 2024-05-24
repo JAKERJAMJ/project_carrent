@@ -29,21 +29,30 @@ require 'conDB.php';
     <div class="show-package">
         <div class="row view-package">
             <?php
-            $sql = "SELECT * FROM package ORDER BY package_id";
+            $sql = "SELECT * FROM packet ORDER BY packet_id";
             $result = mysqli_query($con, $sql);
+
+            // ตรวจสอบผลลัพธ์ของการเรียกใช้ mysqli_query()
+            if (!$result) {
+                // แสดงข้อผิดพลาดถ้าคำสั่ง SQL มีปัญหา
+                die("Error in SQL query: " . mysqli_error($con));
+            }
+
+            // ดำเนินการดึงข้อมูลถ้าคำสั่ง SQL สำเร็จ
             while ($row = mysqli_fetch_array($result)) {
-                $new_url = str_replace("./img/", "../img/", $row['package_main_picture']);
+                $new_url = str_replace("../img/", "./img/", $row['packet_main_picture']);
             ?>
             <div class="col-md-3 mb-4">
                 <div class="card">
-                    <img src="<?= $row['package_main_picture'] ?>" class="card-img-top" alt="package Image" style="width: 100%; height: 250px; object-fit: cover;">
+                <img src="<?= $new_url ?>" class="card-img-top" alt="packet Image" style="width: 100%; height: 250px; object-fit: cover;">
                     <div class="card-body">
-                        <h5 class="card-title text-success"><?= $row['package_name'] ?></h5>
+                        <h5 class="card-title text-success"><?= htmlspecialchars($row['packet_name']) ?></h5>
                         <p class="card-text">
-                            ราคาของแพ็คเกจ : <?= $row['package_price'] ?><br>
+                            ราคาของแพ็คเกจ : <?= htmlspecialchars($row['packet_price']) ?><br>
                         </p>
-                        <a href="package_detail.php?id=<?= $row['package_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
-                        <button type="button" class="btn btn-outline-warning">เช่าแพ็คเกจ</button>
+                        <a href="show_package_detail.php?id=<?= htmlspecialchars($row['packet_id']) ?>" class="btn btn-outline-success">รายละเอียด</a>
+                        <a href="member_rent_packet.php" class="btn btn-outline-warning">เช่าแพ็คเกจ</a>
+
                     </div>
                 </div>
             </div>

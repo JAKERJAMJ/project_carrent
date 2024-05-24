@@ -64,7 +64,6 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
 </head>
 
 <body>
-
     <header>
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid d-flex justify-content-between">
@@ -107,8 +106,8 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
                         <input class="form-control" type="text" name="carrent_date" id="carrent_date" value="<?= $row['carrent_date']; ?>" readonly>
                     </div>
                     <div class="box">
-                        <label for="carrent_date">วันที่คืน</label>
-                        <input class="form-control" type="text" name="carrent_date" id="carrent_date" value="<?= $row['carrent_return']; ?>" readonly>
+                        <label for="carrent_return">วันที่คืน</label>
+                        <input class="form-control" type="text" name="carrent_return" id="carrent_return" value="<?= $row['carrent_return']; ?>" readonly>
                     </div>
                     <div class="box">
                         <label for="driver_status">ต้องการคนขับหรือไม่</label>
@@ -140,6 +139,7 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
                     </div>
                     <div class="box">
                         <div class="center-button">
+                            <button type="submit" class="btn btn-primary mt-3" name="qrgen" id="qrgen" <?= $is_status_1 ? '' : 'disabled'; ?>>QRcode</button>
                             <button type="submit" class="btn btn-info" name="confirm" id="confirm" <?= $is_status_1 ? '' : 'disabled'; ?>>ยืนยัน</button>
                         </div>
                     </div>
@@ -147,29 +147,25 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
             </div>
         </div>
         <div class="detail-right">
-            <div class="status-container">
+            <div class="status-container" id="statusContainer" style="display: <?= $is_status_1 ? 'block' : 'none'; ?>;">
                 <div class="title-status">
                     <p>ตรวจสอบการชำระเงิน</p>
                 </div>
                 <div class="payment">
-                    <p class="price-payment">จำนวนเงิน <?php echo $row['carrent_price']; ?>บาท</p>
+                    <p class="price-payment">จำนวนเงิน <?php echo $row['carrent_price']; ?> บาท</p>
                     <div class="payment-logo">
                         <img src="../img/PromptPay-logo.png" alt="">
                     </div>
-                    <?php if (isset($qr_code)) : ?>
-                        <img src="<?= $qr_code; ?>">
-                    <?php else : ?>
-                        <?php
-                        require_once '../conDB.php';
-                        require_once("../lib/PromptPayQR.php");
+                    <?php
+                    require_once '../conDB.php';
+                    require_once("../lib/PromptPayQR.php");
 
-                        $PromptPayQR = new PromptPayQR(); // new object
-                        $PromptPayQR->size = 4; // Set QR code size to 4
-                        $PromptPayQR->id = '0610299843'; // PromptPay ID
-                        $PromptPayQR->amount = $row['carrent_price']; // Set amount from car rent price
-                        echo '<img src="' . $PromptPayQR->generate() . '">';
-                        ?>
-                    <?php endif; ?>
+                    $PromptPayQR = new PromptPayQR(); // new object
+                    $PromptPayQR->size = 4; // Set QR code size to 4
+                    $PromptPayQR->id = '0610299843'; // PromptPay ID
+                    $PromptPayQR->amount = $row['carrent_price']; // Set amount from car rent price
+                    echo '<img src="' . $PromptPayQR->generate() . '">';
+                    ?>
                 </div>
                 <div class="number-payment">
                     <p>หรือ<br>
@@ -178,17 +174,47 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
                     </p>
                 </div>
             </div>
+            <div class="change-status" id="changeStatus" style="display: <?= $is_status_1 ? 'none' : 'block'; ?>;">
+                <div class="title-change">
+                    <p>สถานะการเช่า</p>
+                </div>
+                <div class="box">
+                    <label for="carrent_status_id">สถานะการเช่า</label>
+                    <select class="form-select" name="carrent_status_id" id="carrent_status_id">
+                        <?php foreach ($statuses as $status) : ?>
+                            <option value="<?= $status['carrent_status_id']; ?>" <?= ($row['carrent_status_id'] == $status['carrent_status_id']) ? 'selected' : ''; ?>><?= $status['status_name']; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="box">
+                    <button type="submit" class="btn btn-primary mt-3">บันทึก</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <?php
-    if (isset($_POST['confirm']) && $is_status_1) {
+    if (isset($_POST['qrgen']) && $is_status_1) {
         $updated_price = $_POST['updated_price'];
         $driver_status = $_POST['driver_status'];
         $driver_id = $_POST['driver_id'] ?? null;
-    
+
         // Update the carrent record
-        $update_sql = "UPDATE carrent SET driver_status='$driver_status', driver_id='$driver_id', carrent_price='$updated_price', carrent_status_id = '2' WHERE carrent_id=$id";
+        $update_sql = "UPDATE carrent SET driver_status= '$driver_status', driver_id='$driver_id', carrent_price='$updated_price' WHERE carrent_id=$id";
+        if (mysqli_query($con, $update_sql)) {
+            echo "<script>window.location.href = window.location.href;</script>";
+            exit;
+        } else {
+            echo "Error: " . mysqli_error($con);
+        }
+    }
+    if (isset($_POST['confirm']) && $is_status_1) {
+        $updated_price = $_POST['original_price'] ?? null;
+        $driver_status = $_POST['driver_status'];
+        $driver_id = $_POST['driver_id'] ?? null;
+
+        // Update the carrent record
+        $update_sql = "UPDATE carrent SET driver_status='$driver_status', driver_id='$driver_id', carrent_status_id = '2' WHERE carrent_id=$id";
         if (mysqli_query($con, $update_sql)) {
             // Insert data into another table
             $insert_sql = "INSERT INTO payment (carrent_id, payment_type, payment_slip) VALUES ('$id', 'ชำระเงินหน้าร้าน', 'ชำระเงินหน้าร้าน')";

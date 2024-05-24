@@ -7,7 +7,6 @@ if (!isset($_SESSION['admin'])) {
 }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,7 +30,7 @@ if (!isset($_SESSION['admin'])) {
                     <button class="btn btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         Admin
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"> <!-- เพิ่ม class dropdown-menu-end เพื่อจัดให้ dropdown อยู่ด้านขวาของ Navbar -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="../logout.php">Logout</a></li>
                     </ul>
                 </div>
@@ -59,41 +58,66 @@ if (!isset($_SESSION['admin'])) {
         <div class="search-container">
             <form action="" method="GET">
                 <input class="form-control" type="date" name="start_date" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>">
+                <select class="form-select" name="carrent_status_id">
+                    <option value="">เลือกสถานะ</option>
+                    <?php
+                    require '../conDB.php';
+                    $statusSql = "SELECT carrent_status_id, status_name FROM carrent_status";
+                    $statusResult = mysqli_query($con, $statusSql);
+                    while ($statusRow = mysqli_fetch_assoc($statusResult)) {
+                        $selected = isset($_GET['carrent_status_id']) && $_GET['carrent_status_id'] == $statusRow['carrent_status_id'] ? 'selected' : '';
+                        echo "<option value='{$statusRow['carrent_status_id']}' $selected>{$statusRow['status_name']}</option>";
+                    }
+                    ?>
+                </select>
                 <button type="submit" class="btn-s">ค้นหา</button>
                 <a href="manage_carrent.php">ล้างค้นหา</a>
             </form>
         </div>
+
         <div class="table-view-carrent">
             <table class="table table-bordered ">
                 <tr>
                     <th width="90px">ลำดับที่</th>
+                    <th width="100px">ประเภทการเช่า</th>
                     <th width="100px">รหัสการเช่า</th>
                     <th width="100px">วันที่เช่า</th>
                     <th width="400px">ชื่อผู้เช่า</th>
                     <th width="130px">รถที่เช่า</th>
-                    <th width="100px">วันที่เริ่มเช่า</th>
-                    <th width="120px">วันที่คืนรถ</th>
+                    <th width="90px">วันที่เริ่มเช่า</th>
+                    <th width="100px">เวลารับรถ</th>
+                    <th width="90px">วันที่คืนรถ</th>
+                    <th width="100px">เวลาคืนรถ</th>
                     <th width="170px">จำนวนเงิน</th>
                     <th width="170px">สถานะการเช่า</th>
                     <th width="250px">Action</th>
-
                 </tr>
                 <?php
                 require '../conDB.php';
 
-                // ตั้งค่าจำนวนข้อมูลต่อหน้า
+                // Set the number of records per page
                 $limit = 15;
                 $page = isset($_GET['page']) ? $_GET['page'] : 1;
                 $start = ($page - 1) * $limit;
 
-                // เพิ่มเงื่อนไขสำหรับวันที่เริ่มเช่าถ้ามีการค้นหา
+                // Add conditions for start date and carrent status
                 $whereClause = "";
                 if (!empty($_GET['start_date'])) {
                     $startDate = $_GET['start_date'];
-                    $whereClause = " WHERE carrent.carrent_date = '$startDate'";
+                    $whereClause .= " WHERE carrent.carrent_date = '$startDate'";
                 }
 
-                $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.carrent_date, carrent.carrent_return, carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
+                if (!empty($_GET['carrent_status_id'])) {
+                    $statusId = $_GET['carrent_status_id'];
+                    if (empty($whereClause)) {
+                        $whereClause .= " WHERE carrent.carrent_status_id = '$statusId'";
+                    } else {
+                        $whereClause .= " AND carrent.carrent_status_id = '$statusId'";
+                    }
+                }
+
+                $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_carrent, carrent.carrent_date, carrent.carrent_time, carrent.carrent_return, carrent.return_time,
+                        carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
                         member.Membername, member.Memberlastname,
                         car.car_name, car.car_price,
                         carrent_status.status_name
@@ -102,34 +126,53 @@ if (!isset($_SESSION['admin'])) {
                         LEFT JOIN car ON carrent.car_id = car.car_id
                         LEFT JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
                         $whereClause
-                        ORDER BY carrent.carrent_id
+                        ORDER BY carrent.carrent_timestamp DESC
                         LIMIT $start, $limit";
 
                 $result = mysqli_query($con, $sql);
 
-                // การคำนวณจำนวนหน้าทั้งหมดต้องแก้ไขเพื่อตรงกับการค้นหา
+                // Count the total number of records with the applied filters
                 $countSql = "SELECT COUNT(*) AS total FROM carrent $whereClause";
                 $countResult = mysqli_query($con, $countSql);
                 $countRow = mysqli_fetch_assoc($countResult);
                 $total = $countRow['total'];
                 $pages = ceil($total / $limit);
 
-                mysqli_close($con);
-                ?>
-
-                <?php
-                $counter = $start + 1; // เริ่มต้นการนับจากข้อมูลของหน้าปัจจุบัน
+                $counter = $start + 1; // Start counting from the current page
                 while ($row = mysqli_fetch_assoc($result)) {
+                    // Determine the class for the status button
+                    $status_class = '';
+                    switch ($row['status_name']) {
+                        case 'กำลังดำเนินการ':
+                            $status_class = 'btn-warning';
+                            break;
+                        case 'ดำเนินการเช่าเสร็จสิ้น':
+                            $status_class = 'btn-success';
+                            break;
+                        case 'กำลังใช้งาน':
+                            $status_class = 'btn-info';
+                            break;
+                        case 'ใช้งานเสร็จสิ้น':
+                            $status_class = 'btn-secondary';
+                            break;
+                        default:
+                            $status_class = 'btn-warning'; // Default class if none match
+                            break;
+                    }
+
                     echo "<tr>";
                     echo "<td>" . $counter . "</td>";
+                    echo "<td>" . $row['type_carrent'] . "</td>";
                     echo "<td>" . $row['carrent_id'] . "</td>";
                     echo "<td>" . date('d/m/Y H:i:s', strtotime($row['carrent_timestamp'])) . "</td>"; // Use date function with UNIX timestamp
                     echo "<td>" . $row['Membername'] . " " . $row['Memberlastname'] . "</td>";
                     echo "<td>" . $row['car_name'] . "</td>";
                     echo "<td>" . date('d/m/Y', strtotime($row['carrent_date'])) . "</td>";
+                    echo "<td>" . $row['carrent_time'] . "</td>";
                     echo "<td>" . date('d/m/Y', strtotime($row['carrent_return'])) . "</td>";
+                    echo "<td>" . $row['return_time'] . "</td>";
                     echo "<td>" . $row['carrent_price'] . "</td>";
-                    echo "<td><a href='status_carrent.php?id=" . $row['carrent_id'] . "' class='btn btn-warning'>" . $row['status_name'] . "</a></td>";
+                    echo "<td><a href='status_carrent.php?id=" . $row['carrent_id'] . "' class='btn " . $status_class . " btn-sm'>" . $row['status_name'] . "</a></td>";
                     echo "<td>";
                     echo '<button type="button" class="btn btn-warning btn-sm mr-2">แก้ไข</button>';
                     echo '&nbsp;&nbsp;&nbsp;';
@@ -146,25 +189,13 @@ if (!isset($_SESSION['admin'])) {
                 <ul class="pagination">
                     <?php for ($i = 1; $i <= $pages; $i++) : ?>
                         <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>&start_date=<?php echo $startDate; ?>"><?php echo $i; ?></a>
+                            <a class="page-link" href="?page=<?php echo $i; ?>&start_date=<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>&carrent_status_id=<?php echo isset($_GET['carrent_status_id']) ? $_GET['carrent_status_id'] : ''; ?>"><?php echo $i; ?></a>
                         </li>
                     <?php endfor; ?>
                 </ul>
             </nav>
         </div>
     </div>
-
-    <!-- HTML to display the car availability -->
-    
-    <?php
-    mysqli_close($con);
-    ?>
-
-
-
-
-
-
     <script src="../script/manage_carrent.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
