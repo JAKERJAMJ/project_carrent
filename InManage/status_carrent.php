@@ -11,7 +11,8 @@ $sql = "SELECT * FROM carrent WHERE carrent_id = $id";
 $result = mysqli_query($con, $sql);
 $row = mysqli_fetch_assoc($result);
 
-$sql_MemberCarrent = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_carrent, carrent.driver_status, carrent.driver_id, carrent.carrent_date, carrent.carrent_return, carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
+$sql_MemberCarrent = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.driver_status, carrent.driver_id, carrent.carrent_date, carrent.carrent_time, 
+                        carrent.carrent_return, carrent.return_time, carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
                         member.Membername, member.Memberlastname,
                         car.car_name, car.car_price,
                         driver.driver_name, 
@@ -32,7 +33,7 @@ $row_enum = mysqli_fetch_assoc($result_enum);
 preg_match("/^enum\(\'(.*)\'\)$/", $row_enum['Type'], $matches);
 $enum_values = explode("','", $matches[1]);
 
-// Fetch drivers
+// ดึงข้อมูลคนขับรถ
 $drivers = [];
 $sql_drivers = "SELECT driver_id, driver_name FROM driver";
 $result_drivers = mysqli_query($con, $sql_drivers);
@@ -40,16 +41,28 @@ while ($row_driver = mysqli_fetch_assoc($result_drivers)) {
     $drivers[] = $row_driver;
 }
 
-// Fetch carrent statuses
+// ดึงข้อมูลสถานะการเช่า
 $statuses = [];
 $sql_statuses = "SELECT carrent_status_id, status_name FROM carrent_status";
 $result_statuses = mysqli_query($con, $sql_statuses);
 while ($row_status = mysqli_fetch_assoc($result_statuses)) {
-    $statuses[] = $row_status;
+    $statuses[$row_status['carrent_status_id']] = $row_status['status_name'];
 }
 
-// Check if the status is 1
+// ตรวจสอบว่าขณะนี้สถานะเป็น 1 หรือไม่
 $is_status_1 = ($row['carrent_status_id'] == 1);
+
+// กำหนดค่าจ้างรายวันของคนขับรถ
+$driver_daily_wage = 300; // กำหนดเป็นค่าจ้างรายวันของคนขับรถ
+
+// คำนวณจำนวนวันเช่า
+$carrent_date = new DateTime($row['carrent_date']);
+$carrent_return = new DateTime($row['carrent_return']);
+$interval = $carrent_date->diff($carrent_return);
+$rental_days = $interval->days + 1; // บวก 1 เพื่อรวมวันที่รับรถด้วย
+
+// คำนวณค่าจ้างคนขับทั้งหมด
+$total_driver_cost = $rental_days * $driver_daily_wage;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,6 +74,35 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="../styles/status_carrent.css">
     <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        .status-bar {
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status-processing {
+            background-color: yellow;
+            color: black; /* Adjust the color for better contrast */
+        }
+
+        .status-completed {
+            background-color: green;
+        }
+
+        .status-other {
+            background-color: lightgrey;
+        }
+
+        .btn-block {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
@@ -90,6 +132,10 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
             <div class="detail-body">
                 <form action="status_carrent.php?id=<?= $row['carrent_id'] ?>" method="post" id="statusForm">
                     <div class="box">
+                        <label for="carrent_rent">รหัสการเช่า</label>
+                        <input class="form-control" type="text" name="type_rent" id="type_rent" value="<?= $row['type_rent']; ?>" readonly>
+                    </div>
+                    <div class="box">
                         <label for="carrent_id">รหัสการเช่า</label>
                         <input class="form-control" type="text" name="carrent_id" id="carrent_id" value="<?= $row['carrent_id']; ?>" readonly>
                     </div>
@@ -106,8 +152,16 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
                         <input class="form-control" type="text" name="carrent_date" id="carrent_date" value="<?= $row['carrent_date']; ?>" readonly>
                     </div>
                     <div class="box">
+                        <label for="carrent_time">เวลาที่รับรถ</label>
+                        <input class="form-control" type="text" name="carrent_time" id="carrent_time" value="<?= $row['carrent_time']; ?>" readonly>
+                    </div>
+                    <div class="box">
                         <label for="carrent_return">วันที่คืน</label>
                         <input class="form-control" type="text" name="carrent_return" id="carrent_return" value="<?= $row['carrent_return']; ?>" readonly>
+                    </div>
+                    <div class="box">
+                        <label for="return_time">เวลาในการคืนรถ</label>
+                        <input class="form-control" type="text" name="return_time" id="return_time" value="<?= $row['return_time']; ?>" readonly>
                     </div>
                     <div class="box">
                         <label for="driver_status">ต้องการคนขับหรือไม่</label>
@@ -138,8 +192,11 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
                         <?php endif; ?>
                     </div>
                     <div class="box">
+                        <input type="hidden" id="driver_daily_wage" value="<?= $driver_daily_wage; ?>">
+                        <input type="hidden" id="rental_days" value="<?= $rental_days; ?>">
+                        <input type="hidden" id="total_driver_cost" value="<?= $total_driver_cost; ?>">
                         <div class="center-button">
-                            <button type="submit" class="btn btn-primary mt-3" name="qrgen" id="qrgen" <?= $is_status_1 ? '' : 'disabled'; ?>>QRcode</button>
+                            <button type="submit" class="btn btn-primary mt-3" name="qrgen" id="qrgen" disabled>QRcode</button>
                             <button type="submit" class="btn btn-info" name="confirm" id="confirm" <?= $is_status_1 ? '' : 'disabled'; ?>>ยืนยัน</button>
                         </div>
                     </div>
@@ -178,16 +235,24 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
                 <div class="title-change">
                     <p>สถานะการเช่า</p>
                 </div>
-                <div class="box">
-                    <label for="carrent_status_id">สถานะการเช่า</label>
-                    <select class="form-select" name="carrent_status_id" id="carrent_status_id">
-                        <?php foreach ($statuses as $status) : ?>
-                            <option value="<?= $status['carrent_status_id']; ?>" <?= ($row['carrent_status_id'] == $status['carrent_status_id']) ? 'selected' : ''; ?>><?= $status['status_name']; ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                <div class="box-status" id="statusBox">
+                    <?php 
+                        $statusClass = '';
+                        $statusName = $Member['status_name'];
+                        if ($statusName == 'กำลังดำเนินการ') {
+                            $statusClass = 'status-processing';
+                        } elseif ($statusName == 'ดำเนินการเช่าเสร็จสิ้น') {
+                            $statusClass = 'status-completed';
+                        } else {
+                            $statusClass = 'status-other';
+                        }
+                    ?>
+                    <div class="status-bar <?= $statusClass; ?>">
+                        <?= $statusName; ?>
+                    </div>
                 </div>
                 <div class="box">
-                    <button type="submit" class="btn btn-primary mt-3">บันทึก</button>
+                    <button type="button" class="btn btn-success mt-3" id="receiveCar">รับรถ</button>
                 </div>
             </div>
         </div>
@@ -199,7 +264,7 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
         $driver_status = $_POST['driver_status'];
         $driver_id = $_POST['driver_id'] ?? null;
 
-        // Update the carrent record
+        // อัปเดตบันทึกการเช่า
         $update_sql = "UPDATE carrent SET driver_status= '$driver_status', driver_id='$driver_id', carrent_price='$updated_price' WHERE carrent_id=$id";
         if (mysqli_query($con, $update_sql)) {
             echo "<script>window.location.href = window.location.href;</script>";
@@ -213,22 +278,76 @@ $is_status_1 = ($row['carrent_status_id'] == 1);
         $driver_status = $_POST['driver_status'];
         $driver_id = $_POST['driver_id'] ?? null;
 
-        // Update the carrent record
-        $update_sql = "UPDATE carrent SET driver_status='$driver_status', driver_id='$driver_id', carrent_status_id = '2' WHERE carrent_id=$id";
+        // ตรวจสอบ type_rent
+        $type_rent = $row['type_rent'];
+
+        // อัปเดตบันทึกการเช่า
+        $update_sql = "UPDATE carrent SET driver_status='$driver_status', driver_id='$driver_id', carrent_status_id='2' WHERE carrent_id=$id";
         if (mysqli_query($con, $update_sql)) {
-            // Insert data into another table
-            $insert_sql = "INSERT INTO payment (carrent_id, payment_type, payment_slip) VALUES ('$id', 'ชำระเงินหน้าร้าน', 'ชำระเงินหน้าร้าน')";
-            if (mysqli_query($con, $insert_sql)) {
+            // เพิ่มข้อมูลลงในตาราง payment ถ้า type_rent เป็น 'เช่ารถหน้าร้าน'
+            if ($type_rent == 'เช่ารถหน้าร้าน') {
+                $insert_sql = "INSERT INTO payment (carrent_id, payment_type, payment_date, payment_time, payment_slip, payment_status, payment_timestamp) VALUES ('$id', 'ชำระเงินหน้าร้าน', CURDATE(), CURTIME(), 'ชำระเงินหน้าร้าน', 'ยังไม่ได้อนุมัติ', CURRENT_TIMESTAMP)";
+                if (mysqli_query($con, $insert_sql)) {
+                    echo "<script>window.location.href = window.location.href;</script>";
+                    exit;
+                } else {
+                    echo "Error: " . mysqli_error($con);
+                }
+            } else {
                 echo "<script>window.location.href = window.location.href;</script>";
                 exit;
-            } else {
-                echo "Error: " . mysqli_error($con);
             }
         } else {
             echo "Error: " . mysqli_error($con);
         }
     }
     ?>
+    <div class="view-payment">
+        <div class="view-payment-title">
+            การชำระเงิน
+        </div>
+        <table class="table">
+            <tr>
+                <th>Payment ID</th>
+                <th>เวลาการชำระเงิน</th>
+                <th>รหัสการเช่า</th>
+                <th>จำนวนเงิน</th>
+                <th>ลักษณะการชำระเงิน</th>
+                <th>หลักฐานการชำระเงิน</th>
+                <th>Action</th>
+            </tr>
+            <?php
+            $sql_payments = "SELECT payment.payment_id, payment.payment_date, payment.payment_time, payment.carrent_id, carrent.type_rent, carrent.carrent_price, payment.payment_type, payment.payment_slip, payment.payment_status 
+                         FROM payment
+                         JOIN carrent ON payment.carrent_id = carrent.carrent_id
+                         WHERE payment.carrent_id = $id";
+            $result_payments = mysqli_query($con, $sql_payments);
+
+            while ($row_payment = mysqli_fetch_assoc($result_payments)) {
+                // Format date and time to Thai style
+                $date = new DateTime($row_payment['payment_date'] . ' ' . $row_payment['payment_time']);
+                $fmt = new IntlDateFormatter('th_TH', IntlDateFormatter::FULL, IntlDateFormatter::FULL, 'Asia/Bangkok', IntlDateFormatter::GREGORIAN, "d MMMM yyyy HH:mm:ss");
+                $thai_date = $fmt->format($date);
+
+                echo "<tr>";
+                echo "<td>" . $row_payment['payment_id'] . "</td>";
+                echo "<td>" . $thai_date . "</td>";
+                echo "<td>" . $row_payment['carrent_id'] . "</td>";
+                echo "<td>" . $row_payment['carrent_price'] . "</td>";
+                echo "<td>" . $row_payment['payment_type'] . "</td>";
+
+                if ($row_payment['type_rent'] == 'เช่ารถหน้าร้าน') {
+                    echo "<td>" . $row_payment['payment_slip'] . "</td>";
+                } else {
+                    echo "<td>" . (!empty($row_payment['payment_slip']) ? '<a href="../uploads/' . $row_payment['payment_slip'] . '" target="_blank">ดูหลักฐาน</a>' : 'ไม่มี') . "</td>";
+                }
+
+                echo "<td><button class='btn btn-danger'>" . $row_payment['payment_status'] . "</button></td>";
+                echo "</tr>";
+            }
+            ?>
+        </table>
+    </div>
 
     <script src="../script/status_carrent.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>

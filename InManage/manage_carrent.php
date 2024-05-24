@@ -79,9 +79,9 @@ if (!isset($_SESSION['admin'])) {
             <table class="table table-bordered ">
                 <tr>
                     <th width="90px">ลำดับที่</th>
+                    <th width="100px">ประเภท</th>
                     <th width="100px">ประเภทการเช่า</th>
                     <th width="100px">รหัสการเช่า</th>
-                    <th width="100px">วันที่เช่า</th>
                     <th width="400px">ชื่อผู้เช่า</th>
                     <th width="130px">รถที่เช่า</th>
                     <th width="90px">วันที่เริ่มเช่า</th>
@@ -116,7 +116,7 @@ if (!isset($_SESSION['admin'])) {
                     }
                 }
 
-                $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_carrent, carrent.carrent_date, carrent.carrent_time, carrent.carrent_return, carrent.return_time,
+                $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.carrent_date, carrent.carrent_time, carrent.carrent_return, carrent.return_time,
                         carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
                         member.Membername, member.Memberlastname,
                         car.car_name, car.car_price,
@@ -162,9 +162,9 @@ if (!isset($_SESSION['admin'])) {
 
                     echo "<tr>";
                     echo "<td>" . $counter . "</td>";
+                    echo "<td>" . $row['type_rent'] . "</td>";
                     echo "<td>" . $row['type_carrent'] . "</td>";
                     echo "<td>" . $row['carrent_id'] . "</td>";
-                    echo "<td>" . date('d/m/Y H:i:s', strtotime($row['carrent_timestamp'])) . "</td>"; // Use date function with UNIX timestamp
                     echo "<td>" . $row['Membername'] . " " . $row['Memberlastname'] . "</td>";
                     echo "<td>" . $row['car_name'] . "</td>";
                     echo "<td>" . date('d/m/Y', strtotime($row['carrent_date'])) . "</td>";
