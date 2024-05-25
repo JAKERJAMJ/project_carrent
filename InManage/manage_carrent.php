@@ -5,7 +5,6 @@ if (!isset($_SESSION['admin'])) {
     echo "<script>alert('กรุณาเข้าสู่ระบบ'); window.location.href='../login.php';</script>";
     exit;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,8 +43,8 @@ if (!isset($_SESSION['admin'])) {
             <p class="title">การจัดการการเช่ารถ</p>
         </div>
         <div class="btn-carrent">
-            <button class="carrent">การเช่ารถ</button>
-            <button class="returncar">การคืนรถ</button>
+            <button class="carrent" onclick="window.location.href='manage_carrent.php'">การเช่ารถ</button>
+            <button class="btn btn-outline-info" onclick="window.location.href='?status_filter=กำลังใช้งาน'">รถที่กำลังใช้งาน</button>
         </div>
         <div class="add-carrent">
             <a href="check_carrent.php" class="rent" name="rent" id="rent">เช็ครถที่ว่าง</a>
@@ -101,19 +100,19 @@ if (!isset($_SESSION['admin'])) {
                 $start = ($page - 1) * $limit;
 
                 // Add conditions for start date and carrent status
-                $whereClause = "";
+                $whereClause = "WHERE carrent_status.status_name IN ('กำลังดำเนินการ', 'ดำเนินการเช่าเสร็จสิ้น')";
                 if (!empty($_GET['start_date'])) {
                     $startDate = $_GET['start_date'];
-                    $whereClause .= " WHERE carrent.carrent_date = '$startDate'";
+                    $whereClause .= " AND carrent.carrent_date = '$startDate'";
                 }
 
                 if (!empty($_GET['carrent_status_id'])) {
                     $statusId = $_GET['carrent_status_id'];
-                    if (empty($whereClause)) {
-                        $whereClause .= " WHERE carrent.carrent_status_id = '$statusId'";
-                    } else {
-                        $whereClause .= " AND carrent.carrent_status_id = '$statusId'";
-                    }
+                    $whereClause .= " AND carrent.carrent_status_id = '$statusId'";
+                }
+
+                if (isset($_GET['status_filter']) && $_GET['status_filter'] == 'กำลังใช้งาน') {
+                    $whereClause = "WHERE carrent_status.status_name = 'กำลังใช้งาน'";
                 }
 
                 $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.carrent_date, carrent.carrent_time, carrent.carrent_return, carrent.return_time,
