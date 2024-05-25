@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var paymentIdSpan = document.getElementById('paymentId');
     var confirmPaymentButton = document.getElementById('confirmPaymentButton');
     var paymentIdInput = document.getElementById('paymentIdInput');
-    var selectedPaymentId;
 
     function toggleDriverSelectBox() {
         if (driverStatus.value === 'ต้องการคนขับ') {
@@ -32,10 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
         qrgenButton.disabled = false;
     }
 
-    // ตรวจสอบครั้งแรก
+    // Initial check
     toggleDriverSelectBox();
 
-    // เพิ่ม event listener สำหรับการเปลี่ยนแปลง
+    // Event listeners for changes
     driverStatus.addEventListener('change', function () {
         toggleDriverSelectBox();
         enableQRGenButton();
@@ -61,38 +60,27 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// function เลือกวันปัจจุบันอัตโนมัติ
 function setToday() {
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
     var yyyy = today.getFullYear();
 
-    // Format today's date in Thai format (dd/mm/yyyy)
-    today = dd + '/' + mm + '/' + yyyy;
-
-    // Set the display input value
-    document.getElementById('display_date_return').value = today;
-
-    // Set the hidden input value for database storage (yyyy-mm-dd format)
-    document.getElementById('date_return').value = yyyy + '-' + mm + '-' + dd;
+    // Set display and hidden values
+    document.getElementById('display_date_return').value = `${dd}/${mm}/${yyyy}`;
+    document.getElementById('date_return').value = `${yyyy}-${mm}-${dd}`;
 }
 
-// function เลือกเวลาปัจจุบัน
 function setTimeNow() {
     var now = new Date();
     var hours = String(now.getHours()).padStart(2, '0');
     var minutes = String(now.getMinutes()).padStart(2, '0');
-    var time = hours + ':' + minutes;
 
-    // Set the display input value
-    document.getElementById('display_time_return').value = time;
-
-    // Set the hidden input value for database storage
-    document.getElementById('time_return').value = time;
+    // Set display and hidden values
+    document.getElementById('display_time_return').value = `${hours}:${minutes}`;
+    document.getElementById('time_return').value = `${hours}:${minutes}`;
 }
 
-// Return function 
 function ReturnCar() {
     var returnCarModal = new bootstrap.Modal(document.getElementById('ReturnCarModal'));
     returnCarModal.show();

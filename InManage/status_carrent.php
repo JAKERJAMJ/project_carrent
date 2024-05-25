@@ -83,6 +83,18 @@ if (isset($_POST['confirmReceiveCar'])) {
         exit;
     }
 }
+
+
+$sql_return_enum = "SHOW COLUMNS FROM return_carrent LIKE 'return_status'";
+$result_return_enum = $con->query($sql_return_enum);
+
+$return_enumValues = [];
+if ($result_return_enum->num_rows > 0) {
+    $row_return_enum = $result_return_enum->fetch_assoc();
+    $type = $row_return_enum['Type']; // e.g. enum('value1','value2','value3')
+    preg_match("/^enum\(\'(.*)\'\)$/", $type, $matches);
+    $return_enumValues = explode("','", $matches[1]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -159,7 +171,7 @@ if (isset($_POST['confirmReceiveCar'])) {
                     </div>
                     <div class="box">
                         <label for="return_time">เวลาในการคืนรถ</label>
-                        <input class="form-control" type="text" name="return_time" id="return_time" value="<?= $row['return_time']; ?>" readonly>
+                        <input class="form-control" type="text" name="return_time" id="return_time" value="<?= $return_time ?>" readonly>
                     </div>
                     <div class="box">
                         <label for="driver_status">ต้องการคนขับหรือไม่</label>
@@ -437,7 +449,7 @@ if (isset($_POST['confirmReceiveCar'])) {
 
     <!-- Return Car Modal -->
     <div class="modal fade" id="ReturnCarModal" tabindex="-1" aria-labelledby="ReturnCarModalLabel" aria-hidden="true">
-        <div class="modal-dialog  modal-lg">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="ReturnCarModalLabel">การคืนรถ</h5>
@@ -446,7 +458,7 @@ if (isset($_POST['confirmReceiveCar'])) {
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="carrent_id" class="form-label">รหัสการเช่า</label>
-                        <input class="form-control" type="text" name="carrent_id" id="carrent_id" value="<?= $row['carrent_id'] ?>" readonly>
+                        <input class="form-control" type="text" name="carrent_id" id="carrent_id" value="<?= $carrent_id ?>" readonly>
                     </div>
                     <div class="mb-3">
                         <label for="Membername" class="form-label">ชื่อผู้เช่า</label>
@@ -458,7 +470,17 @@ if (isset($_POST['confirmReceiveCar'])) {
                     </div>
                     <div class="mb-3">
                         <label for="return_time" class="form-label">เวลาที่ต้องคืนรถ</label>
-                        <input class="form-control" type="text" name="return_time" id="return_time" value="<?= $row['return_time']; ?>" readonly>
+                        <input class="form-control" type="text" name="return_time" id="return_time" value="<?= $return_time ?>" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="return_status" class="form-label">สถานะการคืนรถ</label>
+                        <select id="return_status" name="return_status" class="form-select">
+                            <option selected>เลือกสถานะรถ</option>
+
+                            <?php foreach ($return_enumValues as $value) : ?>
+                                <option value="<?php echo $value; ?>"><?php echo $value; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="display_date_return" class="form-label">วันที่คืน</label>
@@ -472,18 +494,16 @@ if (isset($_POST['confirmReceiveCar'])) {
                         <input type="hidden" name="time_return" id="time_return">
                         <button type="button" onclick="setTimeNow()" class="btn btn-outline-secondary btn-sm mt-2">Set Time</button>
                     </div>
-                    <div class="mb-3">
-                        <label for="return_price" class="form-label">ค่าบริการส่วนเกิน</label>
-                        <input class="form-control" type="text" name="return_price" id="return_price" readonly>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="button" class="btn btn-primary">ยืนยัน</button>
+                    <button type="button" class="btn btn-primary" onclick="checkReturnStatus()">ยืนยัน</button>
                 </div>
             </div>
         </div>
     </div>
+
+
     <script src="../script/status_carrent.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
