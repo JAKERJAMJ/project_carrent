@@ -86,3 +86,14 @@ function ReturnCar() {
     returnCarModal.show();
 }
 
+function handleStatusChange() {
+    const returnStatus = document.getElementById('return_status').value;
+    const dateTimeInputs = document.getElementById('dateTimeInputs');
+    
+    if (returnStatus !== 'เลือกสถานะรถ') {
+        dateTimeInputs.style.display = 'block';
+    } else {
+        dateTimeInputs.style.display = 'none';
+    }
+}
+

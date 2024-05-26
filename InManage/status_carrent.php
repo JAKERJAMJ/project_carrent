@@ -12,6 +12,15 @@ $sql = "SELECT * FROM carrent WHERE carrent_id = $id";
 $result = mysqli_query($con, $sql);
 $row = mysqli_fetch_assoc($result);
 
+// Retrieve car_id from the initial query result
+$car_id = $row['car_id'];
+
+// Fetch car information based on car_id
+$sql_car = "SELECT * FROM car WHERE car_id = $car_id";
+$result_car = mysqli_query($con, $sql_car);
+$car = mysqli_fetch_assoc($result_car);
+$car_price_per_day = $car['car_price'];
+
 $sql_MemberCarrent = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.driver_status, carrent.driver_id, carrent.carrent_date, carrent.carrent_time, 
                         carrent.carrent_return, carrent.return_time, carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
                         member.Membername, member.Memberlastname,
@@ -84,7 +93,6 @@ if (isset($_POST['confirmReceiveCar'])) {
     }
 }
 
-
 $sql_return_enum = "SHOW COLUMNS FROM return_carrent LIKE 'return_status'";
 $result_return_enum = $con->query($sql_return_enum);
 
@@ -95,6 +103,21 @@ if ($result_return_enum->num_rows > 0) {
     preg_match("/^enum\(\'(.*)\'\)$/", $type, $matches);
     $return_enumValues = explode("','", $matches[1]);
 }
+
+function getTimeFromEnum($enumValue)
+{
+    switch ($enumValue) {
+        case 'คืนรถช่วงเช้า (09.30 น.)':
+            return '09:30';
+        case 'คืนรถช่วงเย็น (16.30 น.)':
+            return '16:30';
+        default:
+            return null;
+    }
+}
+
+$return_time_enum = $row['return_time'];
+$return_time = getTimeFromEnum($return_time_enum);
 ?>
 
 <!DOCTYPE html>
@@ -268,6 +291,8 @@ if ($result_return_enum->num_rows > 0) {
                 <div class="box">
                     <?php if ($statusName == 'กำลังใช้งาน') : ?>
                         <button type="button" class="btn btn-warning mt-3" id="returnCar" onclick="ReturnCar()">คืนรถ</button>
+                    <?php elseif ($statusName == 'ใช้งานเสร็จสิ้น') : ?>
+                        <!-- No button is displayed if statusName is 'ใช้งานเสร็จสิ้น' -->
                     <?php else : ?>
                         <button type="button" class="btn btn-success mt-3" id="receiveCar" data-bs-toggle="modal" data-bs-target="#confirmModal">รับรถ</button>
                     <?php endif; ?>
@@ -385,16 +410,13 @@ if ($result_return_enum->num_rows > 0) {
 
             while ($row_payment = mysqli_fetch_assoc($result_payments)) {
                 // จัดรูปแบบวันที่และเวลาให้เป็นสไตล์ไทย
-                $date = new DateTime($row_payment['payment_date'] . ' ' . $row_payment['payment_time']);
-                $fmt = new IntlDateFormatter('th_TH', IntlDateFormatter::FULL, IntlDateFormatter::FULL, 'Asia/Bangkok', IntlDateFormatter::GREGORIAN, "d MMMM yyyy HH:mm:ss");
-                $thai_date = $fmt->format($date);
 
                 // กำหนดคลาสของปุ่มตามสถานะการชำระเงิน
                 $button_class = $row_payment['payment_status'] == 'อนุมัติการชำระเงิน' ? 'btn-success' : 'btn-danger';
 
                 echo "<tr>";
                 echo "<td>" . $row_payment['payment_id'] . "</td>";
-                echo "<td>" . $thai_date . "</td>";
+                echo "<td>" . $row_payment['payment_date'] . ' ' . $row_payment['payment_time'] . "</td>";
                 echo "<td>" . $row_payment['carrent_id'] . "</td>";
                 echo "<td>" . $row_payment['carrent_price'] . "</td>";
                 echo "<td>" . $row_payment['payment_type'] . "</td>";
@@ -455,51 +477,210 @@ if ($result_return_enum->num_rows > 0) {
                     <h5 class="modal-title" id="ReturnCarModalLabel">การคืนรถ</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="carrent_id" class="form-label">รหัสการเช่า</label>
-                        <input class="form-control" type="text" name="carrent_id" id="carrent_id" value="<?= $carrent_id ?>" readonly>
+                <form action="status_carrent.php?id=<?= htmlspecialchars($row['carrent_id']) ?>" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="carrent_id" class="form-label">รหัสการเช่า</label>
+                            <input class="form-control" type="text" name="carrent_id" id="carrent_id" value="<?= htmlspecialchars($row['carrent_id']) ?>" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Membername" class="form-label">ชื่อผู้เช่า</label>
+                            <input class="form-control" type="text" name="Membername" id="Membername" value="<?= htmlspecialchars($Member['Membername'] . ' ' . $Member['Memberlastname']) ?>" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="carrent_return" class="form-label">วันที่ต้องคืน</label>
+                            <input class="form-control" type="text" name="carrent_return" id="carrent_return" value="<?= htmlspecialchars($rentEndDate) ?>" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="return_time" class="form-label">เวลาที่ต้องคืนรถ</label>
+                            <input class="form-control" type="text" name="return_time" id="return_time" value="<?= htmlspecialchars($return_time) ?>" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="return_status" class="form-label">สถานะการคืนรถ</label>
+                            <select id="return_status" name="return_status" class="form-select" onchange="handleStatusChange()">
+                                <option selected>เลือกสถานะรถ</option>
+                                <?php foreach ($return_enumValues as $value) : ?>
+                                    <option value="<?= htmlspecialchars($value) ?>"><?= htmlspecialchars($value) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div id="dateTimeInputs" style="display: none;">
+                            <div class="mb-3">
+                                <label for="display_date_return" class="form-label">วันที่คืน</label>
+                                <input class="form-control" type="text" name="display_date_return" id="display_date_return" readonly>
+                                <input type="hidden" name="date_return" id="date_return">
+                                <button type="button" onclick="setToday()" class="btn btn-outline-secondary btn-sm mt-2">Set Today</button>
+                            </div>
+                            <div class="mb-3">
+                                <label for="display_time_return" class="form-label">เวลาที่คืน</label>
+                                <input class="form-control" type="text" name="display_time_return" id="display_time_return" readonly>
+                                <input type="hidden" name="time_return" id="time_return">
+                                <button type="button" onclick="setTimeNow()" class="btn btn-outline-secondary btn-sm mt-2">Set Time</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="Membername" class="form-label">ชื่อผู้เช่า</label>
-                        <input class="form-control" type="text" name="Membername" id="Membername" value="<?= $Member['Membername'] . ' ' . $Member['Memberlastname']; ?>" readonly>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                        <button type="submit" class="btn btn-primary" name="returncarstatus">ยืนยัน</button>
                     </div>
-                    <div class="mb-3">
-                        <label for="carrent_return" class="form-label">วันที่ต้องคืน</label>
-                        <input class="form-control" type="text" name="carrent_return" id="carrent_return" value="<?= $rentEndDate; ?>" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="return_time" class="form-label">เวลาที่ต้องคืนรถ</label>
-                        <input class="form-control" type="text" name="return_time" id="return_time" value="<?= $return_time ?>" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="return_status" class="form-label">สถานะการคืนรถ</label>
-                        <select id="return_status" name="return_status" class="form-select">
-                            <option selected>เลือกสถานะรถ</option>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                            <?php foreach ($return_enumValues as $value) : ?>
-                                <option value="<?php echo $value; ?>"><?php echo $value; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="display_date_return" class="form-label">วันที่คืน</label>
-                        <input class="form-control" type="text" name="display_date_return" id="display_date_return" readonly>
-                        <input type="hidden" name="date_return" id="date_return">
-                        <button type="button" onclick="setToday()" class="btn btn-outline-secondary btn-sm mt-2">Set Today</button>
-                    </div>
-                    <div class="mb-3">
-                        <label for="display_time_return" class="form-label">เวลาที่คืน</label>
-                        <input class="form-control" type="text" name="display_time_return" id="display_time_return" readonly>
-                        <input type="hidden" name="time_return" id="time_return">
-                        <button type="button" onclick="setTimeNow()" class="btn btn-outline-secondary btn-sm mt-2">Set Time</button>
-                    </div>
+    <div class="modal fade" id="returnCarPopup" tabindex="-1" aria-labelledby="returnCarPopupLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="returnCarPopupLabel">ข้อมูลการคืนรถ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeReturnCarPopup"></button>
+                </div>
+                <div class="modal-body">
+                    <p><span id="popupReturnStatus"></span></p>
+                    <p><strong>รหัสการเช่า:</strong> <span id="popupCarrentId"></span></p>
+                    <p><strong>วันที่คืน:</strong> <span id="popupDateReturn"></span></p>
+                    <p><strong>เวลาที่คืน:</strong> <span id="popupTimeReturn"></span></p>
+                    <p><strong>ค่าปรับ:</strong> <span id="popupReturnPrice"></span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="button" class="btn btn-primary" onclick="checkReturnStatus()">ยืนยัน</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <?php
+    if (isset($_POST['returncarstatus'])) {
+        $carrent_id = htmlspecialchars($_POST['carrent_id']);
+        $date_return = htmlspecialchars($_POST['date_return']);
+        $time_return = htmlspecialchars($_POST['time_return']);
+        $carrent_return = htmlspecialchars($_POST['carrent_return']); // วันที่ต้องคืนรถ
+        $return_time = htmlspecialchars($_POST['return_time']); // เวลาที่ต้องคืนรถ
+        $return_status = htmlspecialchars($_POST['return_status']);
+        $car_price_per_day = $car['car_price']; // สมมติว่าราคาเช่าต่อวันคือ 500 บาท
+        $new_status_id = 4;
+
+        if ($return_status == 'คืนรถตรงเวลา') {
+            $return_price = 0; // ถ้าคืนตรงเวลา ไม่คิดค่าใช้จ่าย
+            $isLate = false;
+        } else if ($return_status == 'คืนรถเกินกำหนด') {
+            // ถ้าคืนรถเกินกำหนด คำนวณราคาสำหรับการคืนรถเกินกำหนด
+            $return_price = calculateLateReturnPrice($carrent_return, $date_return, $return_time, $car_price_per_day);
+            $isLate = true;
+        }
+
+        $sql = "INSERT INTO return_carrent (carrent_id, date_return, time_return, return_price, return_status) 
+            VALUES ('$carrent_id', '$date_return', '$time_return', '$return_price', '$return_status')";
+
+        if (mysqli_query($con, $sql)) {
+            // อัปเดตสถานะการเช่าในตาราง carrent
+            $update_sql = "UPDATE carrent SET carrent_status_id = '$new_status_id' WHERE carrent_id = '$carrent_id'";
+            if (mysqli_query($con, $update_sql)) {
+                $result = mysqli_query($con, "SELECT * FROM return_carrent WHERE carrent_id = '$carrent_id'");
+                $row = mysqli_fetch_assoc($result);
+
+                $popupData = [
+                    'carrent_id' => $row['carrent_id'],
+                    'date_return' => $row['date_return'],
+                    'time_return' => $row['time_return'],
+                    'return_price' => $row['return_price'],
+                    'return_status' => $row['return_status'],
+                    'isLate' => $isLate
+                ];
+
+                $popupDataJson = json_encode($popupData);
+                echo "<script>
+                var popupData = $popupDataJson;
+                document.addEventListener('DOMContentLoaded', function() {
+                    var modal = new bootstrap.Modal(document.getElementById('returnCarPopup'));
+                    document.getElementById('popupCarrentId').innerText = popupData.carrent_id;
+                    document.getElementById('popupDateReturn').innerText = popupData.date_return;
+                    document.getElementById('popupTimeReturn').innerText = popupData.time_return;
+                    document.getElementById('popupReturnPrice').innerText = popupData.return_price;
+                    document.getElementById('popupReturnStatus').innerText = popupData.return_status;
+                    if (popupData.isLate) {
+                        document.getElementById('popupReturnStatus').style.color = 'red';
+                    } else {
+                        document.getElementById('popupReturnStatus').style.color = 'green';
+                    }
+                    modal.show();
+                });
+                setTimeout(function(){ window.location.href = window.location.href; }, 4000);
+            </script>";
+            } else {
+                echo "Error updating carrent table: " . mysqli_error($con);
+            }
+        } else {
+            echo "Error: " . mysqli_error($con);
+        }
+    }
+
+    function calculateLateReturnPrice($expectedDate, $actualDate, $actualTime, $car_price_per_day)
+    {
+        // แปลงวันที่ให้เป็น DateTime เพื่อการคำนวณ
+        $expectedDateTime = DateTime::createFromFormat('d/m/Y H:i', "$expectedDate 00:00");
+        $actualDateTime = DateTime::createFromFormat('Y-m-d H:i', "$actualDate $actualTime");
+
+        // คำนวณความแตกต่างของวันที่
+        $dateDiff = $actualDateTime->diff($expectedDateTime)->days;
+
+        if ($dateDiff > 0) {
+            // คืนเกินวัน คำนวณจำนวนวันเกินกำหนดคูณกับราคาเช่าต่อวัน
+            return $dateDiff * $car_price_per_day;
+        } elseif ($dateDiff == 0 && $actualDateTime > $expectedDateTime) {
+            // คืนเกินเวลาในวันเดียวกัน คิดค่าธรรมเนียม 200 บาท
+            return 200;
+        } else {
+            return 0;
+        }
+    }
+    ?>
+
+    <div class="history-return">
+        <div class="history-title">
+            การคืนรถ
+        </div>
+        <div class="view-history">
+            <table class="h-table">
+                <tr>
+                    <th>Return ID</th>
+                    <th>รหัสการเช่ารถ</th>
+                    <th>วันที่คืน</th>
+                    <th>เวลาที่คืน</th>
+                    <th>ค่าบริการส่วนเกิน</th>
+                    <th>สถานะการคืนรถ</th>
+                </tr>
+                <?php
+                $sql_return = "SELECT return_carrent.return_id, return_carrent.carrent_id, return_carrent.date_return, return_carrent.time_return,
+                                return_carrent.return_price, return_carrent.return_status
+                                FROM return_carrent
+                                JOIN carrent ON return_carrent.carrent_id = carrent.carrent_id
+                                WHERE return_carrent.carrent_id = $id";
+                $result_return = mysqli_query($con, $sql_return);
+
+                while ($row_return = mysqli_fetch_assoc($result_return)) {
+                    // Format date and time to Thai style (assuming you have a function for this, otherwise use PHP's date functions)
+                    $date_return = date('d/m/Y', strtotime($row_return['date_return']));
+                    $time_return = date('H:i', strtotime($row_return['time_return']));
+
+                    $status_color = '';
+                    if ($row_return['return_status'] == 'คืนรถตรงเวลา') {
+                        $status_color = 'green';
+                    } elseif ($row_return['return_status'] == 'คืนรถเกินกำหนด') {
+                        $status_color = 'red';
+                    }
+
+                    echo "<tr>";
+                    echo "<td>" . $row_return['return_id'] . "</td>";
+                    echo "<td>" . $row_return['carrent_id'] . "</td>";
+                    echo "<td>" . $date_return . "</td>";
+                    echo "<td>" . $time_return . "</td>";
+                    echo "<td>" . $row_return['return_price'] . "</td>";
+                    echo "<td style='color: $status_color;'>" . $row_return['return_status'] . "</td>";
+                    echo "</tr>";
+                }
+                ?>
+            </table>
         </div>
     </div>
 
