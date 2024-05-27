@@ -45,9 +45,6 @@ if (!isset($_SESSION['admin'])) {
         <div class="button-manage-carrent">
             <a href="manage_carrent.php"><button class="carrent">การจัดการการเช่ารถ</button></a>
         </div>
-        <div class="button-manage-packetrent">
-            <button class="packet">การจัดการการเช่าแพ็คเกจ</button>
-        </div>
         <div class="button-manage-member">
             <a href="manage_member.php"><button class="member">การจัดการการสมาชิก</button></a>
         </div>

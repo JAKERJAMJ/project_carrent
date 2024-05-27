@@ -1,0 +1,54 @@
+.btn-back {
+    margin-left: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.booking-out-header {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    height: auto; 
+    flex-direction: column;
+    padding: 20px;
+}
+
+.booking-out-car-name {
+    display: block;
+    position: relative;
+    font-size: 26px;
+    padding: 20px;
+    background-color: rgb(113, 149, 255);
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
+
+.booking-out-car-image {
+    display: block;
+    position: relative;
+    max-width: 40%; 
+    max-height: 100%;
+    border-radius: 20px;
+}
+
+.booking-out-body {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 20px;
+    background-color: #ffffff;
+    width: 40%;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+    left: 30%;
+    border-radius: 25px;
+    margin-bottom: 10%;
+}
+
+.booking-out-box {
+    padding: 10px;
+}
+
+.booking-out-box label {
+    margin-bottom: 1rem;
+}

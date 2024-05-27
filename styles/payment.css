@@ -1,0 +1,90 @@
+.btn-back {
+    margin-left: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.payment-header {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    height: auto; 
+    flex-direction: column;
+    padding: 20px;
+}
+
+.payment-car-name {
+    display: block;
+    position: relative;
+    font-size: 26px;
+    padding: 20px;
+    background-color: rgb(113, 149, 255);
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
+
+.payment-car-image {
+    display: block;
+    position: relative;
+    max-width: 40%; 
+    max-height: 100%;
+    border-radius: 20px;
+}
+
+.payment-body {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 20px;
+    background-color: #ffffff;
+    width: 40%;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+    left: 30%;
+    border-radius: 25px;
+    margin-bottom: 10%;
+}
+
+.payment-box {
+    padding: 10px;
+}
+
+.payment-box label {
+    margin-bottom: 1rem;
+}
+.payment-body .bank {
+    display: none;
+    position: relative;
+    flex-direction: column;
+}
+.bank .bank-number {
+    text-align: center;
+    padding: 10px;
+}
+.bank .bank-text {
+    margin-top: 10px;
+    font-size: 17px;
+    font-weight: lighter;
+}
+.payment-body .bank img {
+    width: 300px;
+}
+.payment-body .qr-pay {
+    display: none;
+    position: relative;
+    flex-direction: column;
+
+}
+.qr-pay .payment-logo {
+    align-items: center;
+    text-align: center;
+}
+.qr-pay .payment-logo img {
+    width: 300px;
+}
+.qr-pay .qr {
+    text-align: center;
+}
+.qr-pay .qr img {
+    width: 250px;
+}

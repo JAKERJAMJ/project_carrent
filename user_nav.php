@@ -32,10 +32,10 @@ if (!$user) {
                     <a class="nav-link active text-dark" aria-current="page" href="show_car.php">รถยนต์ส่วนตัว</a>
                 </div>
                 <div class="me-3">
-                    <a class="nav-link active text-dark" aria-current="page" href="#">แพ็คเกจท่องเที่ยว</a>
+                    <a class="nav-link active text-dark" aria-current="page" href="show_packet.php">แพ็คเกจท่องเที่ยว</a>
                 </div>
-                <div>
-                    <a class="nav-link active text-dark" aria-current="page" href="#">เกี่ยวกับเรา</a>
+                <div class="me-3">
+                    <a class="nav-link active text-dark" aria-current="page" href="about_us.php">เกี่ยวกับเรา</a>
                 </div>
             </div>
 

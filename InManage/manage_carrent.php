@@ -44,7 +44,7 @@ if (!isset($_SESSION['admin'])) {
         </div>
         <div class="btn-carrent">
             <button class="carrent" onclick="window.location.href='manage_carrent.php'">การเช่ารถ</button>
-            <button class="btn btn-outline-info" onclick="window.location.href='?status_filter=กำลังใช้งาน'">รถที่กำลังใช้งาน</button>
+            <button class="btn btn-outline-info" onclick="window.location.href='carrent_use.php'">รถที่กำลังใช้งาน</button>
             <button class="btn-history" onclick="window.location.href='carrent_history.php'">ประวัติการเช่ารถ</button>
         </div>
         <div class="add-carrent">

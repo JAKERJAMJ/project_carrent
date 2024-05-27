@@ -27,10 +27,42 @@ require 'conDB.php';
             รถยนต์ส่วนตัว
         </div>
     </div>
+    <div class="search_date">
+        <form action="" method="GET" class="d-flex justify-content-center">
+            <div class="form-group mx-2">
+                <label for="start_date">วันที่เริ่มเช่า:</label>
+                <input type="date" name="start_date" id="start_date" class="form-control" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>" required>
+            </div>
+            <div class="form-group mx-2">
+                <label for="end_date">วันที่สิ้นสุด:</label>
+                <input type="date" name="end_date" id="end_date" class="form-control" value="<?php echo isset($_GET['end_date']) ? $_GET['end_date'] : ''; ?>" required>
+            </div>
+            <div class="form-group mx-2 align-self-end">
+                <button type="submit" class="btn btn-primary">ค้นหา</button>
+                <button type="button" class="btn btn-danger" onclick="window.location.href='show_car.php'">ล้างค้นหา</button>
+            </div>
+        </form>
+    </div>
     <div class="show-car">
         <div class="row view-car">
             <?php
-            $sql = "SELECT * FROM car ORDER BY car_id";
+            if (isset($_GET['start_date']) && isset($_GET['end_date'])) {
+                $start_date = $_GET['start_date'];
+                $end_date = $_GET['end_date'];
+
+                // Query to find available cars within the selected date range
+                $sql = "SELECT * FROM car WHERE car_id NOT IN (
+                            SELECT car_id FROM carrent 
+                            WHERE ('$start_date' BETWEEN carrent_date AND carrent_return) 
+                            OR ('$end_date' BETWEEN carrent_date AND carrent_return) 
+                            OR (carrent_date BETWEEN '$start_date' AND '$end_date')
+                            OR (carrent_return BETWEEN '$start_date' AND '$end_date')
+                        )";
+            } else {
+                // Default query to show all cars
+                $sql = "SELECT * FROM car ORDER BY car_id";
+            }
+
             $result = mysqli_query($con, $sql);
             while ($row = mysqli_fetch_array($result)) {
                 $new_url = str_replace("../img/", "./img/", $row['car_picture1']);
@@ -42,16 +74,16 @@ require 'conDB.php';
                             <h5 class="card-title text-success"><?= $row['car_name'] ?></h5>
                             <p class="card-text">
                                 ยี่ห้อรถ : <?= $row['car_brand'] ?><br>
-                                ราคา : <?= $row['car_price']?> บาท <br>
+                                ราคา : <?= $row['car_price'] ?> บาท <br>
                             </p>
-                            <a href=show_car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
-                            <button type="button" class="btn btn-outline-warning">เช่ารถ</button>
+                            <a href="show_car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
+                            <button type="button" class="btn btn-outline-warning" onclick="window.location.href='check.php'">เช่ารถ</button>
                         </div>
                     </div>
                 </div>
             <?php
             }
-            ?>            
+            ?>
         </div>
     </div>
 
