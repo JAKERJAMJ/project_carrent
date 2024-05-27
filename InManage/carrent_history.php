@@ -12,7 +12,7 @@ if (!isset($_SESSION['admin'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>การจัดการการเช่ารถ</title>
+    <title>ประวัติการเช่ารถ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="../styles/manage_carrent.css">
     <link rel="stylesheet" href="../styles/style.css">
@@ -38,40 +38,20 @@ if (!isset($_SESSION['admin'])) {
     </header>
 
     <div class="head-carrent">
-        <a href="inside_management.php" class="btn btn-outline-dark" style="align-self: flex-start;">กลับ</a>
+        <a href="manage_carrent.php" class="btn btn-outline-dark" style="align-self: flex-start;">กลับ</a>
         <div class="title-carrent">
-            <p class="title">การจัดการการเช่ารถ</p>
-        </div>
-        <div class="btn-carrent">
-            <button class="carrent" onclick="window.location.href='manage_carrent.php'">การเช่ารถ</button>
-            <button class="btn btn-outline-info" onclick="window.location.href='?status_filter=กำลังใช้งาน'">รถที่กำลังใช้งาน</button>
-            <button class="btn-history" onclick="window.location.href='carrent_history.php'">ประวัติการเช่ารถ</button>
-        </div>
-        <div class="add-carrent">
-            <a href="check_carrent.php" class="rent" name="rent" id="rent">เช็ครถที่ว่าง</a>
+            <p class="title">ประวัติการเช่ารถ</p>
         </div>
     </div>
     <div class="body-carrent">
         <div class="title-body">
-            การเช่ารถ
+            ประวัติการเช่ารถ
         </div>
         <div class="search-container">
             <form action="" method="GET">
                 <input class="form-control" type="date" name="start_date" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>">
-                <select class="form-select" name="carrent_status_id">
-                    <option value="">เลือกสถานะ</option>
-                    <?php
-                    require '../conDB.php';
-                    $statusSql = "SELECT carrent_status_id, status_name FROM carrent_status";
-                    $statusResult = mysqli_query($con, $statusSql);
-                    while ($statusRow = mysqli_fetch_assoc($statusResult)) {
-                        $selected = isset($_GET['carrent_status_id']) && $_GET['carrent_status_id'] == $statusRow['carrent_status_id'] ? 'selected' : '';
-                        echo "<option value='{$statusRow['carrent_status_id']}' $selected>{$statusRow['status_name']}</option>";
-                    }
-                    ?>
-                </select>
                 <button type="submit" class="btn-s">ค้นหา</button>
-                <a href="manage_carrent.php">ล้างค้นหา</a>
+                <a href="car_rental_history.php">ล้างค้นหา</a>
             </form>
         </div>
 
@@ -90,7 +70,6 @@ if (!isset($_SESSION['admin'])) {
                     <th width="100px">เวลาคืนรถ</th>
                     <th width="170px">จำนวนเงิน</th>
                     <th width="170px">สถานะการเช่า</th>
-                    <th width="250px">Action</th>
                 </tr>
                 <?php
                 require '../conDB.php';
@@ -101,19 +80,10 @@ if (!isset($_SESSION['admin'])) {
                 $start = ($page - 1) * $limit;
 
                 // Add conditions for start date and carrent status
-                $whereClause = "WHERE carrent_status.status_name IN ('กำลังดำเนินการ', 'ดำเนินการเช่าเสร็จสิ้น')";
+                $whereClause = "WHERE carrent_status.carrent_status_id = 4"; // Only show status = 4
                 if (!empty($_GET['start_date'])) {
                     $startDate = $_GET['start_date'];
                     $whereClause .= " AND carrent.carrent_date = '$startDate'";
-                }
-
-                if (!empty($_GET['carrent_status_id'])) {
-                    $statusId = $_GET['carrent_status_id'];
-                    $whereClause .= " AND carrent.carrent_status_id = '$statusId'";
-                }
-
-                if (isset($_GET['status_filter']) && $_GET['status_filter'] == 'กำลังใช้งาน') {
-                    $whereClause = "WHERE carrent_status.status_name = 'กำลังใช้งาน'";
                 }
 
                 $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.carrent_date, carrent.carrent_time, carrent.carrent_return, carrent.return_time,
@@ -141,24 +111,7 @@ if (!isset($_SESSION['admin'])) {
                 $counter = $start + 1; // Start counting from the current page
                 while ($row = mysqli_fetch_assoc($result)) {
                     // Determine the class for the status button
-                    $status_class = '';
-                    switch ($row['status_name']) {
-                        case 'กำลังดำเนินการ':
-                            $status_class = 'btn-warning';
-                            break;
-                        case 'ดำเนินการเช่าเสร็จสิ้น':
-                            $status_class = 'btn-success';
-                            break;
-                        case 'กำลังใช้งาน':
-                            $status_class = 'btn-info';
-                            break;
-                        case 'ใช้งานเสร็จสิ้น':
-                            $status_class = 'btn-secondary';
-                            break;
-                        default:
-                            $status_class = 'btn-warning'; // Default class if none match
-                            break;
-                    }
+                    $status_class = 'btn-secondary'; // Set to btn-secondary since status = 4 is 'ใช้งานเสร็จสิ้น'
 
                     echo "<tr>";
                     echo "<td>" . $counter . "</td>";
@@ -173,11 +126,6 @@ if (!isset($_SESSION['admin'])) {
                     echo "<td>" . $row['return_time'] . "</td>";
                     echo "<td>" . $row['carrent_price'] . "</td>";
                     echo "<td><a href='status_carrent.php?id=" . $row['carrent_id'] . "' class='btn " . $status_class . " btn-sm'>" . $row['status_name'] . "</a></td>";
-                    echo "<td>";
-                    echo '<button type="button" class="btn btn-warning btn-sm mr-2">แก้ไข</button>';
-                    echo '&nbsp;&nbsp;&nbsp;';
-                    echo '<button type="button" class="btn btn-danger btn-sm mr-2" onclick="cancelCarRental(' . $row['carrent_id'] . ')">ยกเลิก</button>';
-                    echo "</td>";
                     echo "</tr>";
 
                     $counter++;
@@ -189,7 +137,7 @@ if (!isset($_SESSION['admin'])) {
                 <ul class="pagination">
                     <?php for ($i = 1; $i <= $pages; $i++) : ?>
                         <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>&start_date=<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>&carrent_status_id=<?php echo isset($_GET['carrent_status_id']) ? $_GET['carrent_status_id'] : ''; ?>"><?php echo $i; ?></a>
+                            <a class="page-link" href="?page=<?php echo $i; ?>&start_date=<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>"><?php echo $i; ?></a>
                         </li>
                     <?php endfor; ?>
                 </ul>

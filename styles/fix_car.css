@@ -6,8 +6,8 @@ body {
     padding: 0;
 }
 
-/* Head car rent styles */
-.head-carrent {
+/* Head car styles */
+.head-car {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -15,7 +15,7 @@ body {
     padding: 20px;
 }
 
-.head-carrent .title-carrent {
+.head-car .title-car {
     font-size: 40px;
     padding: 30px;
     color: rgb(57, 57, 57);
@@ -28,17 +28,15 @@ body {
     margin: auto;
 }
 
-.head-carrent .btn-carrent {
+.head-car .btn-car {
     padding: 20px;
     display: flex;
     gap: 10px; /* Add space between buttons */
     flex-wrap: wrap; /* Ensure buttons wrap in smaller screens */
 }
 
-.btn-carrent .carrent,
-.btn-carrent .returncar,
-.btn-carrent .btn-outline-info,
-.btn-carrent .btn-history { /* Added .btn-history */
+.btn-car .btn-outline-info,
+.btn-car .btn-history { /* Added .btn-history */
     width: 250px; /* Set a fixed width */
     padding: 10px;
     font-size: 20px;
@@ -51,54 +49,34 @@ body {
     border: 2px solid;
 }
 
-.btn-carrent .carrent {
-    border-color: rgb(0, 195, 0);
-    color: rgb(0, 195, 0);
-}
-
-.btn-carrent .carrent:hover {
-    background-color: rgb(0, 195, 0);
-    color: white;
-}
-
-.btn-carrent .returncar {
-    border-color: rgb(30, 109, 255);
-    color: rgb(30, 109, 255);
-}
-
-.btn-carrent .returncar:hover {
-    background-color: rgb(30, 109, 255);
-    color: white;
-}
-
-.btn-carrent .btn-outline-info {
+.btn-car .btn-outline-info {
     border-color: rgb(0, 123, 255);
     color: rgb(0, 123, 255);
 }
 
-.btn-carrent .btn-outline-info:hover {
+.btn-car .btn-outline-info:hover {
     background-color: rgb(0, 123, 255);
     color: white;
 }
 
-.btn-carrent .btn-history { /* Added .btn-history */
+.btn-car .btn-history { /* Added .btn-history */
     border-color: rgb(145, 145, 145);
     color: rgb(145, 145, 145);
 }
 
-.btn-carrent .btn-history:hover { /* Added .btn-history */
+.btn-car .btn-history:hover { /* Added .btn-history */
     background-color: rgb(145, 145, 145);
     color: white;
 }
 
-.head-carrent .add-carrent {
+.head-car .add-car {
     display: flex;
     padding: 20px;
     width: 100%;
     justify-content: flex-end;
 }
 
-.add-carrent .rent {
+.add-car .rent {
     padding: 10px;
     background-color: white;
     width: 220px;
@@ -112,13 +90,13 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.add-carrent .rent:hover {
+.add-car .rent:hover {
     background-color: rgb(255, 142, 5);
     color: white;
 }
 
-/* Body car rent styles */
-.body-carrent {
+/* Body car styles */
+.body-car {
     padding: 20px;
     background-color: #ffffff;
     border-radius: 10px;
@@ -126,14 +104,14 @@ body {
     margin: 20px;
 }
 
-.body-carrent .title-body {
+.body-car .title-body {
     font-size: 30px;
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
 }
 
-.body-carrent .search-container {
+.body-car .search-container {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 20px;
@@ -143,7 +121,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.body-carrent .search-container form {
+.body-car .search-container form {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -151,47 +129,47 @@ body {
     width: 100%;
 }
 
-.body-carrent .search-container input,
-.body-carrent .search-container select,
-.body-carrent .search-container button,
-.body-carrent .search-container a {
+.body-car .search-container input,
+.body-car .search-container select,
+.body-car .search-container button,
+.body-car .search-container a {
     margin: 5px;
     padding: 10px 15px;
     border-radius: 5px;
 }
 
-.body-carrent .search-container input,
-.body-carrent .search-container select {
+.body-car .search-container input,
+.body-car .search-container select {
     border: 1px solid #ddd;
     background-color: #fff;
     flex: 1;
 }
 
-.body-carrent .search-container .btn-s {
+.body-car .search-container .btn-s {
     background-color: #007bff;
     color: #fff;
     border: none;
 }
 
-.body-carrent .search-container .btn-s:hover {
+.body-car .search-container .btn-s:hover {
     background-color: #0056b3;
 }
 
-.body-carrent .search-container a {
+.body-car .search-container a {
     background-color: #dc3545;
     color: #fff;
     text-decoration: none;
 }
 
-.body-carrent .search-container a:hover {
+.body-car .search-container a:hover {
     background-color: #c82333;
 }
 
-.body-carrent .table-view-carrent {
+.body-car .table-view-car {
     overflow-x: auto;
 }
 
-.table-view-carrent table {
+.table-view-car table {
     width: 100%;
     border-collapse: collapse;
     text-align: center;
@@ -199,45 +177,45 @@ body {
     vertical-align: middle;
 }
 
-.table-view-carrent th,
-.table-view-carrent td {
+.table-view-car th,
+.table-view-car td {
     padding: 12px 15px;
     border: 1px solid #ddd;
 }
 
-.table-view-carrent th {
+.table-view-car th {
     background-color: #f2f2f2;
     color: #333;
     font-weight: bold;
 }
 
-.table-view-carrent tr:nth-child(even) {
+.table-view-car tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-.table-view-carrent tr:hover {
+.table-view-car tr:hover {
     background-color: #f1f1f1;
     transition: background-color 0.2s ease;
 }
 
-.table-view-carrent .btn {
+.table-view-car .btn {
     font-size: 14px;
     padding: 5px 10px;
     border-radius: 5px;
 }
 
-.table-view-carrent .btn-warning {
+.table-view-car .btn-warning {
     background-color: #ffc107;
     color: #fff;
 }
 
-.table-view-carrent .btn-danger {
+.table-view-car .btn-danger {
     background-color: #dc3545;
     color: #fff;
 }
 
-.table-view-carrent .btn-warning:hover,
-.table-view-carrent .btn-danger:hover {
+.table-view-car .btn-warning:hover,
+.table-view-car .btn-danger:hover {
     opacity: 0.8;
     transition: opacity 0.2s ease;
 }
@@ -268,17 +246,17 @@ body {
 
 /* Responsive design */
 @media (max-width: 768px) {
-    .table-view-carrent {
+    .table-view-car {
         padding: 15px;
     }
 
-    .table-view-carrent table,
-    .table-view-carrent th,
-    .table-view-carrent td {
+    .table-view-car table,
+    .table-view-car th,
+    .table-view-car td {
         font-size: 12px;
     }
 
-    .table-view-carrent .btn {
+    .table-view-car .btn {
         font-size: 12px;
         padding: 3px 5px;
     }
@@ -287,21 +265,21 @@ body {
         padding: 6px 10px;
     }
 
-    .body-carrent .search-container {
+    .body-car .search-container {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .body-carrent .search-container form {
+    .body-car .search-container form {
         width: 100%;
         flex-direction: column;
         align-items: stretch;
     }
 
-    .body-carrent .search-container input,
-    .body-carrent .search-container select,
-    .body-carrent .search-container button,
-    .body-carrent .search-container a {
+    .body-car .search-container input,
+    .body-car .search-container select,
+    .body-car .search-container button,
+    .body-car .search-container a {
         width: 100%;
         margin: 5px 0;
     }

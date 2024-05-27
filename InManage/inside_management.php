@@ -52,7 +52,7 @@ if (!isset($_SESSION['admin'])) {
             <a href="manage_member.php"><button class="member">การจัดการการสมาชิก</button></a>
         </div>
         <div class="button-manage-fix">
-            <button class="fix">การจัดการการการซ่อมรถ</button>
+        <a href="fix_car.php"><button class="fix">การจัดการการการซ่อมรถ</button></a>
         </div>
         <div class="button-manage-report">
             <button class="report">รายงาน</button>

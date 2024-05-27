@@ -321,6 +321,7 @@ $return_time = getTimeFromEnum($return_time_enum);
                         <input type="hidden" name="id" value="<?= $row['carrent_id'] ?>">
                     </form>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
                     <button type="button" class="btn btn-primary" id="confirmReceiveCar">ยืนยัน</button>
