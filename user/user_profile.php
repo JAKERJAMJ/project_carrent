@@ -22,7 +22,41 @@ if (!$user) {
     header("Location: login.php");
     exit;
 }
+
+// Pagination settings
+$limit = 5; // Number of entries to show in a page.
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+$start = ($page - 1) * $limit;
+
+$queryTotalInProgress = "SELECT COUNT(*) as total FROM carrent
+                        WHERE MemberID = '$MemberID' AND carrent_status_id IN (1, 2, 3)";
+$resultTotalInProgress = mysqli_query($con, $queryTotalInProgress);
+$totalInProgress = mysqli_fetch_assoc($resultTotalInProgress)['total'];
+
+$queryInProgress = "SELECT carrent.*, car.car_name, carrent_status.status_name FROM carrent
+                    JOIN car ON carrent.car_id = car.car_id
+                    JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
+                    WHERE carrent.MemberID = '$MemberID' AND carrent.carrent_status_id IN (1, 2, 3)
+                    LIMIT $start, $limit";
+$resultInProgress = mysqli_query($con, $queryInProgress);
+
+$totalPagesInProgress = ceil($totalInProgress / $limit);
+
+$queryTotalCompleted = "SELECT COUNT(*) as total FROM carrent
+                        WHERE MemberID = '$MemberID' AND carrent_status_id = 4";
+$resultTotalCompleted = mysqli_query($con, $queryTotalCompleted);
+$totalCompleted = mysqli_fetch_assoc($resultTotalCompleted)['total'];
+
+$queryCompleted = "SELECT carrent.*, car.car_name, carrent_status.status_name FROM carrent
+                   JOIN car ON carrent.car_id = car.car_id
+                   JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
+                   WHERE carrent.MemberID = '$MemberID' AND carrent.carrent_status_id = 4
+                   LIMIT $start, $limit";
+$resultCompleted = mysqli_query($con, $queryCompleted);
+
+$totalPagesCompleted = ceil($totalCompleted / $limit);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,7 +66,7 @@ if (!$user) {
     <title>ข้อมูลส่วนตัว</title>
     <link rel="stylesheet" href="../styles/user_profile.css">
     <link rel="stylesheet" href="../styles/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -56,7 +90,7 @@ if (!$user) {
                     <button class="btn btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <?php echo $user['Membername'] . ' ' . $user['Memberlastname']; ?>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"> <!-- เพิ่ม class dropdown-menu-end เพื่อจัดให้ dropdown อยู่ด้านขวาของ Navbar -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="user_profile.php">ข้อมูลส่วนตัว</a></li>
                         <li><a class="dropdown-item" href="../logout.php">Logout</a></li>
                     </ul>
@@ -88,8 +122,6 @@ if (!$user) {
                     <button type="submit" class="btn btn-success" name="update-profile" id="update-profile-btn" disabled>บันทึกรูปภาพ</button>
                 </form>
                 <?php
-                require_once '../conDB.php';
-
                 if (isset($_POST["update-profile"])) {
                     $target_dir = "../img/member/";
 
@@ -104,7 +136,6 @@ if (!$user) {
                     move_uploaded_file($_FILES["profile_pic"]["tmp_name"], $profile_pic);
 
                     // เพิ่มโค้ดสำหรับอัปเดตข้อมูลในฐานข้อมูล
-                    // กำหนดคำสั่ง SQL สำหรับการอัปเดตข้อมูลรูปภาพโปรไฟล์ของสมาชิก
                     $update_query = "UPDATE member SET Memberpic = '$profile_pic' WHERE MemberID = $MemberID";
 
                     // ประมวลผลคำสั่ง SQL
@@ -115,7 +146,6 @@ if (!$user) {
                     }
                 }
                 ?>
-
             </div>
         </div>
 
@@ -159,12 +189,6 @@ if (!$user) {
                             <button class="btn btn-success" type="submit" name="update">Update</button>
                         </form>
                         <?php
-                        // เชื่อมต่อกับฐานข้อมูล
-                        require '../conDB.php';
-
-                        session_start();
-                        $MemberID = $_SESSION['MemberID'];
-
                         if (isset($_POST['update'])) {
                             // รับค่าจากฟอร์ม
                             $email = $_POST['email'];
@@ -207,11 +231,6 @@ if (!$user) {
                             <button class="btn btn-success" type="submit" name="change_password" id="change_password">เปลี่ยนรหัสผ่าน</button>
                         </form>
                         <?php
-                        require '../conDB.php';
-
-                        session_start();
-                        $MemberID = $_SESSION['MemberID'];
-
                         if (isset($_POST['change_password'])) {
                             $Memberpassword = $_POST['Memberpassword'];
 
@@ -231,6 +250,102 @@ if (!$user) {
             </div>
         </div>
     </div>
+
+    <div class="container-fluid mt-4">
+        <h3 class="text-center">ประวัติการเช่า</h3>
+
+        <!-- In Progress Rentals -->
+        <h4 class="mt-4">กำลังดำเนินการอยู่</h4>
+        <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>รหัสการเช่า</th>
+                    <th>รถ</th>
+                    <th>ประเภทการเช่า</th>
+                    <th>วันที่เช่า</th>
+                    <th>วันที่คืน</th>
+                    <th>สถานะ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                while ($rowInProgress = mysqli_fetch_assoc($resultInProgress)) {
+                    $badgeClass = 'bg-warning text-dark';
+                    if ($rowInProgress['carrent_status_id'] == 3) {
+                        $badgeClass = 'bg-info text-dark';
+                    }
+                    echo "<tr>";
+                    echo "<td>{$rowInProgress['carrent_id']}</td>";
+                    echo "<td>{$rowInProgress['car_name']}</td>";
+                    echo "<td>{$rowInProgress['type_carrent']}</td>";
+                    echo "<td>" . date('d/m/Y', strtotime($rowInProgress['carrent_date'])) . "</td>";
+                    echo "<td>" . date('d/m/Y', strtotime($rowInProgress['carrent_return'])) . "</td>";
+                    echo "<td><span class='badge {$badgeClass}'>{$rowInProgress['status_name']}</span></td>";
+                    echo "</tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+        <nav>
+            <ul class="pagination justify-content-center">
+                <?php for ($i = 1; $i <= $totalPagesInProgress; $i++) : ?>
+                    <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                        <a class="page-link" href="user_profile.php?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+
+        <!-- Completed Rentals -->
+        <h4 class="mt-4">ใช้งานเสร็จสิ้น</h4>
+        <table class="table table-bordered table-hover">
+            <thead class="table-success">
+                <tr>
+                    <th>รหัสการเช่า</th>
+                    <th>รถ</th>
+                    <th>ประเภทการเช่า</th>
+                    <th>วันที่เช่า</th>
+                    <th>วันที่คืน</th>
+                    <th>สถานะ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                while ($rowCompleted = mysqli_fetch_assoc($resultCompleted)) {
+                    echo "<tr>";
+                    echo "<td>{$rowCompleted['carrent_id']}</td>";
+                    echo "<td>{$rowCompleted['car_name']}</td>";
+                    echo "<td>{$rowCompleted['type_carrent']}</td>";
+                    echo "<td>" . date('d/m/Y', strtotime($rowCompleted['carrent_date'])) . "</td>";
+                    echo "<td>" . date('d/m/Y', strtotime($rowCompleted['carrent_return'])) . "</td>";
+                    echo "<td><span class='badge bg-secondary'>{$rowCompleted['status_name']}</span></td>";
+                    echo "</tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+        <nav>
+            <ul class="pagination justify-content-center">
+                <?php for ($i = 1; $i <= $totalPagesCompleted; $i++) : ?>
+                    <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
+                        <a class="page-link" href="user_profile.php?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+    </div>
+    <script>
+        document.getElementById('edit-btn').addEventListener('click', function() {
+            document.getElementById('profile_pic').style.display = 'block';
+            document.getElementById('update-profile-btn').disabled = false;
+            document.getElementById('upload-form').style.display = 'flex';
+        });
+
+        function formatPhoneNumber(input) {
+            // Custom logic to format phone number
+        }
+    </script>
+
     <script src="../script/user_profile.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>

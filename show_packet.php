@@ -53,7 +53,7 @@ require 'conDB.php';
                                 ราคาของแพ็คเกจ : <?= htmlspecialchars($row['package_price']) ?> บาท <br>
                             </p>
                             <a href="show_package_detail.php?id=<?= htmlspecialchars($row['packet_id']) ?>" class="btn btn-outline-success">รายละเอียด</a>
-                            <a href="member_rent_packet.php" class="btn btn-outline-warning">เช่าแพ็คเกจ</a>
+                            <a href="check_availability.php?package_id=<?= htmlspecialchars($row['package_id']) ?>" class="btn btn-outline-warning">เช่าแพ็คเกจ</a>
                         </div>
                     </div>
                 </div>

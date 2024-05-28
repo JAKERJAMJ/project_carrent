@@ -1,0 +1,40 @@
+.booking-out-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.booking-out-car-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.booking-out-car-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.booking-out-body {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.booking-out-box {
+    margin: 10px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.btn-back {
+    margin-top: 20px;
+}
+
+.btn-primary {
+    width: 100%;
+    margin-top: 20px;
+}

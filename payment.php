@@ -71,6 +71,10 @@ $stmt->close();
                 <input class="form-control" type="text" name="rental_price" id="rental_price" value="<?= htmlspecialchars($rent['carrent_price']) ?>" readonly>
             </div>
             <div class="payment-box">
+                <label for="rental_type">ประเภทการเช่า:</label>
+                <input class="form-control" type="text" name="rental_type" id="rental_type" value="<?= htmlspecialchars($rent['type_carrent']) ?>" readonly>
+            </div>
+            <div class="payment-box">
                 <label for="payment_method">วิธีการชำระเงิน:</label>
                 <select class="form-select" id="payment_method" name="payment_method" required>
                     <option value="" disabled selected>เลือกวิธีการชำระเงิน</option>

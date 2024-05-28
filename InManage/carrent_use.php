@@ -93,7 +93,7 @@ require '../conDB.php';
                 $start = ($page - 1) * $limit;
 
                 // Add conditions for start date and carrent status
-                $whereClause = "WHERE carrent.carrent_status_id = 4"; // Only show status = 4 (กำลังใช้งาน)
+                $whereClause = "WHERE carrent.carrent_status_id = 3"; // Only show status = 3 (กำลังใช้งาน)
                 if (!empty($_GET['start_date'])) {
                     $startDate = $_GET['start_date'];
                     $whereClause .= " AND carrent.carrent_date = '$startDate'";
@@ -123,6 +123,26 @@ require '../conDB.php';
 
                 $counter = $start + 1; // Start counting from the current page
                 while ($row = mysqli_fetch_assoc($result)) {
+                    $status_class = '';
+                    switch ($row['status_name']) {
+                        case 'กำลังดำเนินการ':
+                            $status_class = 'btn-warning';
+                            break;
+                        case 'ดำเนินการเช่าเสร็จสิ้น':
+                            $status_class = 'btn-success';
+                            break;
+                        case 'กำลังใช้งาน':
+                            $status_class = 'btn-info';
+                            break;
+                        case 'ใช้งานเสร็จสิ้น':
+                            $status_class = 'btn-secondary';
+                            break;
+                        default:
+                            $status_class = 'btn-warning'; // Default class if none match
+                            break;
+                    }
+                    $status_link = ($row['type_rent'] == 'เช่ารถแบบออนไลน์') ? 'status_carrent_online.php' : 'status_carrent.php';
+
                     echo "<tr>";
                     echo "<td>" . $counter . "</td>";
                     echo "<td>" . $row['type_rent'] . "</td>";
@@ -135,7 +155,7 @@ require '../conDB.php';
                     echo "<td>" . date('d/m/Y', strtotime($row['carrent_return'])) . "</td>";
                     echo "<td>" . $row['return_time'] . "</td>";
                     echo "<td>" . $row['carrent_price'] . "</td>";
-                    echo "<td><span class='btn btn-info btn-sm'>กำลังใช้งาน</span></td>";
+                    echo "<td><a href='$status_link?id=" . $row['carrent_id'] . "' class='btn " . $status_class . " btn-sm'>" . $row['status_name'] . "</a></td>";
                     echo "<td>";
                     echo '<button type="button" class="btn btn-warning btn-sm mr-2">แก้ไข</button>';
                     echo '&nbsp;&nbsp;&nbsp;';

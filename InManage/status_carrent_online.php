@@ -176,6 +176,10 @@ $payment = mysqli_fetch_assoc($result_payment);
                         <input class="form-control" type="text" name="type_rent" id="type_rent" value="<?= $row['type_rent']; ?>" readonly>
                     </div>
                     <div class="box">
+                        <label for="type_carrent">ประเภทการเช่า</label>
+                        <input class="form-control" type="text" name="type_carrent" id="type_carrent" value="<?= $row['type_carrent']; ?>" readonly>
+                    </div>
+                    <div class="box">
                         <label for="carrent_id">รหัสการเช่า</label>
                         <input class="form-control" type="text" name="carrent_id" id="carrent_id" value="<?= $row['carrent_id']; ?>" readonly>
                     </div>
@@ -695,4 +699,4 @@ document.addEventListener('DOMContentLoaded', (event) => {
 </script>
 </body>
 
-</html>
+</html>  

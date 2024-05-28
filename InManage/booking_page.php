@@ -154,8 +154,8 @@ if (isset($_GET['car_id']) && isset($_GET['start_date']) && isset($_GET['end_dat
         $returnTime = $_POST['ReturnTime'];
         $rentalPrice = $_POST['RentalPrice'];
 
-        $sql = "INSERT INTO carrent (car_id, MemberID, type_rent, type_carrent, driver_status, driver_id, carrent_date, carrent_time, carrent_return, return_time, carrent_price, carrent_status_id) 
-            VALUES ('$carID', '$memberID', 'เช่ารถหน้าร้าน', 'เช่ารถส่วนตัว', 'ไม่ต้องการคนขับ', '5', '$rentalDate', '$rentalTime', '$returnDate', '$returnTime', '$rentalPrice', '1')";
+        $sql = "INSERT INTO carrent (car_id, MemberID, type_rent, type_carrent, package_id, driver_status, driver_id, carrent_date, carrent_time, carrent_return, return_time, carrent_price, carrent_status_id) 
+            VALUES ('$carID', '$memberID', 'เช่ารถหน้าร้าน', 'เช่ารถส่วนตัว','0', 'ไม่ต้องการคนขับ', '0', '$rentalDate', '$rentalTime', '$returnDate', '$returnTime', '$rentalPrice', '1')";
         if (mysqli_query($con, $sql)) {
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {
