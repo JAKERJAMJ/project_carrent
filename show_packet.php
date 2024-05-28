@@ -13,6 +13,7 @@ require 'conDB.php';
     <link rel="stylesheet" href="./styles/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
+
 <body>
     <?php
     if (isset($_SESSION['MemberID'])) {
@@ -27,40 +28,42 @@ require 'conDB.php';
         </div>
     </div>
     <div class="show-package">
-        <div class="row view-package">
-            <?php
-            $sql = "SELECT * FROM packet ORDER BY packet_id";
-            $result = mysqli_query($con, $sql);
+        <div class="container">
+            <div class="row view-package">
+                <?php
+                $sql = "SELECT * FROM package ORDER BY package_id";
+                $result = mysqli_query($con, $sql);
 
-            // ตรวจสอบผลลัพธ์ของการเรียกใช้ mysqli_query()
-            if (!$result) {
-                // แสดงข้อผิดพลาดถ้าคำสั่ง SQL มีปัญหา
-                die("Error in SQL query: " . mysqli_error($con));
-            }
+                // ตรวจสอบผลลัพธ์ของการเรียกใช้ mysqli_query()
+                if (!$result) {
+                    // แสดงข้อผิดพลาดถ้าคำสั่ง SQL มีปัญหา
+                    die("Error in SQL query: " . mysqli_error($con));
+                }
 
-            // ดำเนินการดึงข้อมูลถ้าคำสั่ง SQL สำเร็จ
-            while ($row = mysqli_fetch_array($result)) {
-                $new_url = str_replace("../img/", "./img/", $row['packet_main_picture']);
-            ?>
-            <div class="col-md-3 mb-4">
-                <div class="card">
-                <img src="<?= $new_url ?>" class="card-img-top" alt="packet Image" style="width: 100%; height: 250px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title text-success"><?= htmlspecialchars($row['packet_name']) ?></h5>
-                        <p class="card-text">
-                            ราคาของแพ็คเกจ : <?= htmlspecialchars($row['packet_price']) ?><br>
-                        </p>
-                        <a href="show_package_detail.php?id=<?= htmlspecialchars($row['packet_id']) ?>" class="btn btn-outline-success">รายละเอียด</a>
-                        <a href="member_rent_packet.php" class="btn btn-outline-warning">เช่าแพ็คเกจ</a>
-
+                // ดำเนินการดึงข้อมูลถ้าคำสั่ง SQL สำเร็จ
+                while ($row = mysqli_fetch_array($result)) {
+                    $new_url = str_replace("../img/", "./img/", $row['package_picture']);
+                ?>
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img src="<?= $new_url ?>" class="card-img-top" alt="Packet Image" style="width: 100%; height: 250px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title text-success"><?= htmlspecialchars($row['package_name']) ?></h5>
+                            <p class="card-text">
+                                ราคาของแพ็คเกจ : <?= htmlspecialchars($row['package_price']) ?> บาท <br>
+                            </p>
+                            <a href="show_package_detail.php?id=<?= htmlspecialchars($row['packet_id']) ?>" class="btn btn-outline-success">รายละเอียด</a>
+                            <a href="member_rent_packet.php" class="btn btn-outline-warning">เช่าแพ็คเกจ</a>
+                        </div>
                     </div>
                 </div>
+                <?php
+                }
+                ?>
             </div>
-            <?php
-            }
-            ?>            
         </div>
     </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
+
 </html>

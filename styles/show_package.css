@@ -1,24 +1,113 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+    overflow: auto;
+}
+
 .head-show-package {
     display: flex;
-    position: fixed;
-    width: 100%;
+    justify-content: center;
     align-items: center;
     text-align: center;
-    justify-content: center;
     margin-top: 20px;
 }
+
 .head-show-package .title-show-package {
-    font-size: 30px;
-    padding: 30px;
-    background-color: rgb(137, 190, 255);
-    width: 500px;
+    font-size: 36px;
+    padding: 40px;
+    background-color: #55a7ff;
+    color: #000000;
     border-radius: 15px;
-    box-shadow: 0px 0px 3px rgb(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    width: 600px;
 }
+
 .head-show-package .title-show-package:hover {
-    box-shadow: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
+
 .show-package {
-    margin-top: 15%;
-    margin-left: 3%;
+    padding: 20px;
+    margin-top: 80px;
+}
+
+.view-package .col-md-3 {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    border-bottom: 1px solid #dee2e6;
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.card-body h5 {
+    font-size: 22px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.card-body p {
+    font-size: 16px;
+    color: #6c757d;
+    flex-grow: 1;
+}
+
+.btn-outline-success, .btn-outline-warning {
+    border-width: 2px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+    margin-top: 10px;
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.btn-outline-warning {
+    border-color: #ffc107;
+    color: #ffc107;
+    margin-top: 10px;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: #fff;
 }

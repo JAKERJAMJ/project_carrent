@@ -1,69 +1,60 @@
-.top-button{
+.head-show-package {
     display: flex;
-    justify-content: space-between; /* จัดให้รายการอยู่ตรงกลางตามแนวนอนและปุ่มอยู่ด้านขวา */
-    align-items: center; /* จัดให้อยู่ตรงกลางตามแนวตั้ง */
-    position: absolute;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
-    margin-bottom: 20px;
-    margin: 15px;
-    width: 1200px;
-    padding: 20px;
-    text-align: center;
-    left: 7%;
-}
-.top-button .manage-car{
-    font-size: 30px;
-}
-.container-box {
-    display: none;
-    position: fixed;
     align-items: center;
-    background-color: #ffffff;
-    padding: 3rem;
     justify-content: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
-    text-align: center; /* จัดข้อความตรงกลาง */
-    width: 40%;
-    max-height: 80%;
-    overflow-y: auto;
-    overflow-x: auto;
-    left: 30%;
-    top: 10%;
-    z-index: 99999;
+    margin-top: 20px;
+    text-align: center;
 }
-.box {
-    align-items: center;
-    margin-bottom: 1rem; /* ระยะห่างของกล่องข้อความ */
+
+.head-show-package .title-show-package {
+    font-size: 30px;
+    padding: 30px;
+    background-color: rgb(137, 190, 255);
+    width: 500px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
 }
-.box label {
-    margin-right: 1rem; /* ระยะห่างของข้อความกับกล่องข้อความ */
+
+.head-show-package .title-show-package:hover {
+    box-shadow: none;
 }
-.box input[type="text"] {
-    padding: 0.5rem; /* การเพิ่ม padding สำหรับ input */
-    border: 1px solid #ccc; /* เส้นขอบ input */
-    border-radius: 5px; /* การกำหนดขอบโค้ง */
-    width: 300px ;
-    margin-top: 2px;
+
+.show-package {
+    margin-top: 80px;
 }
-.box textarea {
-    padding: 0.5rem;
-    border: 1px solid #ccc; /* เส้นขอบ input */
-    border-radius: 5px; /* การกำหนดขอบโค้ง */
-    width: 350px;
-    margin-top: 2px;
-    height: 150px;
+
+.view-package .card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
-.image-preview {
-    display: none;
-    max-width: 100%; /* ความกว้างสูงสุด 100% ของพื้นที่ที่ใช้แสดงรูป */
-    max-height: 300px; /* ความสูงสูงสุดที่ใช้แสดงรูป (ปรับตามความต้องการ) */
+
+.view-package .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
-.title-box {
-    font-size: 25px;
+
+.view-package .card img {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 250px;
+    object-fit: cover;
+}
+
+.view-package .card-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.view-package .card-text {
     margin-bottom: 10px;
 }
-.container {
-    margin-top: 150px;
+
+.view-package .btn-group .btn {
+    flex: 1;
+}
+
+.view-package .btn-group .btn-outline-success {
+    margin-right: 5px;
 }

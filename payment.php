@@ -59,7 +59,7 @@ $stmt->close();
         require 'nav.php'; // Include default navigation if user is not logged in
     }
     ?>
-    <a href="add_payment.php" class="btn btn-outline-dark btn-back">กลับ</a>
+    <a href="check.php" class="btn btn-outline-dark btn-back">กลับ</a>
     <div class="payment-header">
         <div class="payment-car-name"><?= htmlspecialchars($car['car_name']) ?></div>
         <img src="<?= str_replace("../img/", "./img/", $car['car_picture1']) ?>" alt="รูปภาพรถ" class="payment-car-image">
@@ -86,20 +86,6 @@ $stmt->close();
                         ชื่อบัญชี ธนวรรณ คัมภ์บุญยอ
                     </div>
                 </div>
-                <div class="bank-slip">
-                    <div class="box">
-                        <label for="payment_date">วันที่โอน</label>
-                        <input class="form-control" type="date" name="payment_date" id="payment_date" required>
-                    </div>
-                    <div class="box">
-                        <label for="payment_time">เวลาที่โอน</label>
-                        <input class="form-control" type="time" name="payment_time" id="payment_time" required>
-                    </div>
-                    <div class="box">
-                        <label for="payment_slip">หลักฐานการชำระเงิน</label>
-                        <input class="form-control" type="file" name="payment_slip" id="payment_slip" required>
-                    </div>
-                </div>
             </div>
             <div class="qr-pay" style="display: none;">
                 <div class="payment-logo">
@@ -117,19 +103,19 @@ $stmt->close();
                     echo '<img src="' . $PromptPayQR->generate() . '">';
                     ?>
                 </div>
-                <div class="bank-slip">
-                    <div class="box">
-                        <label for="payment_date">วันที่โอน</label>
-                        <input class="form-control" type="date" name="payment_date" id="payment_date" required>
-                    </div>
-                    <div class="box">
-                        <label for="payment_time">เวลาที่โอน</label>
-                        <input class="form-control" type="time" name="payment_time" id="payment_time" required>
-                    </div>
-                    <div class="box">
-                        <label for="payment_slip">หลักฐานการชำระเงิน</label>
-                        <input class="form-control" type="file" name="payment_slip" id="payment_slip" required>
-                    </div>
+            </div>
+            <div class="bank-slip">
+                <div class="box">
+                    <label for="payment_date">วันที่โอน</label>
+                    <input class="form-control" type="date" name="payment_date" id="payment_date" required>
+                </div>
+                <div class="box">
+                    <label for="payment_time">เวลาที่โอน</label>
+                    <input class="form-control" type="time" name="payment_time" id="payment_time" required>
+                </div>
+                <div class="box">
+                    <label for="payment_slip">หลักฐานการชำระเงิน</label>
+                    <input class="form-control" type="file" name="payment_slip" id="payment_slip" required>
                 </div>
             </div>
             <input type="hidden" name="rent_id" value="<?= $rentID ?>">
@@ -139,6 +125,54 @@ $stmt->close();
         </form>
     </div>
 
+    <?php
+    if (isset($_POST['processPayment'])) {
+        // ส่วนการประมวลผลการชำระเงินจะอยู่ที่นี่
+        echo '<pre>';
+        print_r($_POST);
+        print_r($_FILES);
+        echo '</pre>';
+
+        $memberID = $_SESSION['MemberID'];
+        $rentID = $_POST['rent_id'];
+        $rentalPrice = $_POST['rental_price'];
+        $paymentMethod = "ชำระเงินออนไลน์";
+        $paymentDate = $_POST['payment_date'];
+        $paymentTime = $_POST['payment_time'];
+        $paymentSlip = "";
+
+        if (isset($_FILES['payment_slip']) && $_FILES['payment_slip']['error'] == UPLOAD_ERR_OK) {
+            $targetDir = "./img/slip/";
+            $fileExtension = pathinfo($_FILES['payment_slip']['name'], PATHINFO_EXTENSION);
+            $fileName = "slip_" . date('YmdHis') . "_" . rand(1000, 999999) . "." . $fileExtension;
+            $targetFilePath = $targetDir . $fileName;
+
+            if (move_uploaded_file($_FILES['payment_slip']['tmp_name'], $targetFilePath)) {
+                $paymentSlip = $fileName;
+            } else {
+                echo "<script>alert('เกิดข้อผิดพลาดในการอัพโหลดไฟล์'); window.location.href='./payment.php?rent_id=$rentID';</script>";
+                exit;
+            }
+        }
+
+        $sql = "INSERT INTO payment (carrent_id, payment_type, payment_date, payment_time, payment_slip, payment_status, payment_timestamp) 
+            VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
+        $stmt = $con->prepare($sql);
+        $paymentStatus = 'ยังไม่ได้อนุมัติ';
+        $stmt->bind_param("isssss", $rentID, $paymentMethod, $paymentDate, $paymentTime, $paymentSlip, $paymentStatus);
+
+        if ($stmt->execute()) {
+            echo "<script>
+                alert('การชำระเงินสำเร็จ');
+                window.location.href = './user/user_profile.php';
+              </script>";
+        } else {
+            echo "<script>alert('เกิดข้อผิดพลาดในการชำระเงิน: " . $stmt->error . "'); window.location.href='./payment.php?rent_id=$rentID';</script>";
+        }
+
+    }
+  
+    ?>
     <script>
         document.getElementById('payment_method').addEventListener('change', function() {
             var bankSection = document.querySelector('.bank');
@@ -157,6 +191,7 @@ $stmt->close();
             }
         });
     </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
 
 </html>

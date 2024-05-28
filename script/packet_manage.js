@@ -1,6 +1,6 @@
 // Preview Img
 
-const fileInput = document.getElementById('packet_main_picture');
+const fileInput = document.getElementById('package_picture');
 const imagePreview = document.getElementById('image-preview');
 const fileInputLabel = document.getElementById('file-input-label');
     

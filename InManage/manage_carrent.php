@@ -160,6 +160,9 @@ if (!isset($_SESSION['admin'])) {
                             break;
                     }
 
+                    // Change status link based on type_rent
+                    $status_link = ($row['type_rent'] == 'เช่ารถแบบออนไลน์') ? 'status_carrent_online.php' : 'status_carrent.php';
+
                     echo "<tr>";
                     echo "<td>" . $counter . "</td>";
                     echo "<td>" . $row['type_rent'] . "</td>";
@@ -172,7 +175,7 @@ if (!isset($_SESSION['admin'])) {
                     echo "<td>" . date('d/m/Y', strtotime($row['carrent_return'])) . "</td>";
                     echo "<td>" . $row['return_time'] . "</td>";
                     echo "<td>" . $row['carrent_price'] . "</td>";
-                    echo "<td><a href='status_carrent.php?id=" . $row['carrent_id'] . "' class='btn " . $status_class . " btn-sm'>" . $row['status_name'] . "</a></td>";
+                    echo "<td><a href='$status_link?id=" . $row['carrent_id'] . "' class='btn " . $status_class . " btn-sm'>" . $row['status_name'] . "</a></td>";
                     echo "<td>";
                     echo '<button type="button" class="btn btn-warning btn-sm mr-2">แก้ไข</button>';
                     echo '&nbsp;&nbsp;&nbsp;';

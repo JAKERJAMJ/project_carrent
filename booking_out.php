@@ -133,19 +133,6 @@ $returnTimes = explode(",", $enumList);
                     <option value="ต้องการคนขับ">ต้องการคนขับ</option>
                 </select>
             </div>
-            <div class="booking-out-box" id="driverSelectBox" style="display: none;">
-                <label for="driver_id">เลือกคนขับ:</label><br>
-                <select class="form-select" id="driver_id" name="driver_id">
-                    <option value="">เลือกคนขับ</option>
-                    <?php
-                    $sql_drivers = "SELECT driver_id, driver_name FROM driver";
-                    $result_drivers = mysqli_query($con, $sql_drivers);
-                    while ($row_driver = mysqli_fetch_assoc($result_drivers)) {
-                        echo "<option value=\"" . htmlspecialchars($row_driver['driver_id']) . "\">" . htmlspecialchars($row_driver['driver_name']) . "</option>";
-                    }
-                    ?>
-                </select>
-            </div>
             <div class="booking-out-box">
                 <label for="RentalPrice">ราคาเช่าทั้งหมด:</label><br>
                 <input class="form-control" type='text' id='RentalPrice' name='RentalPrice' value='<?= htmlspecialchars($totalRentalPrice) ?>' readonly>
@@ -168,7 +155,7 @@ $returnTimes = explode(",", $enumList);
         $returnDate = $_POST['ReturnDate'];
         $returnTime = $_POST['ReturnTime'];
         $driverStatus = $_POST['driver_status'];
-        $driverID = ($driverStatus === 'ไม่ต้องการคนขับ') ? '5' : $_POST['driver_id'];
+        $driverID = "5"; // Temporary driver ID
         $rentalPrice = $_POST['RentalPrice'];
 
         $stmt = $con->prepare("INSERT INTO carrent (car_id, MemberID, type_rent, type_carrent, driver_status, driver_id, carrent_date, carrent_time, carrent_return, return_time, carrent_price, carrent_status_id) VALUES (?, ?, 'เช่ารถแบบออนไลน์', 'เช่ารถส่วนตัว', ?, ?, ?, ?, ?, ?, ?, '1')");
@@ -177,10 +164,8 @@ $returnTimes = explode(",", $enumList);
         if ($stmt->execute()) {
             $rentID = $stmt->insert_id;
             echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                    successModal.show();
-                });
+            alert('จองรถสำเร็จ กรุณาชำระเงิน');
+            window.location.href = 'payment.php?rent_id=$rentID';
                 </script>";
         } else {
             echo "<script>
@@ -192,30 +177,11 @@ $returnTimes = explode(",", $enumList);
     }
     ?>
 
-    <!-- Success Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">การเช่าสำเร็จ</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    เพิ่มข้อมูลเรียบร้อยแล้ว
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="confirmButton">ตกลง</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="./script/booking.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var driverStatus = document.getElementById('driver_status');
-            var driverSelectBox = document.getElementById('driverSelectBox');
             var originalPrice = parseFloat(document.getElementById('original_price').value);
             var rentalPriceField = document.getElementById('RentalPrice');
             var driverDailyWage = parseFloat(document.getElementById('driver_daily_wage').value);
@@ -224,10 +190,8 @@ $returnTimes = explode(",", $enumList);
 
             driverStatus.addEventListener('change', function() {
                 if (driverStatus.value === 'ต้องการคนขับ') {
-                    driverSelectBox.style.display = 'block';
                     rentalPriceField.value = (originalPrice + totalDriverCost).toFixed(2);
                 } else {
-                    driverSelectBox.style.display = 'none';
                     rentalPriceField.value = originalPrice.toFixed(2);
                 }
             });

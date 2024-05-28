@@ -88,3 +88,6 @@
 .qr-pay .qr img {
     width: 250px;
 }
+.payment-body .bank-slip {
+    padding: 15px;
+}
