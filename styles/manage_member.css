@@ -1,4 +1,13 @@
-.head-managemember {
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Head member styles */
+.head-member {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -6,82 +15,190 @@
     padding: 20px;
 }
 
-.head-managemember .title-member {
+.head-member .title-member {
     font-size: 40px;
     padding: 30px;
-    color: rgb(57, 57, 57);
-    background-color: aliceblue;
+    color: #343a40;
+    background-color: #e9ecef;
     width: 50%;
     text-align: center;
     border-radius: 20px;
     margin-bottom: 20px;
-    box-shadow: 0px 0px 2px rgb(0, 0, 0, 0.2);
-    /* แก้ไขให้หัวข้ออยู่กึ่งกลาง */
-    margin: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-.head-managemember .btn-button {
+
+.head-member .btn-member {
     padding: 20px;
     display: flex;
     width: 100%;
     justify-content: flex-end;
 }
+
 .body-member {
-    padding: 30px;
-    justify-content: center;
-    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
 }
-.body-member .view-member {
-    padding: 30px;
+
+.body-member .title-body {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
 }
-.body-member .view-member td,tr {
-    text-align: center; /* จัดให้ข้อมูลภายในตารางอยู่ตรงกลาง */
-    vertical-align: middle; /* จัดให้ข้อมูลภายในตารางอยู่ตรงกลางแนวตั้ง */
-}
+
 .body-member .search-container {
     display: flex;
     justify-content: flex-end;
-    margin-right: 20px;
-    font-size: 16px;
     margin-bottom: 20px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .body-member .search-container form {
     display: flex;
-    flex-wrap: wrap; /* ให้สามารถขึ้นบรรทัดใหม่ได้ */
-    align-items: center; /* ให้องค์ประกอบในฟอร์มอยู่ในแนวกลางตามแนวตั้ง */
-    justify-content: space-between; /* จัดระยะห่างระหว่างปุ่มและช่องใส่วันที่ */
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .body-member .search-container input,
 .body-member .search-container button,
 .body-member .search-container a {
-    margin-left: 20px;
+    margin: 5px;
+    padding: 10px 15px;
+    border-radius: 5px;
 }
-#passwordStrength {
-    margin-top: 10px;
-    color: aliceblue;
-    border-radius: 15px;
-    padding: 5px;
+
+.body-member .search-container input {
+    border: 1px solid #ddd;
+    background-color: #fff;
+    flex: 1;
+}
+
+.body-member .search-container .btn-outline-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.body-member .search-container .btn-outline-primary:hover {
+    background-color: #0056b3;
+}
+
+.body-member .search-container .btn-outline-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+}
+
+.body-member .search-container .btn-outline-secondary:hover {
+    background-color: #5a6268;
+}
+
+.body-member .table-view-member {
+    overflow-x: auto;
+}
+
+.table-view-member table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
     font-size: 15px;
+    vertical-align: middle;
 }
+
+.table-view-member th,
+.table-view-member td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.table-view-member th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+}
+
+.table-view-member tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table-view-member tr:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.2s ease;
+}
+
+.table-view-member .btn {
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.table-view-member .btn-warning {
+    background-color: #ffc107;
+    color: #fff;
+}
+
+.table-view-member .btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.table-view-member .btn-warning:hover,
+.table-view-member .btn-danger:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+/* Pagination styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.pagination .page-item {
+    margin: 0 5px;
+}
+
+.pagination .page-link {
+    color: #007bff;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+/* Add member modal styles */
 .add-member {
     display: none;
     position: fixed;
+    flex-direction: column;
     align-items: center;
     background-color: #ffffff;
     padding: 3rem;
-    justify-content: center;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     border-radius: 20px;
-    text-align: center; /* จัดข้อความตรงกลาง */
-    width: 40%;
+    text-align: center;
+    width: 50%;
     max-height: 80%;
     overflow-y: auto;
     overflow-x: auto;
-    left: 30%;
+    left: 25%;
     top: 10%;
     z-index: 99999;
-    
 }
 
 .add-member .title-addmember {
@@ -89,4 +206,59 @@
     padding: 10px;
     margin-bottom: 15px;
     font-weight: bold;
+}
+.add-member .addmember-body {
+    display: flex;
+    position: relative;
+    width: 100%;
+    flex-direction: column;
+}
+
+#passwordStrength {
+    margin-top: 10px;
+    color: aliceblue;
+    background-color: #6c757d;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 15px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .table-view-member {
+        padding: 15px;
+    }
+
+    .table-view-member table,
+    .table-view-member th,
+    .table-view-member td {
+        font-size: 12px;
+    }
+
+    .table-view-member .btn {
+        font-size: 12px;
+        padding: 3px 5px;
+    }
+
+    .pagination .page-link {
+        padding: 6px 10px;
+    }
+
+    .body-member .search-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .body-member .search-container form {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .body-member .search-container input,
+    .body-member .search-container button,
+    .body-member .search-container a {
+        width: 100%;
+        margin: 5px 0;
+    }
 }

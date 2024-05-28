@@ -1,74 +1,99 @@
+/* driver_manage.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #343a40;
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+    font-size: 24px;
+}
 .top-button {
     display: flex;
-    justify-content: space-between; /* จัดให้รายการอยู่ตรงกลางตามแนวนอนและปุ่มอยู่ด้านขวา */
-    align-items: center; /* จัดให้อยู่ตรงกลางตามแนวตั้ง */
-    position: absolute;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     border-radius: 20px;
-    margin-bottom: 20px;
-    margin: 15px;
-    width: 1200px;
     padding: 20px;
-    text-align: center;
-    left: 7%;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1200px;
 }
+
+.top-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
+}
+
 .top-button .manage-driver {
     font-size: 30px;
+    font-weight: bold;
 }
+
 .container {
-    margin-top: 150px;
+    margin-top: 100px;
+    padding: 20px;
 }
-.add-driver {
-    display: none;
-    position: fixed;
-    align-items: center;
-    flex-direction: column;
-    background-color: #ffffff;
-    padding: 3rem;
-    justify-content: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
-    text-align: center; /* จัดข้อความตรงกลาง */
-    width: 40%;
-    max-height: 80%;
-    overflow-y: auto;
-    overflow-x: auto;
-    left: 30%;
-    top: 10%;
-    z-index: 99999;
+
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s;
 }
-.add-driver .title-add-driver {
-    font-size: 25px;
-    margin-bottom: 10px;
+
+.card:hover {
+    transform: translateY(-5px);
 }
-.add-driver .box {
-    align-items: center;
-    margin-bottom: 1rem;
+
+.card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
-.add-driver .box label {
-    margin-right: 1rem;
+
+.card-body {
+    padding: 15px;
 }
-.add-driver .box input[type="text"] {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 300px;
-    margin-top: 2px;
+
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
 }
-.add-driver .box textarea {
-    padding: 0.5rem;
-    border: 1px solid #ccc; /* เส้นขอบ input */
-    border-radius: 5px; /* การกำหนดขอบโค้ง */
-    width: 350px;
-    margin-top: 2px;
-    height: 150px;
+
+.card-text {
+    font-size: 16px;
+    color: #6c757d;
 }
-.box .preview-img {
-    justify-content: center;
-    align-items: center;
+
+.card button {
+    font-size: 16px;
+    margin-top: 10px;
+    width: 100%;
 }
-  
-.box .preview-img .image-preview {
-    max-width: 100%; /* ความกว้างสูงสุด 100% ของพื้นที่ที่ใช้แสดงรูป */
-    max-height: 80vh; /* ความสูงสูงสุดที่ใช้แสดงรูป (ปรับตามความต้องการ) */
+
+.preview-img {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.preview-img .image-preview {
+    max-width: 100%;
+    max-height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 5px;
 }

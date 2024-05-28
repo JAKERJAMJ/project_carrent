@@ -1,17 +1,13 @@
 // ฟังก์ชันเพื่อกำหนดรูปแบบเบอร์โทรศัพท์
 function formatPhoneNumber(input) {
-    
     input.value = input.value.replace(/\D/g, '');
-    
     if (input.value.length === 10) {
         let formattedPhoneNumber = input.value.slice(0, 3) + '-' + input.value.slice(3, 6) + '-' + input.value.slice(6, 10);
         input.value = formattedPhoneNumber;
     }
 }
 
-
-// function ตรวจสอบ Password
-// ฟังก์ชันเพื่อตรวจสอบการยืนยันพาสเวิร์ดทันที
+// Function to check password match
 function checkPasswordMatch() {
     let password = document.getElementById("Memberpassword").value;
     let confirmPassword = document.getElementById("confirmPassword").value;
@@ -19,24 +15,21 @@ function checkPasswordMatch() {
 
     if (password !== confirmPassword) {
         errorDiv.innerHTML = "รหัสผ่านไม่ตรงกัน";
-        errorDiv.style.color = "red"; // เปลี่ยนสีข้อความเป็นสีแดง
+        errorDiv.style.color = "red";
     } else {
         errorDiv.innerHTML = "รหัสผ่านตรงกัน";
-        errorDiv.style.color = "green"; // เปลี่ยนสีข้อความเป็นสีเขียว
+        errorDiv.style.color = "green";
     }
 }
-// เรียกใช้ฟังก์ชัน checkPasswordMatch ทุกครั้งที่พิมพ์ใน input
 document.getElementById("confirmPassword").addEventListener("input", checkPasswordMatch);
 
-// function ในการตรวจสอบความปลอดภัยของรหัสผ่าน
-// function ตรวจสอบ Password
-// ตรวจสอบความปลอดภัยของรหัสผ่าน
+// Function to check password strength
 function checkPasswordStrength(password) {
-    let lengthRegex = /.{8,}/; // ตรวจสอบความยาวของอย่างน้อย 8 ตัวอักษร
-    let uppercaseRegex = /[A-Z]/; // ตรวจสอบตัวอักษรตัวใหญ่
-    let lowercaseRegex = /[a-z]/; // ตรวจสอบตัวอักษรตัวเล็ก
-    let digitRegex = /\d/; // ตรวจสอบตัวเลข
-    let specialCharRegex = /[!@#$%^&*.]/; // ตรวจสอบอักขระพิเศษ
+    let lengthRegex = /.{8,}/;
+    let uppercaseRegex = /[A-Z]/;
+    let lowercaseRegex = /[a-z]/;
+    let digitRegex = /\d/;
+    let specialCharRegex = /[!@#$%^&*.]/;
 
     let hasLength = lengthRegex.test(password);
     let hasUppercase = uppercaseRegex.test(password);
@@ -77,15 +70,9 @@ document.getElementById("Memberpassword").addEventListener("input", function() {
     }
 });
 
-
-
-
-
-
-
-// function ในการตรวจสอบช่องว่างของการกรอกข้อมูลสมัครสมาชิก
+// Function to validate form
 function validateForm() {
-    let form = document.getElementById("AddMember"); // เลือกฟอร์มที่มี ID เป็น "AddMember" เท่านั้น
+    let form = document.getElementById("AddMemberForm");
     let email = form.querySelector("#Memberemail").value;
     let password = form.querySelector("#Memberpassword").value;
     let confirmPassword = form.querySelector("#confirmPassword").value;
@@ -101,21 +88,8 @@ function validateForm() {
     return true;
 }
 
-document.getElementById("AddMember").addEventListener("submit", function(e) { // เช็คเมื่อฟอร์มที่มี ID เป็น "AddMember" ถูกส่ง
+document.getElementById("AddMemberForm").addEventListener("submit", function(e) {
     if (!validateForm()) {
         e.preventDefault();
     }
 });
-
-// add member popup
-function AddMember() {
-    var popup = document.getElementById('AddMember');
-
-    popup.style.display = 'block';
-}
-function Cancel() {
-    var popup = document.getElementById('AddMember');
-
-    popup.style.display = 'none';
-}
-

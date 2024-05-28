@@ -9,7 +9,7 @@ if (!isset($_SESSION['admin'])) {
 }
 ?>
 
-
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -29,10 +29,10 @@ if (!isset($_SESSION['admin'])) {
                     <a class="navbar-brand" href="../admin.php">Admin Controller</a>
                 </div>
                 <div class="dropdown">
-                    <button class="btn btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         Admin
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"> <!-- เพิ่ม class dropdown-menu-end เพื่อจัดให้ dropdown อยู่ด้านขวาของ Navbar -->
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="../logout.php">Logout</a></li>
                     </ul>
                 </div>
@@ -47,7 +47,6 @@ if (!isset($_SESSION['admin'])) {
     <div class="container">
         <div class="row view-car">
             <?php
-            require '../conDB.php';
             $sql = "SELECT * FROM car ORDER BY car_id";
             $result = mysqli_query($con, $sql);
             while ($row = mysqli_fetch_array($result)) {
@@ -64,7 +63,6 @@ if (!isset($_SESSION['admin'])) {
                             <a href="car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
                             <button type="button" class="btn btn-outline-danger" onclick="deleteCar(<?= $row['car_id'] ?>)">ยกเลิกการใช้งาน</button>
                         </div>
-
                     </div>
                 </div>
             <?php
@@ -73,10 +71,9 @@ if (!isset($_SESSION['admin'])) {
         </div>
     </div>
 
-    <!-- popuo container-box => add_car -->
+    <!-- popup container-box => add_car -->
     <div class="container-box" id="add_car">
         <form action="car_management.php" method="post" enctype="multipart/form-data">
-            <!-- ทำฟอร์มหรือเพิ่มองค์ประกอบในป็อปอัพ -->
             <div class="title-box"><u>เพิ่มข้อมูลรถ</u></div>
             <div class="box">
                 <label for="car_name">ชื่อรถ</label><br>
@@ -111,13 +108,11 @@ if (!isset($_SESSION['admin'])) {
                 </div>
             </div>
             <input type="submit" name="submit" value="Submit" id="submit">
-            <button onclick="hidePopup()" id="close-car">Close</button>
+            <button type="button" onclick="hidePopup()" id="close-car">Close</button>
         </form>
     </div>
 
     <?php
-    require '../conDB.php'; // Include your DB connection file
-
     if (isset($_POST['submit'])) {
         $car_name = $_POST['car_name'];
         $car_brand = $_POST['car_brand'];
@@ -126,7 +121,7 @@ if (!isset($_SESSION['admin'])) {
         $car_price = $_POST['car_price'];
         $car_detail = $_POST['car_detail'];
 
-        $target_dir = "../img/car/"; // ปรับเส้นทางตามที่ต้องการ
+        $target_dir = "../img/car/";
 
         function createNewFileName($originalFileName)
         {
@@ -135,17 +130,14 @@ if (!isset($_SESSION['admin'])) {
             return $newFileName;
         }
 
-
         // ประมวลผลและย้ายไฟล์ทั้งหมด
         $car_picture1 = $target_dir . createNewFileName($_FILES["car_picture1"]["name"]);
         move_uploaded_file($_FILES["car_picture1"]["tmp_name"], $car_picture1);
-        // ทำซ้ำสำหรับ car_picture2, car_picture3, และ car_picture4 ...
-
 
         // SQL Query
         $sql = "INSERT INTO car (car_name, car_brand, 
                 car_numplate, car_vin, car_price, car_detail, 
-                car_picture1 ) 
+                car_picture1) 
                 VALUES ('$car_name', '$car_brand', '$car_numplate', 
                 '$car_vin', '$car_price', '$car_detail', '$car_picture1')";
 

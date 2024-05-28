@@ -177,8 +177,7 @@ if (!isset($_SESSION['admin'])) {
                     echo "<td>" . $row['carrent_price'] . "</td>";
                     echo "<td><a href='$status_link?id=" . $row['carrent_id'] . "' class='btn " . $status_class . " btn-sm'>" . $row['status_name'] . "</a></td>";
                     echo "<td>";
-                    echo '<button type="button" class="btn btn-warning btn-sm mr-2">แก้ไข</button>';
-                    echo '&nbsp;&nbsp;&nbsp;';
+
                     echo '<button type="button" class="btn btn-danger btn-sm mr-2" onclick="cancelCarRental(' . $row['carrent_id'] . ')">ยกเลิก</button>';
                     echo "</td>";
                     echo "</tr>";

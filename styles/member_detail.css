@@ -1,0 +1,39 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.btn-back {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.user {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+.user .user-title {
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    background-color: rgb(110, 166, 255);
+    font-size: 30px;
+}
+.user .user-body {
+    padding: 10px;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+}
+.user .user-body .pic {
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+.user .user-body .pic img {
+    width: 300px;
+    border-radius: 30px;
+}
+.user .user-body p {
+    margin-top: 3%;
+    margin-left: 20%;
+}

@@ -1,156 +1,85 @@
-.right-align-button {
-    float: right;
-    margin-right: 20px;
+
+.title-detail {
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
 }
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #f1f1f1;
-    padding: 50px;
-    border: 1px solid #ccc;
-    z-index: 9999;
+
+.img-container {
+  text-align: center;
+  
 }
-.detailbox{
-  width: 300px;
-	padding: 10px;
-	font-size: 16px;
+.img-container img {
+  border-radius: 20px;
+  width: 400px;
 }
-.AddPicture{
+
+.container-box {
   display: none;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #f1f1f1;
-  padding: 50px;
-  border: 1px solid #ccc;
-  z-index: 9999;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 }
-#back {
+
+.title-box {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.box {
+  margin-bottom: 15px;
+}
+
+.box label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.box input,
+.box textarea {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+#file-input-label {
+  display: inline-block;
+  margin-bottom: 5px;
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.preview-img {
   margin-top: 10px;
 }
-#carpicture {
-  width: 300px;
-}
-.main-picture img {
-  width: 600px;
-  max-width: 100%;
-}
-.container-none {
-  display: flex;
-  padding: 20px;
-  margin-top: 30px;
-  align-items: center;
-  justify-content: center;
-}
-.container-none .forget{
-  background-color: #fd6d62;
-  padding: 25px;
-  border-radius: 60px;
-  box-shadow: 0 0 5px rgb(72, 72, 72);
-  transition: all 0.3s;
-  color: #e6e6e6;
-}
-.container-none .forget:hover{
-  box-shadow: none;
-}
-.head-detail{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.head-detail .title-detail{
-  padding: 10px;
-  font-size: 30px;
-}
-.head-detail .update-picture{
-  margin-bottom: 20px;
-}
-.detail {
-  display: flex;
-  justify-content: center;
-}
-.detail .detail-carpicture {
-  display: flex;
-  justify-content: center; /* จัดภาพให้อยู่ตรงกลางของคอนเทนเนอร์ */
-  max-width: 90%;
-  align-items: center;
-  flex-wrap: wrap; /* อนุญาตให้รายการสามารถห่อไปยังหลายแถวได้ */
-}
-.detail .detail-carpicture img{
-  width: 30%; /* ปรับความกว้างตามที่จำเป็นเพื่อให้สามรูปภาพอยู่ในหนึ่งแถว */
+
+.preview-img img {
+  width: 100%;
   height: auto;
-  margin: 0 auto; /* ตั้งระยะขอบให้ภาพอยู่ตรงกลาง */
-}
-.popup-update {
-  display: none;
-  position: fixed;
-  align-items: center;
-  background-color: #ffffff;
-  padding: 3rem;
-  justify-content: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  border-radius: 20px;
-  text-align: center; /* จัดข้อความตรงกลาง */
-  width: 50%;
-  max-height: 80%;
-  overflow-y: auto;
-  overflow-x: auto;
-  left: 30%;
-  top: 10%;
-  z-index: 99999;
 }
 
-.popup-update .title-box {
-  font-size: 30px;
-  margin-bottom: 2rem;
+#close-car {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
 }
 
-.popup-update .box {
-  align-items: center;
-  margin-bottom: 1rem; /* ระยะห่างของกล่องข้อความ */
-}
-
-.popup-update .title-box .box label {
-  margin-right: 1rem; /* ระยะห่างของข้อความกับกล่องข้อความ */
-}
-.popup-update .title-box .box .btn-update-car-pic {
-  margin-top: 1rem;
-}
-.popup-edit-car {
-  display: none;
-  position: fixed;
-  align-items: center;
-  background-color: #ffffff;
-  padding: 3rem;
-  justify-content: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  border-radius: 20px;
-  text-align: center; /* จัดข้อความตรงกลาง */
-  width: 45%;
-  max-height: 80%;
-  overflow-y: auto;
-  overflow-x: auto;
-  left: 30%;
-  top: 10%;
-  z-index: 99999;
-}
-.popup-edit-car .title-edit-car {
-  font-size: 25px;
-}
-.popup-edit-car .box {
-  align-items: center;
-  margin-bottom: 1rem; /* ระยะห่างของกล่องข้อความ */
-}
-.popup-update .box .preview-img img {
-  max-width: 100%; /* กำหนดให้ภาพมีความกว้างสูงสุดเท่ากับขนาดของคอลัมน์ */
-  height: auto; /* กำหนดให้ความสูงของภาพปรับตามอัตราส่วน */
-}
-.popup-update .box .preview-img {
-  margin-top: 2px;
+#submit {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-right: 10px;
 }
 

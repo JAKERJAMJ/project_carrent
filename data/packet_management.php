@@ -1,3 +1,14 @@
+<?php
+session_start();
+require '../conDB.php';
+
+if (!isset($_SESSION['admin'])) {
+    // แสดง alert และ redirect ไปยังหน้า login.php
+    echo "<script>alert('กรุณาเข้าสู่ระบบ'); window.location.href='../login.php';</script>";
+    exit; // จบการทำงานของสคริปต์
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,12 +42,12 @@
     </header>
     <div class="top-button">
         <a href="data_management.php"><button type="button" class="btn btn-outline-dark" id="back">กลับ</button></a>
-        <div class="manage-car">การจัดการแพ็คเกจ</div>
-        <button onclick="showPopup()" id="uppacket" type="button" class="btn btn-success"> เพิ่ม</button>
+        <div class="manage-package">การจัดการแพ็คเกจ</div>
+        <button onclick="showPopup()" id="uppacket" type="button" class="btn btn-success">เพิ่ม</button>
     </div>
 
     <div class="container">
-        <div class="row view-packet">
+        <div class="row view-package">
             <?php
             require '../conDB.php';
             $sql = "SELECT * FROM package ORDER BY package_id";
@@ -45,23 +56,25 @@
             ?>
                 <div class="col-md-3 mb-4">
                     <div class="card">
-                        <img src="<?= $row['package_picture'] ?>" class="card-img-top" alt="packet img" style="width: 100%; height: 250px; object-fit: cover;">
+                        <img src="<?= $row['package_picture'] ?>" class="card-img-top" alt="packet img">
                         <div class="card-body">
                             <h5 class="card-title text-success"><?= $row['package_name'] ?></h5>
                             <p class="card-text">
-                                ID : <?= $row['package_id'] ?><br>
-                                ราคาของแพ็คเกจ : <?= $row['package_price'] ?><br>
+                                ID: <?= $row['package_id'] ?><br>
+                                ราคาของแพ็คเกจ: <?= $row['package_price'] ?><br>
                             </p>
-                            <a href="packet_detail.php?id=<?= $row['packet_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
-                            <button type="button" class="btn btn-outline-danger" onclick="deletePacket(<?= $row['packet_id'] ?>)">ยกเลิกการใช้งาน</button>
+                            <div class="btn-group">
+                                <a href="packet_detail.php?id=<?= $row['package_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
+                                <button type="button" class="btn btn-outline-danger" onclick="deletePacket(<?= $row['package_id'] ?>)">ยกเลิกการใช้งาน</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <script>
-                    function deletePacket(packet_id) {
-                        if (confirm('ต้องการยกเลิกการใช้งานรถ ID ' + packet_id + '?')) {
-                            fetch('delete_packet.php?id=' + packet_id, {
+                    function deletePacket(package_id) {
+                        if (confirm('ต้องการยกเลิกการใช้งานแพ็คเกจ ID ' + package_id + '?')) {
+                            fetch('delete_packet.php?id=' + package_id, {
                                     method: 'GET'
                                 })
                                 .then(response => response.text())
@@ -86,39 +99,46 @@
         <div class="package-body">
             <form action="packet_management.php" method="post" enctype="multipart/form-data">
                 <div class="box">
-                    <label for="ชื่อแพ็คเกจท่องเที่ยว">ชื่อแพ็คเกจท่องเที่ยว</label><br>
+                    <label for="package_name">ชื่อแพ็คเกจท่องเที่ยว</label><br>
                     <input class="form-control" type="text" id="package_name" name="package_name" placeholder="-- ชื่อแพ็คเกจท่องเที่ยว --">
                 </div>
                 <div class="box">
-                    <label for="ราคาของแพ็คเกจท่องเที่ยว">ราคาของแพ็คเกจ</label><br>
+                    <label for="package_hotel">ชื่อที่พัก</label><br>
+                    <input class="form-control" type="text" id="package_hotel" name="package_hotel" placeholder="-- ชื่อที่พัก--">
+                </div>
+                <div class="box">
+                    <label for="package_price">ราคาของแพ็คเกจ</label><br>
                     <input class="form-control" type="text" name="package_price" placeholder="-- ราคาของแพ็คเกจ --">
                 </div>
                 <div class="box">
-                    <label for="ระยะเวลา">ระยะเวลา (จำนวนกี่วัน)</label><br>
+                    <label for="package_date">ระยะเวลา (จำนวนกี่วัน)</label><br>
                     <input class="form-control" type="text" id="package_date" name="package_date">
                 </div>
                 <div class="box">
-                    <label for="รูปภาพหลัก">รูปภาพหลัก</label><br>
-                    <label for="file-input" id="file-input-label"><u>เลือกไฟล์รูปภาพ</u></label>
+                    <label for="package_detail">รายละเอียดแพ็คเกจ</label><br>
+                    <textarea class="form-control" type="text" id="package_detail" name="package_detail"></textarea>
+                </div>
+                <div class="box">
+                    <label for="package_picture">รูปภาพหลัก</label><br>
                     <input class="form-control" type="file" name="package_picture" accept="image/*" id="package_picture">
                     <img src="" id="image-preview" class="image-preview" alt="รูปภาพตัวอย่าง">
                 </div>
                 <div class="box-btn">
                     <button class="btn btn-success" type="submit" name="submit">บันทึก</button>
-                    <button class="btn btn-danger" type="button" onclick="hidePopup()" id="close-car">Close</button>
+                    <button class="btn btn-danger" type="button" onclick="hidePopup()" id="close-package">Close</button>
                 </div>
             </form>
         </div>
     </div>
 
     <?php
-    require '../conDB.php';
-
     if (isset($_POST['submit'])) {
         $package_name = $_POST['package_name'];
         $package_price = $_POST['package_price'];
         $package_date = $_POST['package_date'];
-        $package_status = "ยังไม่ถูกเช่า";
+        $package_detail = $_POST['package_detail'];
+        $package_hotel = $_POST['package_hotel'];
+        
 
         $target_dir = "../img/packet/";
 
@@ -131,9 +151,9 @@
         $package_picture = $target_dir . createNewFileName($_FILES["package_picture"]["name"]);
         move_uploaded_file($_FILES["package_picture"]["tmp_name"], $package_picture);
 
-        $sql = "INSERT INTO package (package_name, package_picture, 
-            package_price, package_date, package_status) 
-            VALUES ('$package_name', '$package_picture', '$package_price', '$package_date', '$package_status')";
+        $sql = "INSERT INTO package (package_name, package_hotel, package_picture, 
+            package_price, package_date, package_detail) 
+            VALUES ('$package_name', '$package_hotel', '$package_picture', '$package_price', '$package_date', '$package_detail')";
 
         if ($con->query($sql) === TRUE) {
             echo '<script>window.location.href = window.location.href;</script>';

@@ -1,74 +1,63 @@
-.top-button{
-    display: flex;
-    justify-content: space-between; /* จัดให้รายการอยู่ตรงกลางตามแนวนอนและปุ่มอยู่ด้านขวา */
-    align-items: center; /* จัดให้อยู่ตรงกลางตามแนวตั้ง */
-    position: absolute;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
-    margin-bottom: 20px;
-    margin: 15px;
-    width: 1200px;
-    padding: 20px;
-    text-align: center;
-    left: 7%;
-}
-.top-button .manage-car{
-    font-size: 30px;
+/* car_manage.css */
+
+body {
+    font-family: 'Prompt', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
 }
 
-.detailbox{
-    height: 200px;
-    width: 100%;
-    resize: vertical;
+header {
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
 }
-.custom-button {
-    margin-top: 20px;  /* ปรับค่าตามความต้องการของคุณ */
-    margin-right: 20px; /* ปรับค่าตามความต้องการของคุณ */
+
+.top-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
 }
-#close-car{
-    background-color: #ffffff;
-    color: #616161;
-    border: 1px solid rgb(255, 62, 62);;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 12px;
+
+.top-button .manage-car {
+    font-size: 30px;
+    font-weight: bold;
 }
-#close-car:hover {
-    background-color: rgb(255, 62, 62);;
-    color: white;
-    border: 1px solid rgb(255, 207, 158);
-}
+
 .container {
-    margin-top: 150px;
+    margin-top: 50px;
 }
-.popup table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 10px; /* ปรับระยะห่างระหว่างช่อง */
+
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: transform 0.3s ease;
 }
-.popup table td {
-    padding: 10px; /* ปรับระยะห่างในช่อง */
+
+.card:hover {
+    transform: translateY(-10px);
 }
-#submit {
-    background-color: #ffffff;
-      color: #616161;
-      border: 1px solid rgb(149, 255, 137);
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-     font-size: 12px;
+
+.card-body {
+    padding: 20px;
 }
-#submit:hover {
-    background-color: rgb(149, 255, 137);
-    color: #fff;
+
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
 }
+
+.card-text {
+    margin: 10px 0;
+}
+
+.btn-outline-danger {
+    margin-top: 10px;
+}
+
 .container-box {
     display: none;
     position: fixed;
@@ -78,108 +67,104 @@
     justify-content: center;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     border-radius: 20px;
-    text-align: center; /* จัดข้อความตรงกลาง */
     width: 40%;
     max-height: 80%;
     overflow-y: auto;
-    overflow-x: auto;
-    left: 30%;
     top: 10%;
+    left: 30%;
     z-index: 99999;
 }
-.container-box .title-box {
-  font-size: 25px;
-  margin-bottom: 10px;
-}
-.container-box .box {
-    align-items: center;
-    margin-bottom: 1rem; /* ระยะห่างของกล่องข้อความ */
-}
-.container-box .box label {
-    margin-right: 1rem; /* ระยะห่างของข้อความกับกล่องข้อความ */
-}
-.container-box .box input[type="text"] {
-    padding: 0.5rem; /* การเพิ่ม padding สำหรับ input */
-    border: 1px solid #ccc; /* เส้นขอบ input */
-    border-radius: 5px; /* การกำหนดขอบโค้ง */
-    width: 300px ;
-    margin-top: 2px;
-}
-.container-box .box textarea {
-    padding: 0.5rem;
-    border: 1px solid #ccc; /* เส้นขอบ input */
-    border-radius: 5px; /* การกำหนดขอบโค้ง */
-    width: 350px;
-    margin-top: 2px;
-    height: 150px;
-}
-.box .preview-img {
-  justify-content: center;
-  align-items: center;
+
+.title-box {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
-.box .preview-img .image-preview {
-  max-width: 100%; /* ความกว้างสูงสุด 100% ของพื้นที่ที่ใช้แสดงรูป */
-  max-height: 80vh; /* ความสูงสูงสุดที่ใช้แสดงรูป (ปรับตามความต้องการ) */
+.box {
+    margin-bottom: 1rem;
 }
-  /*popup เพิ่มรถ*/
-  /* ส่วนแสดงป๊อปอัพ */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.7);
-  z-index: 1;
-  overflow: auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  border-radius: 20px;
+
+.box label {
+    margin-right: 1rem;
 }
-  
-.modal-content {
-    position: relative;
-    background-color: #fefefe;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 100px;
-    height: 500px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
-}
-  
-.close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 10px;
-    cursor: pointer;
-}
-  
-  /* ปุ่มเรียกใช้ป๊อปอัพ */
-  /* ส่วนแสดงป๊อปอัพ */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
+
+.box input[type="text"],
+.box textarea {
     width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7);
-    z-index: 1;
-    overflow: auto;
-}
-  
-.modal-content {
-    position: relative ;
-    background-color: #fefefe;
-    margin: 10% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    box-shadow: 0 0 20px rgba(26, 255, 0, 0.2);
-    border-radius: 20px;  
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 2px;
 }
 
+.detailbox {
+    height: 150px;
+    resize: vertical;
+}
+
+#submit {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#submit:hover {
+    background-color: #218838;
+}
+
+#close-car {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+#close-car:hover {
+    background-color: #c82333;
+}
+
+#file-input-label {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+#file-input-label:hover {
+    background-color: #0056b3;
+}
+
+.preview-img {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.preview-img img {
+    max-width: 100%;
+    max-height: 250px;
+}
