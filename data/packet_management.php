@@ -3,9 +3,8 @@ session_start();
 require '../conDB.php';
 
 if (!isset($_SESSION['admin'])) {
-    // แสดง alert และ redirect ไปยังหน้า login.php
     echo "<script>alert('กรุณาเข้าสู่ระบบ'); window.location.href='../login.php';</script>";
-    exit; // จบการทำงานของสคริปต์
+    exit;
 }
 ?>
 
@@ -65,27 +64,11 @@ if (!isset($_SESSION['admin'])) {
                             </p>
                             <div class="btn-group">
                                 <a href="packet_detail.php?id=<?= $row['package_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
-                                <button type="button" class="btn btn-outline-danger" onclick="deletePacket(<?= $row['package_id'] ?>)">ยกเลิกการใช้งาน</button>
+                                <button type="button" class="btn btn-outline-danger" onclick="deletePackage(<?= $row['package_id'] ?>)">ลบข้อมูล</button>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <script>
-                    function deletePacket(package_id) {
-                        if (confirm('ต้องการยกเลิกการใช้งานแพ็คเกจ ID ' + package_id + '?')) {
-                            fetch('delete_packet.php?id=' + package_id, {
-                                    method: 'GET'
-                                })
-                                .then(response => response.text())
-                                .then(data => {
-                                    alert(data);
-                                    window.location.reload();
-                                })
-                                .catch(error => console.error('Error:', error));
-                        }
-                    }
-                </script>
             <?php
             }
             ?>
@@ -138,7 +121,6 @@ if (!isset($_SESSION['admin'])) {
         $package_date = $_POST['package_date'];
         $package_detail = $_POST['package_detail'];
         $package_hotel = $_POST['package_hotel'];
-        
 
         $target_dir = "../img/packet/";
 
@@ -163,10 +145,48 @@ if (!isset($_SESSION['admin'])) {
 
         $con->close();
     }
+
+    if (isset($_POST['delete'])) {
+        $package_id = $_POST['package_id'];
+
+        $sql = "DELETE FROM package WHERE package_id = '$package_id'";
+
+        if ($con->query($sql) === TRUE) {
+            echo '<script>window.location.href = window.location.href;</script>';
+        } else {
+            echo "Error: " . $sql . "<br>" . $con->error;
+        }
+
+        $con->close();
+    }
     ?>
 
     <script src="../script/packet_manage.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script>
+        function deletePackage(packageId) {
+            if (confirm('Are you sure you want to delete this package?')) {
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = '';
+                
+                const hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = 'package_id';
+                hiddenField.value = packageId;
+                form.appendChild(hiddenField);
+                
+                const deleteField = document.createElement('input');
+                deleteField.type = 'hidden';
+                deleteField.name = 'delete';
+                deleteField.value = 'true';
+                form.appendChild(deleteField);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
 </body>
 
 </html>

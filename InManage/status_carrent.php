@@ -348,7 +348,7 @@ $return_time = getTimeFromEnum($return_time_enum);
     if (isset($_POST['confirm']) && $is_status_1) {
         $updated_price = $_POST['original_price'] ?? null;
         $driver_status = $_POST['driver_status'];
-        $driver_id = $_POST['driver_id'] ?? null;
+        $driver_id = $_POST['driver_id'] ?? 0;
 
         // ตรวจสอบ type_rent
         $type_rent = $row['type_rent'];

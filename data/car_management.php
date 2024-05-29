@@ -101,7 +101,6 @@ if (!isset($_SESSION['admin'])) {
             </div>
             <div class="box">
                 <label for="car_picture1">รูปภาพ</label><br>
-                <label for="file-input" id="file-input-label">เลือกไฟล์รูปภาพ</label>
                 <input type="file" name="car_picture1" accept="img/" id="car_picture1" onchange="previewImage()">
                 <div class="preview-img">
                     <img src="" id="image-preview" class="image-preview" alt="รูปภาพตัวอย่าง" style="display:none;">

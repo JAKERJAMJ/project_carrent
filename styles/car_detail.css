@@ -82,4 +82,25 @@
   cursor: pointer;
   margin-right: 10px;
 }
-
+.sum-car {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  padding: 20px;
+  text-align: center;
+}
+.sum-car .title-sum {
+  padding: 30px;
+  font-size: 30px;
+}
+.fix-car {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  padding: 20px;
+  text-align: center;
+}
+.fix-car .fix-title {
+  padding: 30px;
+  font-size: 30px;
+}

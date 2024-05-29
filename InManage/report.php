@@ -212,44 +212,7 @@ $months = [
 
         <div class="report-carrent">
             <div class="search-date">
-                <form class="row g-3 justify-content-center" method="GET" action="summary_report.php">
-                    <div class="col-md-3">
-                        <label for="year" class="form-label">เลือกปี</label>
-                        <select id="year" name="year" class="form-select">
-                            <?php foreach ($years as $year) : ?>
-                                <option value="<?php echo $year; ?>" <?php echo ($year == $selectedYear) ? 'selected' : ''; ?>><?php echo $year; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="month" class="form-label">เลือกเดือน</label>
-                        <select id="month" name="month" class="form-select">
-                            <?php foreach ($months as $num => $name) : ?>
-                                <option value="<?php echo $num; ?>" <?php echo ($num == $selectedMonth) ? 'selected' : ''; ?>><?php echo $name; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="start_date" class="form-label">วันที่เริ่มเช่า</label>
-                        <input type="date" id="start_date" name="start_date" class="form-control" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="carrent_status_id" class="form-label">สถานะการเช่า</label>
-                        <select id="carrent_status_id" name="carrent_status_id" class="form-select">
-                            <option value="">ทั้งหมด</option>
-                            <?php
-                            $statusQuery = "SELECT * FROM carrent_status";
-                            $statusResult = mysqli_query($con, $statusQuery);
-                            while ($status = mysqli_fetch_assoc($statusResult)) {
-                                echo "<option value='{$status['carrent_status_id']}'" . (isset($_GET['carrent_status_id']) && $_GET['carrent_status_id'] == $status['carrent_status_id'] ? 'selected' : '') . ">{$status['status_name']}</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary">แสดงผล</button>
-                    </div>
-                </form>
+                
             </div>
         </div>
 

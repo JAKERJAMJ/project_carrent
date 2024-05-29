@@ -9,6 +9,7 @@ if (!isset($_SESSION['admin'])) {
 
 $car_id = $_GET['id'];
 
+// Fetch car details
 $sql = "SELECT * FROM car WHERE car_id = '$car_id'";
 $result = mysqli_query($con, $sql);
 $car = mysqli_fetch_assoc($result);
@@ -16,6 +17,54 @@ $car = mysqli_fetch_assoc($result);
 $picture_sql = "SELECT * FROM car_picture WHERE car_id = '$car_id'";
 $picture_result = mysqli_query($con, $picture_sql);
 $pictures = mysqli_fetch_assoc($picture_result);
+
+// Fetch rental details
+$carrent_sql = "SELECT * FROM carrent WHERE car_id = '$car_id'";
+$carrent_result = mysqli_query($con, $carrent_sql);
+$carrent = mysqli_fetch_assoc($carrent_result);
+
+// Calculate income
+$income_sql = "SELECT 
+    SUM(carrent_price) AS total_income, 
+    DATE_FORMAT(carrent_date, '%Y-%m') AS rent_month 
+FROM carrent 
+WHERE car_id = '$car_id' 
+GROUP BY rent_month";
+$income_result = mysqli_query($con, $income_sql);
+
+$monthly_income = [];
+while ($row = mysqli_fetch_assoc($income_result)) {
+    $monthly_income[] = $row;
+}
+
+// Filter daily income by selected month
+$selected_month = isset($_POST['month']) ? $_POST['month'] : date('Y-m');
+
+$daily_income_sql = "SELECT 
+    SUM(carrent.carrent_price) AS daily_income, 
+    DATE(carrent.carrent_date) AS rent_day,
+    carrent.carrent_id,
+    member.Membername,
+    member.Memberlastname
+FROM carrent 
+LEFT JOIN member ON carrent.MemberID = member.MemberID
+WHERE car_id = '$car_id' AND DATE_FORMAT(carrent.carrent_date, '%Y-%m') = '$selected_month'
+GROUP BY rent_day, carrent.carrent_id, member.Membername, member.Memberlastname";
+$daily_income_result = mysqli_query($con, $daily_income_sql);
+
+$daily_income = [];
+while ($row = mysqli_fetch_assoc($daily_income_result)) {
+    $daily_income[] = $row;
+}
+
+// Fetch repair history
+$repair_sql = "SELECT * FROM fix_car WHERE car_id = '$car_id' ORDER BY fix_date DESC";
+$repair_result = mysqli_query($con, $repair_sql);
+
+$repair_history = [];
+while ($row = mysqli_fetch_assoc($repair_result)) {
+    $repair_history[] = $row;
+}
 
 if (isset($_POST['update'])) {
     $car_name = $_POST['car_name'];
@@ -53,7 +102,7 @@ if (isset($_POST['add_pictures'])) {
     move_uploaded_file($_FILES["picture2"]["tmp_name"], $picture2);
     move_uploaded_file($_FILES["picture3"]["tmp_name"], $picture3);
 
-    if ($picturs) {
+    if ($pictures) {
         $picture_update_sql = "UPDATE car_picture SET picture1='$picture1', picture2='$picture2', picture3='$picture3' WHERE car_id='$car_id'";
     } else {
         $picture_update_sql = "INSERT INTO car_picture (car_id, picture1, picture2, picture3) VALUES ('$car_id', '$picture1', '$picture2', '$picture3')";
@@ -73,9 +122,32 @@ function createNewFileName($originalFileName)
     return $newFileName;
 }
 
+function thai_date($date)
+{
+    $months = [
+        "01" => "มกราคม",
+        "02" => "กุมภาพันธ์",
+        "03" => "มีนาคม",
+        "04" => "เมษายน",
+        "05" => "พฤษภาคม",
+        "06" => "มิถุนายน",
+        "07" => "กรกฎาคม",
+        "08" => "สิงหาคม",
+        "09" => "กันยายน",
+        "10" => "ตุลาคม",
+        "11" => "พฤศจิกายน",
+        "12" => "ธันวาคม"
+    ];
+
+    $year = date('Y', strtotime($date)) + 543;
+    $month = date('m', strtotime($date));
+    $day = date('d', strtotime($date));
+
+    return $day . ' ' . $months[$month] . ' ' . $year;
+}
+
 mysqli_close($con);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -148,8 +220,88 @@ mysqli_close($con);
                 <td><?= $car['car_detail'] ?></td>
             </tr>
         </table>
+    </div>
 
-        <?php if ($pictures): ?>
+    <div class="sum-car">
+        <div class="title-sum">
+            รายได้สุทธิ
+        </div>
+        <div class="table-view-sum">
+            <h5>รายได้ต่อเดือน</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>เดือน</th>
+                        <th>รายได้ (บาท)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($monthly_income as $income) : ?>
+                        <tr>
+                            <td><?= thai_date($income['rent_month']) ?></td>
+                            <td><?= number_format($income['total_income'], 2) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <h5>รายได้ต่อวัน</h5>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>วันที่</th>
+                        <th>รหัสการเช่า</th>
+                        <th>ชื่อผู้เช่า</th>
+                        <th>รายได้ (บาท)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($daily_income as $income) : ?>
+                        <tr>
+                            <td><?= thai_date($income['rent_day']) ?></td>
+                            <td><?= htmlspecialchars($income['carrent_id']) ?></td>
+                            <td><?= htmlspecialchars($income['Membername'] . ' ' . htmlspecialchars($income['Memberlastname'])) ?></td>
+                            <td><?= number_format($income['daily_income'], 2) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="fix-car">
+        <div class="fix-title">
+            ประวัติการซ่อม
+        </div>
+        <div class="fix-body">
+            <?php if (count($repair_history) > 0) : ?>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>วันที่ซ่อม</th>
+                            <th>รายละเอียดการซ่อม</th>
+                            <th>ค่าใช้จ่าย (บาท)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($repair_history as $repair) : ?>
+                            <tr>
+                                <td><?= thai_date($repair['fix_date']) ?></td>
+                                <td><?= htmlspecialchars($repair['fix_detail']) ?></td>
+                                <td><?= number_format($repair['fix_price']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else : ?>
+                <p>ไม่มีประวัติการซ่อมสำหรับรถคันนี้</p>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="picture-detail">
+        <?php if ($pictures) : ?>
             <div class="row mt-5">
                 <div class="col-md-4">
                     <div class="img-container mb-3">
@@ -262,8 +414,8 @@ mysqli_close($con);
     <script src="../scripts/car_detail.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.querySelectorAll('[data-bs-toggle="modal"]').forEach(function (element) {
-            element.addEventListener('click', function () {
+        document.querySelectorAll('[data-bs-toggle="modal"]').forEach(function(element) {
+            element.addEventListener('click', function() {
                 var imgSrc = element.getAttribute('data-bs-picture');
                 var modalImg = document.getElementById('modalImage');
                 modalImg.setAttribute('src', imgSrc);
