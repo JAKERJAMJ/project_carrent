@@ -56,7 +56,7 @@ body {
 .container-total .card .card-header {
     font-size: 18px;
     font-weight: bold;
-    color: #fff;
+    color: #555;
 }
 
 .container-total .card .card-body {
@@ -73,7 +73,7 @@ body {
     padding: 20px;
 }
 
-.report-carrent .search-date {
+.report-fix .search-date {
     display: flex;
     position: relative;
     flex-direction: column;
@@ -86,15 +86,16 @@ body {
 .search-date .search-box {
     padding: 10px;
     width: 100%;
+    display: flex;
     flex-direction: row;
     align-items: center;
-    text-align: center;
     justify-content: center;
 }
 
 .search-date .btn-search {
     padding: 10px;
     width: 100%;
+    text-align: center;
 }
 
 .option-btn {
@@ -104,22 +105,23 @@ body {
 
 .option-btn .btn {
     margin: 5px;
+    background-color: #6c757d;
     border: none;
     transition: background-color 0.3s ease;
 }
 
 .option-btn .btn:hover {
-    opacity: 0.8;
+    background-color: #5a6268;
 }
 
-.report-carrent {
+.report-fix {
     display: block;
     position: relative;
     padding: 15px;
     flex-direction: column;
 }
 
-.report-carrent .carrent-title {
+.report-fix .fix-title {
     padding: 20px;
     font-size: 30px;
     text-align: center;
@@ -130,7 +132,7 @@ body {
     box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.1);
 }
 
-.report-carrent .income-container {
+.report-fix .income-container {
     display: flex;
     position: relative;
     padding: 15px;
@@ -166,34 +168,34 @@ body {
     font-weight: bold;
 }
 
-.table-view-carrent {
+.table-view-fix {
     width: 100%;
     overflow-x: auto;
 }
 
-.table-view-carrent table {
+.table-view-fix table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
 
-.table-view-carrent table th, .table-view-carrent table td {
+.table-view-fix table th, .table-view-fix table td {
     padding: 12px 15px;
     text-align: left;
     border: 1px solid #ddd;
 }
 
-.table-view-carrent table th {
+.table-view-fix table th {
     background-color: #f8f9fa;
     color: #333;
     font-weight: bold;
 }
 
-.table-view-carrent table tr:nth-child(even) {
+.table-view-fix table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-.table-view-carrent table tr:hover {
+.table-view-fix table tr:hover {
     background-color: #f1f1f1;
 }
 
@@ -218,18 +220,38 @@ body {
     }
 }
 
-.option-btn .btn-primary {
+.option-btn .btn-report-carrent {
     background-color: #007bff;
+    border: none;
 }
 
-.option-btn .btn-success {
+.option-btn .btn-report-carrent:hover {
+    background-color: #0056b3;
+}
+
+.option-btn .btn-report-package {
     background-color: #28a745;
+    border: none;
 }
 
-.option-btn .btn-warning {
+.option-btn .btn-report-package:hover {
+    background-color: #218838;
+}
+
+.option-btn .btn-report-fix {
     background-color: #ffc107;
+    border: none;
 }
 
-.option-btn .btn-danger {
+.option-btn .btn-report-fix:hover {
+    background-color: #e0a800;
+}
+
+.option-btn .btn-report-revenue {
     background-color: #dc3545;
+    border: none;
+}
+
+.option-btn .btn-report-revenue:hover {
+    background-color: #c82333;
 }
