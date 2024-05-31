@@ -49,6 +49,12 @@ if (!isset($_SESSION['admin'])) {
             $sql = "SELECT * FROM driver ORDER BY driver_id";
             $result = mysqli_query($con, $sql);
             while ($row = mysqli_fetch_array($result)) {
+                $driver_status = $row['driver_status'];
+                if ($driver_status === 'ใช้งาน') {
+                    $status_color = 'green'; // หากสถานะเป็น 'ใช้งาน' ให้เป็นสีเขียว
+                } elseif ($driver_status === 'ยกเลิกการใช้งาน') {
+                    $status_color = 'red'; // หากสถานะเป็น 'ยกเลิกการใช้งาน' ให้เป็นสีแดง
+                }
             ?>
                 <div class="col-md-3 mb-4">
                     <div class="card">
@@ -58,6 +64,7 @@ if (!isset($_SESSION['admin'])) {
                             <p class="card-text">
                                 ID : <?= $row['driver_id'] ?><br>
                                 เบอร์โทรศัพท์ : <?= $row['driver_phone'] ?><br>
+                                สถานะ : <span style="color: <?= $status_color; ?>;"><?= $driver_status ?></span>
                             </p>
                             <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#driverDetailModal" onclick="showDriverDetail(<?= $row['driver_id'] ?>)">รายละเอียด</button>
                             <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteDriverModal" onclick="setDriverToDelete(<?= $row['driver_id'] ?>)">ยกเลิกการใช้งาน</button>

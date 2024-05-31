@@ -52,6 +52,12 @@ if (!isset($_SESSION['admin'])) {
             $sql = "SELECT * FROM package ORDER BY package_id";
             $result = mysqli_query($con, $sql);
             while ($row = mysqli_fetch_array($result)) {
+                $package_status = $row['package_status'];
+                if ($package_status === 'ใช้งาน') {
+                    $status_color = 'green'; // หากสถานะเป็น 'ใช้งาน' ให้เป็นสีเขียว
+                } elseif ($package_status === 'ยกเลิกการใช้งาน') {
+                    $status_color = 'red'; // หากสถานะเป็น 'ยกเลิกการใช้งาน' ให้เป็นสีแดง
+                }
             ?>
                 <div class="col-md-3 mb-4">
                     <div class="card">
@@ -61,9 +67,10 @@ if (!isset($_SESSION['admin'])) {
                             <p class="card-text">
                                 ID: <?= $row['package_id'] ?><br>
                                 ราคาของแพ็คเกจ: <?= $row['package_price'] ?><br>
+                                สถานะ : <span style="color: <?= $status_color; ?>;"><?= $package_status ?></span>
                             </p>
                             <div class="btn-group">
-                                <a href="packet_detail.php?id=<?= $row['package_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
+                                <a href="package_detail.php?id=<?= $row['package_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
                                 <button type="button" class="btn btn-outline-danger" onclick="deletePackage(<?= $row['package_id'] ?>)">ลบข้อมูล</button>
                             </div>
                         </div>
@@ -80,7 +87,7 @@ if (!isset($_SESSION['admin'])) {
             เพิ่มข้อมูลแพ็คเกจท่องเที่ยว
         </div>
         <div class="package-body">
-            <form action="packet_management.php" method="post" enctype="multipart/form-data">
+            <form action="package_management.php" method="post" enctype="multipart/form-data">
                 <div class="box">
                     <label for="package_name">ชื่อแพ็คเกจท่องเที่ยว</label><br>
                     <input class="form-control" type="text" id="package_name" name="package_name" placeholder="-- ชื่อแพ็คเกจท่องเที่ยว --">

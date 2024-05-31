@@ -49,16 +49,25 @@ if (!isset($_SESSION['admin'])) {
             <?php
             $sql = "SELECT * FROM car ORDER BY car_id";
             $result = mysqli_query($con, $sql);
+
+
             while ($row = mysqli_fetch_array($result)) {
+                $car_status = $row['car_status'];
+                if ($car_status === 'ใช้งาน') {
+                    $status_color = 'green'; // หากสถานะเป็น 'ใช้งาน' ให้เป็นสีเขียว
+                } elseif ($car_status === 'ยกเลิกการใช้งาน') {
+                    $status_color = 'red'; // หากสถานะเป็น 'ยกเลิกการใช้งาน' ให้เป็นสีแดง
+                }
             ?>
                 <div class="col-md-3 mb-4">
                     <div class="card">
-                        <img src="<?= $row['car_picture1'] ?>" class="card-img-top" alt="Car Image" style="width: 100%; height: 250px; object-fit: cover;">
+                        <img src="<?= $row['main_picture'] ?>" class="card-img-top" alt="Car Image" style="width: 100%; height: 250px; object-fit: cover;">
                         <div class="card-body">
                             <h5 class="card-title text-success"><?= $row['car_name'] ?></h5>
                             <p class="card-text">
                                 ยี่ห้อรถ : <?= $row['car_brand'] ?><br>
-                                ราคา : <?= $row['car_price']?> บาท
+                                ราคา : <?= $row['car_price'] ?> บาท<br>
+                                สถานะ : <span style="color: <?= $status_color; ?>;"><?= $car_status ?></span>
                             </p>
                             <a href="car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
                             <button type="button" class="btn btn-outline-danger" onclick="deleteCar(<?= $row['car_id'] ?>)">ยกเลิกการใช้งาน</button>
@@ -100,8 +109,8 @@ if (!isset($_SESSION['admin'])) {
                 <textarea name="car_detail" class="detailbox" placeholder="-- กรุณากรอกรายละเอียด --"></textarea>
             </div>
             <div class="box">
-                <label for="car_picture1">รูปภาพ</label><br>
-                <input type="file" name="car_picture1" accept="img/" id="car_picture1" onchange="previewImage()">
+                <label for="main_picture">รูปภาพ</label><br>
+                <input type="file" name="main_picture" accept="img/" id="main_picture" onchange="previewImage()">
                 <div class="preview-img">
                     <img src="" id="image-preview" class="image-preview" alt="รูปภาพตัวอย่าง" style="display:none;">
                 </div>
@@ -130,15 +139,15 @@ if (!isset($_SESSION['admin'])) {
         }
 
         // ประมวลผลและย้ายไฟล์ทั้งหมด
-        $car_picture1 = $target_dir . createNewFileName($_FILES["car_picture1"]["name"]);
-        move_uploaded_file($_FILES["car_picture1"]["tmp_name"], $car_picture1);
+        $main_picture = $target_dir . createNewFileName($_FILES["main_picture"]["name"]);
+        move_uploaded_file($_FILES["main_picture"]["tmp_name"], $main_picture);
 
         // SQL Query
         $sql = "INSERT INTO car (car_name, car_brand, 
                 car_numplate, car_vin, car_price, car_detail, 
-                car_picture1) 
+                main_picture, car_pic1, car_pic2, car_pic3, car_status) 
                 VALUES ('$car_name', '$car_brand', '$car_numplate', 
-                '$car_vin', '$car_price', '$car_detail', '$car_picture1')";
+                '$car_vin', '$car_price', '$car_detail', '$main_picture', '', '', '', 'ใช้งาน')";
 
         // Execute SQL Query
         if ($con->query($sql) === TRUE) {

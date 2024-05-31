@@ -90,7 +90,7 @@ if (isset($_GET['car_id']) && isset($_GET['start_date']) && isset($_GET['end_dat
     <a href="check_carrent.php" class="btn btn-outline-dark btn-back">กลับ</a>
     <div class="head-booking">
         <div class="car-name"><?= htmlspecialchars($car['car_name']) ?></div>
-        <img src="<?= htmlspecialchars($car['car_picture1']) ?>" alt="รูปภาพรถ">
+        <img src="<?= htmlspecialchars($car['main_picture']) ?>" alt="รูปภาพรถ">
     </div>
     <div class="booking-body">
         <form action="" method="post">
@@ -154,8 +154,8 @@ if (isset($_GET['car_id']) && isset($_GET['start_date']) && isset($_GET['end_dat
         $returnTime = $_POST['ReturnTime'];
         $rentalPrice = $_POST['RentalPrice'];
 
-        $sql = "INSERT INTO carrent (car_id, MemberID, type_rent, type_carrent, package_id, driver_status, driver_id, carrent_date, carrent_time, carrent_return, return_time, carrent_price, carrent_status_id) 
-            VALUES ('$carID', '$memberID', 'เช่ารถหน้าร้าน', 'เช่ารถส่วนตัว','0', 'ไม่ต้องการคนขับ', '0', '$rentalDate', '$rentalTime', '$returnDate', '$returnTime', '$rentalPrice', '1')";
+        $sql = "INSERT INTO carrent (car_id, MemberID, type_rent, type_carrent, package_id, driver_status, driver_id, carrent_date, carrent_time, carrent_return, return_time, carrent_price, carrent_status) 
+            VALUES ('$carID', '$memberID', 'เช่ารถหน้าร้าน', 'เช่ารถส่วนตัว','0', 'ไม่ต้องการคนขับ', '0', '$rentalDate', '$rentalTime', '$returnDate', '$returnTime', '$rentalPrice', 'กำลังดำเนินการเช่า')";
         if (mysqli_query($con, $sql)) {
             echo "<script>
                 document.addEventListener('DOMContentLoaded', function() {

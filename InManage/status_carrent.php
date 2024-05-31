@@ -22,16 +22,14 @@ $car = mysqli_fetch_assoc($result_car);
 $car_price_per_day = $car['car_price'];
 
 $sql_MemberCarrent = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.driver_status, carrent.driver_id, carrent.carrent_date, carrent.carrent_time, 
-                        carrent.carrent_return, carrent.return_time, carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
+                        carrent.carrent_return, carrent.return_time, carrent.carrent_price, carrent.carrent_status, carrent.carrent_timestamp,
                         member.Membername, member.Memberlastname,
                         car.car_name, car.car_price,
                         driver.driver_name, 
-                        carrent_status.status_name
                         FROM carrent
                         LEFT JOIN driver ON carrent.driver_id = driver.driver_id
                         LEFT JOIN member ON carrent.MemberID = member.MemberID
                         LEFT JOIN car ON carrent.car_id = car.car_id
-                        LEFT JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
                         WHERE carrent.carrent_id = $id";
 $result_MemberCarrent = mysqli_query($con, $sql_MemberCarrent);
 $Member = mysqli_fetch_assoc($result_MemberCarrent);
@@ -60,7 +58,7 @@ while ($row_status = mysqli_fetch_assoc($result_statuses)) {
 }
 
 // ตรวจสอบว่าขณะนี้สถานะเป็น 1 หรือไม่
-$is_status_1 = ($row['carrent_status_id'] == 1);
+$is_status_1 = ($row['carrent_status'] == 'กำลังดำเนินการเช่า');
 
 // กำหนดค่าจ้างรายวันของคนขับรถ
 $driver_daily_wage = 300; // กำหนดเป็นค่าจ้างรายวันของคนขับรถ
@@ -81,9 +79,9 @@ $show_success_alert = false;
 
 if (isset($_POST['confirmReceiveCar'])) {
     $id = $_POST['id'];
-    $new_status_id = 3;
+    $new_status = "กำลังใช้งาน";
 
-    $update_sql = "UPDATE carrent SET carrent_status_id = '$new_status_id' WHERE carrent_id = '$id'";
+    $update_sql = "UPDATE carrent SET carrent_status = '$new_status' WHERE carrent_id = '$id'";
 
     if (mysqli_query($con, $update_sql)) {
         $show_success_alert = true;
@@ -271,8 +269,8 @@ $return_time = getTimeFromEnum($return_time_enum);
                 <div class="box-status" id="statusBox">
                     <?php
                     $statusClass = '';
-                    $statusName = $Member['status_name'];
-                    if ($statusName == 'กำลังดำเนินการ') {
+                    $statusName = $Member['carrent_status'];
+                    if ($statusName == 'กำลังดำเนินการเช่า') {
                         $statusClass = 'status-processing';
                     } elseif ($statusName == 'ดำเนินการเช่าเสร็จสิ้น') {
                         $statusClass = 'status-completed';
@@ -354,7 +352,7 @@ $return_time = getTimeFromEnum($return_time_enum);
         $type_rent = $row['type_rent'];
 
         // อัปเดตบันทึกการเช่า
-        $update_sql = "UPDATE carrent SET driver_status='$driver_status', driver_id='$driver_id', carrent_status_id='2' WHERE carrent_id=$id";
+        $update_sql = "UPDATE carrent SET driver_status='$driver_status', driver_id='$driver_id', carrent_status='ดำเนินการเช่าเสร็จสิ้น' WHERE carrent_id=$id";
         if (mysqli_query($con, $update_sql)) {
             // เพิ่มข้อมูลลงในตาราง payment ถ้า type_rent เป็น 'เช่ารถหน้าร้าน'
             if ($type_rent == 'เช่ารถหน้าร้าน') {
@@ -377,9 +375,9 @@ $return_time = getTimeFromEnum($return_time_enum);
     // เปลี่ยนสถานะการเช่ารถ
     if (isset($_POST['confirmReceiveCar'])) {
         $id = $_POST['id'];
-        $new_status_id = 3;
+        $new_status_id = "กำลังใช้งาน";
 
-        $update_sql = "UPDATE carrent SET carrent_status_id = '$new_status_id' WHERE carrent_id = '$id'";
+        $update_sql = "UPDATE carrent SET carrent_status = '$new_status_id' WHERE carrent_id = '$id'";
 
         if (mysqli_query($con, $update_sql)) {
             echo "<script>document.getElementById('successAlert').style.display = 'block'; setTimeout(function(){ window.location.href = window.location.href; }, 4000);</script>";

@@ -13,11 +13,6 @@ $car_id = $_GET['id'];
 $sql = "SELECT * FROM car WHERE car_id = '$car_id'";
 $result = mysqli_query($con, $sql);
 $car = mysqli_fetch_assoc($result);
-
-$picture_sql = "SELECT * FROM car_picture WHERE car_id = '$car_id'";
-$picture_result = mysqli_query($con, $picture_sql);
-$pictures = mysqli_fetch_assoc($picture_result);
-
 // Fetch rental details
 $carrent_sql = "SELECT * FROM carrent WHERE car_id = '$car_id'";
 $carrent_result = mysqli_query($con, $carrent_sql);
@@ -74,15 +69,15 @@ if (isset($_POST['update'])) {
     $car_price = $_POST['car_price'];
     $car_detail = $_POST['car_detail'];
 
-    $car_picture1 = $car['car_picture1'];
+    $car_picture1 = $car['main_picture'];
 
-    if ($_FILES['car_picture1']['name']) {
+    if ($_FILES['main_picture']['name']) {
         $target_dir = "../img/car/";
-        $car_picture1 = $target_dir . createNewFileName($_FILES["car_picture1"]["name"]);
-        move_uploaded_file($_FILES["car_picture1"]["tmp_name"], $car_picture1);
+        $main_picture = $target_dir . createNewFileName($_FILES["main_picture"]["name"]);
+        move_uploaded_file($_FILES["main_picture"]["tmp_name"], $main_picture);
     }
 
-    $update_sql = "UPDATE car SET car_name='$car_name', car_brand='$car_brand', car_numplate='$car_numplate', car_vin='$car_vin', car_price='$car_price', car_detail='$car_detail', car_picture1='$car_picture1' WHERE car_id='$car_id'";
+    $update_sql = "UPDATE car SET car_name='$car_name', car_brand='$car_brand', car_numplate='$car_numplate', car_vin='$car_vin', car_price='$car_price', car_detail='$car_detail', main_picture='$main_picture' WHERE car_id='$car_id'";
 
     if (mysqli_query($con, $update_sql)) {
         echo "<script>alert('อัพเดตข้อมูลสำเร็จ'); window.location.href='car_detail.php?id=$car_id';</script>";
@@ -94,18 +89,18 @@ if (isset($_POST['update'])) {
 if (isset($_POST['add_pictures'])) {
     $target_dir = "../img/car/";
 
-    $picture1 = $target_dir . createNewFileName($_FILES["picture1"]["name"]);
-    $picture2 = $target_dir . createNewFileName($_FILES["picture2"]["name"]);
-    $picture3 = $target_dir . createNewFileName($_FILES["picture3"]["name"]);
+    $car_pic1 = $target_dir . createNewFileName($_FILES["car_pic1"]["name"]);
+    $car_pic2 = $target_dir . createNewFileName($_FILES["car_pic2"]["name"]);
+    $car_pic3 = $target_dir . createNewFileName($_FILES["car_pic3"]["name"]);
 
-    move_uploaded_file($_FILES["picture1"]["tmp_name"], $picture1);
-    move_uploaded_file($_FILES["picture2"]["tmp_name"], $picture2);
-    move_uploaded_file($_FILES["picture3"]["tmp_name"], $picture3);
+    move_uploaded_file($_FILES["car_pic1"]["tmp_name"], $car_pic1);
+    move_uploaded_file($_FILES["car_pic2"]["tmp_name"], $car_pic2);
+    move_uploaded_file($_FILES["car_pic3"]["tmp_name"], $car_pic3);
 
     if ($pictures) {
-        $picture_update_sql = "UPDATE car_picture SET picture1='$picture1', picture2='$picture2', picture3='$picture3' WHERE car_id='$car_id'";
+        $picture_update_sql = "UPDATE car SET car_pic1='$car_pic1', car_pic2='$car_pic2', car_pic3='$car_pic3' WHERE car_id='$car_id'";
     } else {
-        $picture_update_sql = "INSERT INTO car_picture (car_id, picture1, picture2, picture3) VALUES ('$car_id', '$picture1', '$picture2', '$picture3')";
+        $picture_update_sql = "UPDATE car SET car_pic1='$car_pic1', car_pic2='$car_pic2', car_pic3='$car_pic3' WHERE car_id='$car_id'";
     }
 
     if (mysqli_query($con, $picture_update_sql)) {
@@ -161,6 +156,7 @@ mysqli_close($con);
 </head>
 
 <body>
+
     <header>
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid d-flex justify-content-between">
@@ -178,6 +174,7 @@ mysqli_close($con);
             </div>
         </nav>
     </header>
+
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <a href="car_management.php" class="btn btn-outline-dark">กลับ</a>
@@ -191,7 +188,7 @@ mysqli_close($con);
                 รายละเอียดรถ
             </div>
             <div class="img-container mb-3">
-                <img src="<?= $car['car_picture1'] ?>" alt="Car Image" class="img-fluid" style="width: 30%;">
+                <img src="<?= $car['main_picture'] ?>" alt="Car Image" class="img-fluid" style="width: 30%;">
             </div>
         </div>
         <table class="table table-bordered">
@@ -301,25 +298,23 @@ mysqli_close($con);
     </div>
 
     <div class="picture-detail">
-        <?php if ($pictures) : ?>
             <div class="row mt-5">
                 <div class="col-md-4">
                     <div class="img-container mb-3">
-                        <img src="<?= $pictures['picture1'] ?>" alt="Additional Picture 1" class="img-fluid" data-bs-toggle="modal" data-bs-target="#pictureModal" data-bs-picture="<?= $pictures['picture1'] ?>">
+                        <img src="<?= $car['car_pic1'] ?>" alt="Additional Picture 1" class="img-fluid" data-bs-toggle="modal" data-bs-target="#pictureModal" data-bs-picture="<?= $car['car_pic1'] ?>">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="img-container mb-3">
-                        <img src="<?= $pictures['picture2'] ?>" alt="Additional Picture 2" class="img-fluid" data-bs-toggle="modal" data-bs-target="#pictureModal" data-bs-picture="<?= $pictures['picture2'] ?>">
+                        <img src="<?= $car['car_pic2'] ?>" alt="Additional Picture 2" class="img-fluid" data-bs-toggle="modal" data-bs-target="#pictureModal" data-bs-picture="<?= $car['car_pic2'] ?>">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="img-container mb-3">
-                        <img src="<?= $pictures['picture3'] ?>" alt="Additional Picture 3" class="img-fluid" data-bs-toggle="modal" data-bs-target="#pictureModal" data-bs-picture="<?= $pictures['picture3'] ?>">
+                        <img src="<?= $car['car_pic3'] ?>" alt="Additional Picture 3" class="img-fluid" data-bs-toggle="modal" data-bs-target="#pictureModal" data-bs-picture="<?= $car['car_pic3'] ?>">
                     </div>
                 </div>
             </div>
-        <?php endif; ?>
     </div>
 
     <!-- Update Modal -->
@@ -357,8 +352,8 @@ mysqli_close($con);
                             <textarea class="form-control" id="car_detail" name="car_detail" rows="3"><?= $car['car_detail'] ?></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="car_picture1" class="form-label">รูปภาพ</label>
-                            <input type="file" class="form-control" id="car_picture1" name="car_picture1" accept="image/*">
+                            <label for="main_picture" class="form-label">รูปภาพ</label>
+                            <input type="file" class="form-control" id="main_picture" name="main_picture" accept="image/*">
                         </div>
                         <button type="submit" name="update" class="btn btn-primary">อัพเดต</button>
                     </form>
@@ -378,16 +373,16 @@ mysqli_close($con);
                 <div class="modal-body">
                     <form id="addPicturesForm" method="POST" action="car_detail.php?id=<?= $car_id ?>" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label for="picture1" class="form-label">รูปภาพเพิ่มเติม 1</label>
-                            <input type="file" class="form-control" id="picture1" name="picture1" accept="image/*" required>
+                            <label for="car_pic1" class="form-label">รูปภาพเพิ่มเติม 1</label>
+                            <input type="file" class="form-control" id="car_pic1" name="car_pic1" accept="image/*" required>
                         </div>
                         <div class="mb-3">
-                            <label for="picture2" class="form-label">รูปภาพเพิ่มเติม 2</label>
-                            <input type="file" class="form-control" id="picture2" name="picture2" accept="image/*" required>
+                            <label for="car_pic2" class="form-label">รูปภาพเพิ่มเติม 2</label>
+                            <input type="file" class="form-control" id="car_pic2" name="car_pic2" accept="image/*" required>
                         </div>
                         <div class="mb-3">
-                            <label for="picture3" class="form-label">รูปภาพเพิ่มเติม 3</label>
-                            <input type="file" class="form-control" id="picture3" name="picture3" accept="image/*" required>
+                            <label for="car_pic3" class="form-label">รูปภาพเพิ่มเติม 3</label>
+                            <input type="file" class="form-control" id="car_pic3" name="car_pic3" accept="image/*" required>
                         </div>
                         <button type="submit" name="add_pictures" class="btn btn-success">เพิ่มรูปภาพ</button>
                     </form>

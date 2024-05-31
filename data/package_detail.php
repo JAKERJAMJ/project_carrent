@@ -23,7 +23,7 @@ if (isset($_POST['update'])) {
     $update_sql = "UPDATE package SET package_name='$package_name', package_price='$package_price', package_date='$package_date', package_detail='$package_detail', package_hotel='$package_hotel' WHERE package_id='$package_id'";
 
     if (mysqli_query($con, $update_sql)) {
-        echo "<script>alert('อัพเดตข้อมูลสำเร็จ'); window.location.href='packet_detail.php?id=$package_id';</script>";
+        echo "<script>alert('อัพเดตข้อมูลสำเร็จ'); window.location.href='package_detail.php?id=$package_id';</script>";
     } else {
         echo "Error: " . $update_sql . "<br>" . mysqli_error($con);
     }
@@ -45,7 +45,7 @@ if (isset($_POST['add_tourist'])) {
         $add_sql = "INSERT INTO tourist (package_id, tourist_name, tourist_picture, tourist_detail, tourist_link) VALUES ('$package_id', '$tourist_name', '$new_file_name', '$tourist_detail', '$tourist_link')";
 
         if (mysqli_query($con, $add_sql)) {
-            echo "<script>alert('เพิ่มข้อมูลสำเร็จ'); window.location.href='packet_detail.php?id=$package_id';</script>";
+            echo "<script>alert('เพิ่มข้อมูลสำเร็จ'); window.location.href='package_detail.php?id=$package_id';</script>";
         } else {
             echo "Error: " . $add_sql . "<br>" . mysqli_error($con);
         }
@@ -92,7 +92,7 @@ mysqli_close($con);
     </header>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <a href="packet_management.php" class="btn btn-outline-dark">กลับ</a>
+            <a href="package_management.php" class="btn btn-outline-dark">กลับ</a>
             <div>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">อัพเดต</button>
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addTouristModal">เพิ่ม</button>

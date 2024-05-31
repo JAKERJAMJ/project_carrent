@@ -46,7 +46,7 @@ if (!isset($_SESSION['admin'])) {
             <a href="car_management.php"><button class="btn-carrent">จัดการรถ</button></a>
         </div>
         <div class="button-packet">
-            <a href="packet_management.php"><button class="btn-packet">จัดการแพ็คเกจท่องเที่ยว</button>
+            <a href="package_management.php"><button class="btn-packet">จัดการแพ็คเกจท่องเที่ยว</button>
         </div>
         <div class="button-driver">
             <a href="driver_manage.php"><button class="btn-driver">จัดการคนขับ</button>

@@ -35,7 +35,7 @@ function deleteCar(carId) {
 
 function previewImage() {
     var preview = document.getElementById('image-preview');
-    var fileInput = document.getElementById('car_picture1');
+    var fileInput = document.getElementById('main_picture');
     
     if (fileInput.files && fileInput.files[0]) {
         var reader = new FileReader();
