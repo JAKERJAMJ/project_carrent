@@ -99,7 +99,7 @@ $returnTimes = explode(",", $enumList);
     <a href="check_availability.php?package_id=<?= htmlspecialchars($packageId) ?>" class="btn btn-outline-dark btn-back">กลับ</a>
     <div class="booking-out-header">
         <div class="booking-out-car-name"><?= htmlspecialchars($car['car_name']) ?></div>
-        <img src="<?= str_replace("../img/", "./img/", $car['car_picture1']) ?>" alt="รูปภาพรถ" class="booking-out-car-image">
+        <img src="<?= str_replace("../img/", "./img/", $car['main_picture']) ?>" alt="รูปภาพรถ" class="booking-out-car-image">
     </div>
     <div class="booking-out-body">
         <form id="rentalForm" action="" method="post" onsubmit="return validateForm()">
@@ -194,8 +194,8 @@ $returnTimes = explode(",", $enumList);
         $rentalPrice = $_POST['RentalPrice'];
 
         // Insert data into carrent table
-        $sql = "INSERT INTO carrent (car_id, MemberID, type_rent, type_carrent, package_id, driver_status, driver_id, carrent_date, carrent_time, carrent_return, return_time, carrent_price, carrent_status_id)
-                VALUES ('$carID', '$memberID', 'เช่ารถแบบออนไลน์', 'เช่ารถพร้อมแพ็คเกจ', '$packageID', '$driverStatus', '$driverID', '$rentalDate', '$rentalTime', '$returnDate', '$returnTime', '$rentalPrice', '1')";
+        $sql = "INSERT INTO carrent (car_id, MemberID, type_rent, type_carrent, package_id, driver_status, driver_id, carrent_date, carrent_time, carrent_return, return_time, carrent_price, carrent_status)
+                VALUES ('$carID', '$memberID', 'เช่ารถแบบออนไลน์', 'เช่ารถพร้อมแพ็คเกจ', '$packageID', '$driverStatus', '$driverID', '$rentalDate', '$rentalTime', '$returnDate', '$returnTime', '$rentalPrice', 'กำลังดำเนินการเช่า')";
 
         if (mysqli_query($con, $sql)) {
             $rentID = mysqli_insert_id($con);

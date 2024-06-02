@@ -25,7 +25,7 @@ $sql_MemberCarrent = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberI
                         carrent.carrent_return, carrent.return_time, carrent.carrent_price, carrent.carrent_status, carrent.carrent_timestamp,
                         member.Membername, member.Memberlastname,
                         car.car_name, car.car_price,
-                        driver.driver_name, 
+                        driver.driver_name
                         FROM carrent
                         LEFT JOIN driver ON carrent.driver_id = driver.driver_id
                         LEFT JOIN member ON carrent.MemberID = member.MemberID
@@ -227,8 +227,10 @@ $return_time = getTimeFromEnum($return_time_enum);
                         <input type="hidden" id="rental_days" value="<?= $rental_days; ?>">
                         <input type="hidden" id="total_driver_cost" value="<?= $total_driver_cost; ?>">
                         <div class="center-button">
-                            <button type="submit" class="btn btn-primary mt-3" name="qrgen" id="qrgen" disabled>QRcode</button>
-                            <button type="submit" class="btn btn-info" name="confirm" id="confirm" <?= $is_status_1 ? '' : 'disabled'; ?>>ยืนยัน</button>
+                            <?php if ($is_status_1) : ?>
+                                <button type="submit" class="btn btn-primary mt-3" name="qrgen" id="qrgen" disabled>QRcode</button>
+                                <button type="submit" class="btn btn-info" name="confirm" id="confirm">ยืนยัน</button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </form>
@@ -557,7 +559,7 @@ $return_time = getTimeFromEnum($return_time_enum);
         $return_time = htmlspecialchars($_POST['return_time']); // เวลาที่ต้องคืนรถ
         $return_status = htmlspecialchars($_POST['return_status']);
         $car_price_per_day = $car['car_price']; // สมมติว่าราคาเช่าต่อวันคือ 500 บาท
-        $new_status_id = 4;
+        $new_status_id = "ใช้งานเสร็จสิ้น";
 
         if ($return_status == 'คืนรถตรงเวลา') {
             $return_price = 0; // ถ้าคืนตรงเวลา ไม่คิดค่าใช้จ่าย
@@ -573,7 +575,7 @@ $return_time = getTimeFromEnum($return_time_enum);
 
         if (mysqli_query($con, $sql)) {
             // อัปเดตสถานะการเช่าในตาราง carrent
-            $update_sql = "UPDATE carrent SET carrent_status_id = '$new_status_id' WHERE carrent_id = '$carrent_id'";
+            $update_sql = "UPDATE carrent SET carrent_status = '$new_status_id' WHERE carrent_id = '$carrent_id'";
             if (mysqli_query($con, $update_sql)) {
                 $result = mysqli_query($con, "SELECT * FROM return_carrent WHERE carrent_id = '$carrent_id'");
                 $row = mysqli_fetch_assoc($result);

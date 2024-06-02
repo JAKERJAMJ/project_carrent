@@ -11,7 +11,6 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="./styles/style.css">
     <link rel="stylesheet" href="./styles/register.css">
-    <script></script>
 </head>
 
 <body>
@@ -22,7 +21,7 @@ session_start();
         <img src="./img/register-bg.jpg" alt="" class="reg-bg">
     </div>
     <div class="register-container" id="RegisterContainer">
-        <div class="register-title"> สมัครสมาชิก </div>
+        <div class="register-title">สมัครสมาชิก</div>
         <div class="register-body">
             <form action="register.php" method="POST">
                 <div class="mb-3">
@@ -48,7 +47,7 @@ session_start();
                     <input type="text" class="form-control" id="Memberlastname" name="Memberlastname">
                 </div>
                 <div class="mb-3">
-                    <label for="Memberpassport" class="form-label">เลขบัตรประชาชน / Passport .</label>
+                    <label for="Memberpassport" class="form-label">เลขบัตรประชาชน / Passport</label>
                     <input type="text" class="form-control" id="Memberpassport" name="Memberpassport">
                 </div>
                 <div class="mb-3">
@@ -66,43 +65,45 @@ session_start();
 
     <!-- php ในการสมัครสมาชิก -->
     <?php
-require 'conDB.php';
+    require 'conDB.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST["Memberemail"];
-    $password = $_POST["Memberpassword"];
-    $name = $_POST["Membername"];
-    $lastname = $_POST["Memberlastname"];
-    $passport = $_POST["Memberpassport"];
-    $address = $_POST["Memberaddress"];
-    $phone = $_POST["Memberphone"];
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $email = $_POST["Memberemail"];
+        $password = $_POST["Memberpassword"];
+        $name = $_POST["Membername"];
+        $lastname = $_POST["Memberlastname"];
+        $passport = $_POST["Memberpassport"];
+        $address = $_POST["Memberaddress"];
+        $phone = $_POST["Memberphone"];
 
-    $defaultPic = '../img/default.webp';
+        $defaultPic = '../img/default.webp';
 
-    $sql = "INSERT INTO member (MemberID, Membername, Memberlastname, Memberaddress, Memberphone, Memberpassport, Memberpassword, Memberemail, Memberpic) 
-    VALUES (NULL, '$name', '$lastname', '$address', '$phone', '$passport', '$password', '$email', '$defaultPic')";
+        $sql = "INSERT INTO member (MemberID, Membername, Memberlastname, Memberaddress, Memberphone, Memberpassport, Memberpassword, Memberemail, Memberpic) 
+        VALUES (NULL, '$name', '$lastname', '$address', '$phone', '$passport', '$password', '$email', '$defaultPic')";
 
-    if ($con->query($sql) === TRUE) {
-        // แสดง popup สมัครสมาชิกสำเร็จ
-        echo '<script>
-            document.addEventListener("DOMContentLoaded", function() {
-                document.getElementById("RegisterContainer").style.display = "none";
-                document.getElementById("popup").style.display = "block";
-                document.querySelector("nav").style.display = "none";
-            });
-        </script>';
-    } else {
-        echo "Error: " . $sql . "<br>" . $con->error;
+        if ($con->query($sql) === TRUE) {
+            // แสดง popup สมัครสมาชิกสำเร็จ
+            echo '<script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    document.getElementById("RegisterContainer").style.display = "none";
+                    document.getElementById("popup").style.display = "block";
+                    document.querySelector("nav").style.display = "none";
+                });
+            </script>';
+        } else {
+            echo "Error: " . $sql . "<br>" . $con->error;
+        }
+
+        $con->close();
     }
+    ?>
 
-    $con->close();
-}
-?>
-
-    <div class="register-done" id="popup">
+    <div class="register-done" id="popup" style="display: none;">
         <div class="done-title">สมัครสมาชิกสำเร็จ</div>
         <img src="./img/success.png" alt="" class="img-success">
-        <a href="login.php"><div class="to-signin">ไปที่หน้าเข้าสู่ระบบ</div></a>
+        <a href="login.php">
+            <div class="to-signin">ไปที่หน้าเข้าสู่ระบบ</div>
+        </a>
     </div>
 
     <script src="./script/register.js"></script>

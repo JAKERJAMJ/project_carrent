@@ -80,21 +80,19 @@ if (!isset($_SESSION['admin'])) {
                 $start = ($page - 1) * $limit;
 
                 // Add conditions for start date and carrent status
-                $whereClause = "WHERE carrent_status.carrent_status_id = 4"; // Only show status = 4
+                $whereClause = "WHERE carrent.carrent_status = 'ใช้งานเสร็จสิ้น'"; // Only show status = 4
                 if (!empty($_GET['start_date'])) {
                     $startDate = $_GET['start_date'];
                     $whereClause .= " AND carrent.carrent_date = '$startDate'";
                 }
 
                 $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.carrent_date, carrent.carrent_time, carrent.carrent_return, carrent.return_time,
-                        carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
+                        carrent.carrent_price, carrent.carrent_status, carrent.carrent_timestamp,
                         member.Membername, member.Memberlastname,
-                        car.car_name, car.car_price,
-                        carrent_status.status_name
+                        car.car_name, car.car_price
                         FROM carrent
                         LEFT JOIN member ON carrent.MemberID = member.MemberID
                         LEFT JOIN car ON carrent.car_id = car.car_id
-                        LEFT JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
                         $whereClause
                         ORDER BY carrent.carrent_timestamp DESC
                         LIMIT $start, $limit";
@@ -125,7 +123,7 @@ if (!isset($_SESSION['admin'])) {
                     echo "<td>" . date('d/m/Y', strtotime($row['carrent_return'])) . "</td>";
                     echo "<td>" . $row['return_time'] . "</td>";
                     echo "<td>" . $row['carrent_price'] . "</td>";
-                    echo "<td><a href='status_carrent.php?id=" . $row['carrent_id'] . "' class='btn " . $status_class . " btn-sm'>" . $row['status_name'] . "</a></td>";
+                    echo "<td><a href='status_carrent.php?id=" . $row['carrent_id'] . "' class='btn " . $status_class . " btn-sm'>" . $row['carrent_status'] . "</a></td>";
                     echo "</tr>";
 
                     $counter++;

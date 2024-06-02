@@ -62,7 +62,7 @@ $stmt->close();
     <a href="check.php" class="btn btn-outline-dark btn-back">กลับ</a>
     <div class="payment-header">
         <div class="payment-car-name"><?= htmlspecialchars($car['car_name']) ?></div>
-        <img src="<?= str_replace("../img/", "./img/", $car['car_picture1']) ?>" alt="รูปภาพรถ" class="payment-car-image">
+        <img src="<?= str_replace("../img/", "./img/", $car['main_picture']) ?>" alt="รูปภาพรถ" class="payment-car-image">
     </div>
     <div class="payment-body">
         <form action="payment.php?rent_id=<?= htmlspecialchars($rentID) ?>" method="post" enctype="multipart/form-data">

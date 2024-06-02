@@ -62,13 +62,13 @@ require '../conDB.php';
             <table class="table table-bordered">
                 <tr>
                     <th width="90px">ลำดับที่</th>
-                    <th width="100px">รหัสการตรวจสอบ</th> <!-- fix_id -->
                     <th width="100px">รหัสรถ</th> <!-- car_id -->
                     <th width="100px">รหัสการเช่า</th> <!-- carrent_id -->
                     <th width="400px">รายละเอียดการซ่อม</th> <!-- fix_detail -->
                     <th width="130px">รถที่เช่า</th> <!-- car_name -->
-                    <th width="90px">วันที่ส่งซ่อม</th> <!-- fix_date -->
+                    <th width="100px">วันที่ส่งซ่อม</th> <!-- fix_date -->
                     <th width="100px">วันที่ซ่อมเสร็จ</th> <!-- fix_return -->
+                    <th width="100px">ค่าใช้จ่าย</th> <!-- fix_return -->
                     <th width="170px">สถานะการตรวจสอบ</th> <!-- fix_status -->
                     <th width="170px">การดำเนินการ</th> <!-- action -->
                 </tr>
@@ -110,13 +110,13 @@ require '../conDB.php';
 
                     echo "<tr>";
                     echo "<td>" . $counter . "</td>";
-                    echo "<td>" . $row['fix_id'] . "</td>";
                     echo "<td>" . $row['car_id'] . "</td>";
                     echo "<td>" . $row['carrent_id'] . "</td>";
                     echo "<td>" . htmlspecialchars($row['fix_detail']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['car_name']) . "</td>";
                     echo "<td>" . $fix_date . "</td>";
                     echo "<td>" . $fix_return . "</td>";
+                    echo "<td>" . $row['fix_price'] . "</td>";
                     echo "<td style='color: " . $fix_status_color . ";'>" . htmlspecialchars($row['fix_status']) . "</td>";
                     if ($row['fix_status'] == 'ต้องส่งซ่อม') {
                         echo "<td><button type='button' class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#inspectModal' data-fixid='" . $row['fix_id'] . "'>แก้ไข</button></td>";

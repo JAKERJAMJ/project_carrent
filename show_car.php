@@ -50,8 +50,8 @@ require 'conDB.php';
                 $start_date = $_GET['start_date'];
                 $end_date = $_GET['end_date'];
 
-                // Query to find available cars within the selected date range
-                $sql = "SELECT * FROM car WHERE car_id NOT IN (
+                // Query to find available cars with status 'ใช้งาน' within the selected date range
+                $sql = "SELECT * FROM car WHERE car_status = 'ใช้งาน' AND car_id NOT IN (
                             SELECT car_id FROM carrent 
                             WHERE ('$start_date' BETWEEN carrent_date AND carrent_return) 
                             OR ('$end_date' BETWEEN carrent_date AND carrent_return) 
@@ -59,13 +59,15 @@ require 'conDB.php';
                             OR (carrent_return BETWEEN '$start_date' AND '$end_date')
                         )";
             } else {
-                // Default query to show all cars
-                $sql = "SELECT * FROM car ORDER BY car_id";
+                // Default query to show all cars with status 'ใช้งาน'
+                $sql = "SELECT * FROM car WHERE car_status = 'ใช้งาน' ORDER BY car_id";
             }
 
             $result = mysqli_query($con, $sql);
             while ($row = mysqli_fetch_array($result)) {
-                $new_url = str_replace("../img/", "./img/", $row['car_picture1']);
+                $new_url = str_replace("../img/", "./img/", $row['main_picture']);
+                $car_status = $row['car_status'];
+                $status_color = ($car_status === 'ใช้งาน') ? 'green' : 'red'; // Determine the color based on status
             ?>
                 <div class="col-md-3 mb-4">
                     <div class="card">
@@ -75,6 +77,7 @@ require 'conDB.php';
                             <p class="card-text">
                                 ยี่ห้อรถ : <?= $row['car_brand'] ?><br>
                                 ราคา : <?= $row['car_price'] ?> บาท <br>
+                                สถานะ : <span style="color: <?= $status_color; ?>;"><?= $car_status ?></span>
                             </p>
                             <a href="show_car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
                             <button type="button" class="btn btn-outline-warning" onclick="window.location.href='check.php'">เช่ารถ</button>

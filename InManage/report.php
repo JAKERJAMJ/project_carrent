@@ -34,11 +34,10 @@ $selectedMonth = isset($_GET['month']) ? $_GET['month'] : date('m');
 // ฟังก์ชันเพื่อดึงข้อมูลการเช่ารถ
 function getRentalsByDay($con, $selectedYear, $selectedMonth, $startDate = null, $statusId = null)
 {
-    $query = "SELECT carrent.carrent_date, carrent.carrent_id, car.car_name, carrent.type_carrent, member.Membername, member.Memberlastname, carrent_status.status_name
+    $query = "SELECT carrent.carrent_date, carrent.carrent_id, car.car_name, carrent.type_carrent, member.Membername, member.Memberlastname
               FROM carrent
               JOIN car ON carrent.car_id = car.car_id
               JOIN member ON carrent.MemberID = member.MemberID
-              JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
               WHERE YEAR(carrent.carrent_date) = '$selectedYear' AND MONTH(carrent.carrent_date) = '$selectedMonth'
               AND carrent.type_carrent = 'เช่ารถส่วนตัว'";
 
@@ -95,7 +94,7 @@ function getCarReturns($con, $selectedYear, $selectedMonth)
 
 // ดึงข้อมูลที่จะแสดงผล
 $startDate = isset($_GET['start_date']) ? $_GET['start_date'] : null;
-$statusId = isset($_GET['carrent_status_id']) ? $_GET['carrent_status_id'] : null;
+$statusId = isset($_GET['carrent_status']) ? $_GET['carrent_status'] : null;
 $rentalsByDay = getRentalsByDay($con, $selectedYear, $selectedMonth, $startDate, $statusId);
 $carFixes = getCarFixes($con, $selectedYear, $selectedMonth);
 $carReturns = getCarReturns($con, $selectedYear, $selectedMonth);
@@ -212,7 +211,17 @@ $months = [
 
         <div class="report-carrent">
             <div class="search-date">
-                
+                <form method="GET" action="report.php">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="start_date" class="form-label">วันที่</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control" value="<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>">
+                        </div>
+                        <div class="col-md-4 align-self-end">
+                            <button type="submit" class="btn btn-primary">ค้นหา</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -238,6 +247,24 @@ $months = [
                     ?>
                 </div>
             </div>
+            <?php if ($startDate): ?>
+            <div class="daily-income-body shadow p-4 mt-4">
+                <div class="daily-income-title">
+                    รายได้ประจำวันที่ <?php echo date('d/m/Y', strtotime($startDate)); ?>
+                </div>
+                <div class="daily-income-show mt-3 text-center">
+                    <?php
+                    // Query to calculate the daily income from private car rentals
+                    $dailyIncomeSql = "SELECT SUM(carrent_price) AS daily_income FROM carrent WHERE type_carrent = 'เช่ารถส่วนตัว' AND carrent_date = '$startDate'";
+                    $dailyIncomeResult = mysqli_query($con, $dailyIncomeSql);
+                    $dailyIncomeRow = mysqli_fetch_assoc($dailyIncomeResult);
+                    $dailyIncome = $dailyIncomeRow['daily_income'];
+
+                    echo "฿" . number_format($dailyIncome, 2);
+                    ?>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
         <div class="table-view-carrent mt-4">
             <table class="table table-bordered">
@@ -268,18 +295,16 @@ $months = [
                     }
 
                     if ($statusId) {
-                        $whereClause .= " AND carrent.carrent_status_id = '$statusId'";
+                        $whereClause .= " AND carrent.carrent_status = '$statusId'";
                     }
 
                     $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.carrent_date, carrent.carrent_return,
-                    carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
+                    carrent.carrent_price, carrent.carrent_status, carrent.carrent_timestamp,
                     member.Membername, member.Memberlastname,
-                    car.car_name, car.car_price,
-                    carrent_status.status_name
+                    car.car_name, car.car_price
                     FROM carrent
                     LEFT JOIN member ON carrent.MemberID = member.MemberID
                     LEFT JOIN car ON carrent.car_id = car.car_id
-                    LEFT JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
                     $whereClause
                     ORDER BY carrent.carrent_timestamp DESC
                     LIMIT $start, $limit";
@@ -297,8 +322,8 @@ $months = [
                     while ($row = mysqli_fetch_assoc($result)) {
                         // Determine the class for the status button
                         $status_class = '';
-                        switch ($row['status_name']) {
-                            case 'กำลังดำเนินการ':
+                        switch ($row['carrent_status']) {
+                            case 'กำลังดำเนินการเช่า':
                                 $status_class = 'btn-warning';
                                 break;
                             case 'ดำเนินการเช่าเสร็จสิ้น':
@@ -325,7 +350,7 @@ $months = [
                         echo "<td>" . date('d/m/Y', strtotime($row['carrent_date'])) . "</td>";
                         echo "<td>" . date('d/m/Y', strtotime($row['carrent_return'])) . "</td>";
                         echo "<td>" . number_format($row['carrent_price'], 2) . "</td>";
-                        echo "<td><a href='#' class='btn " . $status_class . " btn-sm'>" . $row['status_name'] . "</a></td>";
+                        echo "<td><a href='#' class='btn " . $status_class . " btn-sm'>" . $row['carrent_status'] . "</a></td>";
                         echo "</tr>";
 
                         $counter++;
@@ -338,7 +363,7 @@ $months = [
                 <ul class="pagination justify-content-center">
                     <?php for ($i = 1; $i <= $pages; $i++) : ?>
                         <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>&start_date=<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>&carrent_status_id=<?php echo isset($_GET['carrent_status_id']) ? $_GET['carrent_status_id'] : ''; ?>"><?php echo $i; ?></a>
+                            <a class="page-link" href="?page=<?php echo $i; ?>&start_date=<?php echo isset($_GET['start_date']) ? $_GET['start_date'] : ''; ?>&carrent_status=<?php echo isset($_GET['carrent_status']) ? $_GET['carrent_status'] : ''; ?>"><?php echo $i; ?></a>
                         </li>
                     <?php endfor; ?>
                 </ul>

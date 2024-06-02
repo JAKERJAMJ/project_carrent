@@ -22,59 +22,53 @@ if (isset($_GET['MemberID'])) {
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    // Check if user data is fetched
-    if (!$user) {
-        echo "<script>alert('ไม่พบข้อมูลสมาชิก'); window.location.href='manage_member.php';</script>";
-        exit;
-    }
-
     // Pagination settings
     $limit = 5; // Number of entries to show in a page.
     $page = isset($_GET['page']) ? $_GET['page'] : 1;
     $start = ($page - 1) * $limit;
 
-    $queryTotalInProgress = "SELECT COUNT(*) as total FROM carrent
-                            WHERE MemberID = ? AND carrent_status_id IN (1, 2, 3)";
-    $stmtTotalInProgress = $con->prepare($queryTotalInProgress);
-    $stmtTotalInProgress->bind_param('i', $MemberID);
-    $stmtTotalInProgress->execute();
-    $resultTotalInProgress = $stmtTotalInProgress->get_result();
-    $totalInProgress = $resultTotalInProgress->fetch_assoc()['total'];
-
-    $queryInProgress = "SELECT carrent.*, car.car_name, carrent_status.status_name FROM carrent
-                        JOIN car ON carrent.car_id = car.car_id
-                        JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
-                        WHERE carrent.MemberID = ? AND carrent.carrent_status_id IN (1, 2, 3)
-                        LIMIT ?, ?";
-    $stmtInProgress = $con->prepare($queryInProgress);
+    // Fetch rentals in progress
+    $sqlInProgress = "SELECT car.car_name, carrent.*, payment.payment_status 
+                      FROM carrent 
+                      JOIN car ON carrent.car_id = car.car_id 
+                      LEFT JOIN payment ON carrent.carrent_id = payment.carrent_id 
+                      WHERE carrent.MemberID = ? 
+                      AND carrent.carrent_status IN ('กำลังดำเนินการเช่า', 'ดำเนินการเช่าเสร็จสิ้น', 'กำลังใช้งาน') 
+                      LIMIT ?, ?";
+    $stmtInProgress = $con->prepare($sqlInProgress);
     $stmtInProgress->bind_param('iii', $MemberID, $start, $limit);
     $stmtInProgress->execute();
     $resultInProgress = $stmtInProgress->get_result();
 
-    $totalPagesInProgress = ceil($totalInProgress / $limit);
-
-    $queryTotalCompleted = "SELECT COUNT(*) as total FROM carrent
-                            WHERE MemberID = ? AND carrent_status_id = 4";
-    $stmtTotalCompleted = $con->prepare($queryTotalCompleted);
-    $stmtTotalCompleted->bind_param('i', $MemberID);
-    $stmtTotalCompleted->execute();
-    $resultTotalCompleted = $stmtTotalCompleted->get_result();
-    $totalCompleted = $resultTotalCompleted->fetch_assoc()['total'];
-
-    $queryCompleted = "SELECT carrent.*, car.car_name, carrent_status.status_name FROM carrent
-                       JOIN car ON carrent.car_id = car.car_id
-                       JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
-                       WHERE carrent.MemberID = ? AND carrent.carrent_status_id = 4
-                       LIMIT ?, ?";
-    $stmtCompleted = $con->prepare($queryCompleted);
+    // Fetch completed rentals
+    $sqlCompleted = "SELECT car.car_name, carrent.*, payment.payment_status 
+                     FROM carrent 
+                     JOIN car ON carrent.car_id = car.car_id 
+                     LEFT JOIN payment ON carrent.carrent_id = payment.carrent_id 
+                     WHERE carrent.MemberID = ? 
+                     AND carrent.carrent_status = 'ใช้งานเสร็จสิ้น' 
+                     LIMIT ?, ?";
+    $stmtCompleted = $con->prepare($sqlCompleted);
     $stmtCompleted->bind_param('iii', $MemberID, $start, $limit);
     $stmtCompleted->execute();
     $resultCompleted = $stmtCompleted->get_result();
 
-    $totalPagesCompleted = ceil($totalCompleted / $limit);
-} else {
-    echo "<script>alert('ไม่พบข้อมูลสมาชิก'); window.location.href='manage_member.php';</script>";
-    exit;
+    // Get the total number of records for pagination
+    $totalInProgress = $con->prepare("SELECT COUNT(*) FROM carrent WHERE MemberID = ? AND carrent_status IN ('กำลังดำเนินการเช่า', 'ดำเนินการเช่าเสร็จสิ้น', 'กำลังใช้งาน')");
+    $totalInProgress->bind_param('i', $MemberID);
+    $totalInProgress->execute();
+    $totalInProgress->bind_result($totalInProgressCount);
+    $totalInProgress->fetch();
+    $totalInProgress->close();
+    $totalPagesInProgress = ceil($totalInProgressCount / $limit);
+
+    $totalCompleted = $con->prepare("SELECT COUNT(*) FROM carrent WHERE MemberID = ? AND carrent_status = 'ใช้งานเสร็จสิ้น'");
+    $totalCompleted->bind_param('i', $MemberID);
+    $totalCompleted->execute();
+    $totalCompleted->bind_result($totalCompletedCount);
+    $totalCompleted->fetch();
+    $totalCompleted->close();
+    $totalPagesCompleted = ceil($totalCompletedCount / $limit);
 }
 ?>
 
@@ -139,13 +133,14 @@ if (isset($_GET['MemberID'])) {
                                     <th>วันที่เช่า</th>
                                     <th>วันที่คืน</th>
                                     <th>สถานะ</th>
+                                    <th>สถานะการชำระเงิน</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php while ($rowInProgress = $resultInProgress->fetch_assoc()) : ?>
                                     <?php
                                     $badgeClass = 'bg-warning text-dark';
-                                    if ($rowInProgress['carrent_status_id'] == 3) {
+                                    if ($rowInProgress['carrent_status'] == 'กำลังใช้งาน') {
                                         $badgeClass = 'bg-info text-dark';
                                     }
                                     ?>
@@ -155,7 +150,8 @@ if (isset($_GET['MemberID'])) {
                                         <td><?php echo $rowInProgress['type_carrent']; ?></td>
                                         <td><?php echo date('d/m/Y', strtotime($rowInProgress['carrent_date'])); ?></td>
                                         <td><?php echo date('d/m/Y', strtotime($rowInProgress['carrent_return'])); ?></td>
-                                        <td><span class='badge <?php echo $badgeClass; ?>'><?php echo $rowInProgress['status_name']; ?></span></td>
+                                        <td><span class="badge <?php echo $badgeClass; ?>"><?php echo $rowInProgress['carrent_status']; ?></span></td>
+                                        <td><?php echo $rowInProgress['payment_status']; ?></td>
                                     </tr>
                                 <?php endwhile; ?>
                             </tbody>
@@ -164,7 +160,7 @@ if (isset($_GET['MemberID'])) {
                             <ul class="pagination justify-content-center">
                                 <?php for ($i = 1; $i <= $totalPagesInProgress; $i++) : ?>
                                     <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                                        <a class="page-link" href="user_detail.php?MemberID=<?php echo $MemberID; ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                        <a class="page-link" href="user_profile.php?MemberID=<?php echo $MemberID; ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
                                     </li>
                                 <?php endfor; ?>
                             </ul>
@@ -181,6 +177,7 @@ if (isset($_GET['MemberID'])) {
                                     <th>วันที่เช่า</th>
                                     <th>วันที่คืน</th>
                                     <th>สถานะ</th>
+                                    <th>สถานะการชำระเงิน</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -191,7 +188,8 @@ if (isset($_GET['MemberID'])) {
                                         <td><?php echo $rowCompleted['type_carrent']; ?></td>
                                         <td><?php echo date('d/m/Y', strtotime($rowCompleted['carrent_date'])); ?></td>
                                         <td><?php echo date('d/m/Y', strtotime($rowCompleted['carrent_return'])); ?></td>
-                                        <td><span class='badge bg-secondary'><?php echo $rowCompleted['status_name']; ?></span></td>
+                                        <td><span class="badge bg-secondary"><?php echo $rowCompleted['carrent_status']; ?></span></td>
+                                        <td><?php echo $rowCompleted['payment_status']; ?></td>
                                     </tr>
                                 <?php endwhile; ?>
                             </tbody>
@@ -200,7 +198,7 @@ if (isset($_GET['MemberID'])) {
                             <ul class="pagination justify-content-center">
                                 <?php for ($i = 1; $i <= $totalPagesCompleted; $i++) : ?>
                                     <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                                        <a class="page-link" href="user_detail.php?MemberID=<?php echo $MemberID; ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                        <a class="page-link" href="user_profile.php?MemberID=<?php echo $MemberID; ?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
                                     </li>
                                 <?php endfor; ?>
                             </ul>

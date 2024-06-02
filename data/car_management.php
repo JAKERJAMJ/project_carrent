@@ -70,7 +70,7 @@ if (!isset($_SESSION['admin'])) {
                                 สถานะ : <span style="color: <?= $status_color; ?>;"><?= $car_status ?></span>
                             </p>
                             <a href="car_detail.php?id=<?= $row['car_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
-                            <button type="button" class="btn btn-outline-danger" onclick="deleteCar(<?= $row['car_id'] ?>)">ยกเลิกการใช้งาน</button>
+                            <button type="button" class="btn btn-outline-danger" onclick="updateCarStatus(<?= $row['car_id'] ?>)">ยกเลิกการใช้งาน</button>
                         </div>
                     </div>
                 </div>

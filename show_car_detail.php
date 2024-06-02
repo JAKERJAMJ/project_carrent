@@ -22,7 +22,7 @@ if (!$car) {
 }
 
 // ดึงข้อมูลรูปภาพเพิ่มเติมจากตาราง car_picture
-$sql_pictures = "SELECT picture1, picture2, picture3 FROM car_picture WHERE car_id = ?";
+$sql_pictures = "SELECT car_pic1, car_pic2, car_pic3 FROM car WHERE car_id = ?";
 $stmt_pictures = $con->prepare($sql_pictures);
 $stmt_pictures->bind_param("i", $car_id);
 $stmt_pictures->execute();
@@ -52,7 +52,7 @@ $pictures = $result_pictures->fetch_assoc();
     <div class="container car-detail-container mt-5">
         <div class="car-detail">
             <div class="picture">
-                <img src="<?= str_replace("../img/", "./img/", $car['car_picture1']) ?>" class="pic-head" alt="Car Image">
+                <img src="<?= str_replace("../img/", "./img/", $car['main_picture']) ?>" class="pic-head" alt="Car Image">
             </div>
             <div class="picture-detail mt-3">
                 <?php

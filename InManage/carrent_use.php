@@ -93,7 +93,7 @@ require '../conDB.php';
                 $start = ($page - 1) * $limit;
 
                 // Add conditions for start date and carrent status
-                $whereClause = "WHERE carrent.carrent_status_id = 3"; // Only show status = 3 (กำลังใช้งาน)
+                $whereClause = "WHERE carrent.carrent_status = 'กำลังใช้งาน'"; // Only show status = กำลังใช้งาน
                 if (!empty($_GET['start_date'])) {
                     $startDate = $_GET['start_date'];
                     $whereClause .= " AND carrent.carrent_date = '$startDate'";
@@ -102,11 +102,11 @@ require '../conDB.php';
                 $sql = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.carrent_date, carrent.carrent_time, carrent.carrent_return, carrent.return_time,
                         carrent.carrent_price, carrent.carrent_status, carrent.carrent_timestamp,
                         member.Membername, member.Memberlastname,
-                        car.car_name, car.car_price,
-                        carrent_status.status_name
+                        car.car_name, car.car_price
                         FROM carrent
                         LEFT JOIN member ON carrent.MemberID = member.MemberID
                         LEFT JOIN car ON carrent.car_id = car.car_id
+                        $whereClause
                         ORDER BY carrent.carrent_timestamp DESC
                         LIMIT $start, $limit";
 
@@ -123,7 +123,7 @@ require '../conDB.php';
                 while ($row = mysqli_fetch_assoc($result)) {
                     $status_class = '';
                     switch ($row['carrent_status']) {
-                        case 'กำลังดำเนินการ':
+                        case 'กำลังดำเนินการเช่า':
                             $status_class = 'btn-warning';
                             break;
                         case 'ดำเนินการเช่าเสร็จสิ้น':
@@ -155,8 +155,6 @@ require '../conDB.php';
                     echo "<td>" . $row['carrent_price'] . "</td>";
                     echo "<td><a href='$status_link?id=" . $row['carrent_id'] . "' class='btn " . $status_class . " btn-sm'>" . $row['carrent_status'] . "</a></td>";
                     echo "<td>";
-                    echo '<button type="button" class="btn btn-warning btn-sm mr-2">แก้ไข</button>';
-                    echo '&nbsp;&nbsp;&nbsp;';
                     echo '<button type="button" class="btn btn-danger btn-sm mr-2" onclick="cancelCarRental(' . $row['carrent_id'] . ')">ยกเลิก</button>';
                     echo "</td>";
                     echo "</tr>";

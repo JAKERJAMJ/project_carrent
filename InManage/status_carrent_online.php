@@ -23,18 +23,18 @@ $car = mysqli_fetch_assoc($result_car);
 $car_price_per_day = $car['car_price'];
 
 $sql_MemberCarrent = "SELECT carrent.carrent_id, carrent.car_id, carrent.MemberID, carrent.type_rent, carrent.type_carrent, carrent.driver_status, carrent.driver_id, carrent.carrent_date, carrent.carrent_time, 
-                        carrent.carrent_return, carrent.return_time, carrent.carrent_price, carrent.carrent_status_id, carrent.carrent_timestamp,
+                        carrent.carrent_return, carrent.return_time, carrent.carrent_price, carrent.carrent_status, carrent.carrent_timestamp, carrent.package_id,
                         member.Membername, member.Memberlastname,
                         car.car_name, car.car_price,
                         driver.driver_name, 
-                        carrent_status.status_name,
-                        payment.payment_slip
+                        payment.payment_slip,
+                        package.package_name
                         FROM carrent
                         LEFT JOIN driver ON carrent.driver_id = driver.driver_id
                         LEFT JOIN member ON carrent.MemberID = member.MemberID
                         LEFT JOIN car ON carrent.car_id = car.car_id
-                        LEFT JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
                         LEFT JOIN payment ON carrent.carrent_id = payment.carrent_id
+                        LEFT JOIN package ON carrent.package_id = package.package_id
                         WHERE carrent.carrent_id = $id";
 $result_MemberCarrent = mysqli_query($con, $sql_MemberCarrent);
 $Member = mysqli_fetch_assoc($result_MemberCarrent);
@@ -56,14 +56,14 @@ while ($row_driver = mysqli_fetch_assoc($result_drivers)) {
 
 // ดึงข้อมูลสถานะการเช่า
 $statuses = [];
-$sql_statuses = "SELECT carrent_status_id, status_name FROM carrent_status";
+$sql_statuses = "SELECT carrent_status FROM carrent";
 $result_statuses = mysqli_query($con, $sql_statuses);
 while ($row_status = mysqli_fetch_assoc($result_statuses)) {
-    $statuses[$row_status['carrent_status_id']] = $row_status['status_name'];
+    $statuses[$row_status['carrent_status']] = $row_status['carrent_status'];
 }
 
 // ตรวจสอบว่าขณะนี้สถานะเป็น 1 หรือไม่
-$is_status_1 = ($row['carrent_status_id'] == 1);
+$is_status_1 = ($row['carrent_status'] == 'กำลังดำเนินการเช่า');
 
 // กำหนดค่าจ้างรายวันของคนขับรถ
 $driver_daily_wage = 300; // กำหนดเป็นค่าจ้างรายวันของคนขับรถ
@@ -84,9 +84,9 @@ $show_success_alert = false;
 
 if (isset($_POST['confirmReceiveCar'])) {
     $id = $_POST['id'];
-    $new_status_id = 3;
+    $new_status_id = 'กำลังใช้งาน';
 
-    $update_sql = "UPDATE carrent SET carrent_status_id = '$new_status_id' WHERE carrent_id = '$id'";
+    $update_sql = "UPDATE carrent SET carrent_status = '$new_status_id' WHERE carrent_id = '$id'";
 
     if (mysqli_query($con, $update_sql)) {
         $show_success_alert = true;
@@ -126,7 +126,6 @@ $sql_payment = "SELECT * FROM payment WHERE carrent_id = $id";
 $result_payment = mysqli_query($con, $sql_payment);
 $payment = mysqli_fetch_assoc($result_payment);
 ?>
-
 <!DOCTYPE html>
 <html lang="th">
 
@@ -179,6 +178,12 @@ $payment = mysqli_fetch_assoc($result_payment);
                         <label for="type_carrent">ประเภทการเช่า</label>
                         <input class="form-control" type="text" name="type_carrent" id="type_carrent" value="<?= $row['type_carrent']; ?>" readonly>
                     </div>
+                    <?php if ($row['type_carrent'] == 'เช่ารถพร้อมแพ็คเกจ') : ?>
+                        <div class="box">
+                            <label for="package_name">ชื่อแพ็คเกจ</label>
+                            <input class="form-control" type="text" name="package_name" id="package_name" value="<?= htmlspecialchars($Member['package_name']); ?>" readonly>
+                        </div>
+                    <?php endif; ?>
                     <div class="box">
                         <label for="carrent_id">รหัสการเช่า</label>
                         <input class="form-control" type="text" name="carrent_id" id="carrent_id" value="<?= $row['carrent_id']; ?>" readonly>
@@ -236,11 +241,13 @@ $payment = mysqli_fetch_assoc($result_payment);
                         <?php endif; ?>
                     </div>
                     <div class="box">
-                        <input type="hidden" id="driver_daily_wage" value="<?= $driver_daily_wage; ?>">
+                    <input type="hidden" id="driver_daily_wage" value="<?= $driver_daily_wage; ?>">
                         <input type="hidden" id="rental_days" value="<?= $rental_days; ?>">
                         <input type="hidden" id="total_driver_cost" value="<?= $total_driver_cost; ?>">
                         <div class="center-button">
-                            <button type="submit" class="btn btn-info" name="confirm" id="confirm" <?= $is_status_1 ? '' : 'disabled'; ?>>ยืนยัน</button>
+                            <?php if ($is_status_1) : ?>
+                                <button type="submit" class="btn btn-info" name="confirm" id="confirm">ยืนยัน</button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </form>
@@ -266,8 +273,8 @@ $payment = mysqli_fetch_assoc($result_payment);
                 <div class="box-status" id="statusBox">
                     <?php
                     $statusClass = '';
-                    $statusName = $Member['status_name'];
-                    if ($statusName == 'กำลังดำเนินการ') {
+                    $statusName = $Member['carrent_status'];
+                    if ($statusName == 'กำลังดำเนินการเช่า') {
                         $statusClass = 'status-processing';
                     } elseif ($statusName == 'ดำเนินการเช่าเสร็จสิ้น') {
                         $statusClass = 'status-completed';
@@ -335,7 +342,7 @@ $payment = mysqli_fetch_assoc($result_payment);
         $type_rent = $row['type_rent'];
 
         // อัปเดตบันทึกการเช่า
-        $update_sql = "UPDATE carrent SET driver_status='$driver_status', driver_id='$driver_id', carrent_status_id='2' WHERE carrent_id=$id";
+        $update_sql = "UPDATE carrent SET driver_status='$driver_status', driver_id='$driver_id', carrent_status='ดำเนินการเช่าเสร็จสิ้น' WHERE carrent_id=$id";
         if (mysqli_query($con, $update_sql)) {
             // เพิ่มข้อมูลลงในตาราง payment ถ้า type_rent เป็น 'เช่ารถหน้าร้าน'
             if ($type_rent == 'เช่ารถหน้าร้าน') {
@@ -358,7 +365,7 @@ $payment = mysqli_fetch_assoc($result_payment);
     // เปลี่ยนสถานะการเช่ารถ
     if (isset($_POST['confirmReceiveCar'])) {
         $id = $_POST['id'];
-        $new_status_id = 3;
+        $new_status_id = 'กำลังใช้งาน';
 
         $update_sql = "UPDATE carrent SET carrent_status_id = '$new_status_id' WHERE carrent_id = '$id'";
 
@@ -555,7 +562,7 @@ $payment = mysqli_fetch_assoc($result_payment);
         $return_time = htmlspecialchars($_POST['return_time']); // เวลาที่ต้องคืนรถ
         $return_status = htmlspecialchars($_POST['return_status']);
         $car_price_per_day = $car['car_price']; // สมมติว่าราคาเช่าต่อวันคือ 500 บาท
-        $new_status_id = 4;
+        $new_status_id = 'ใช้งานเสร็จสิ้น';
 
         if ($return_status == 'คืนรถตรงเวลา') {
             $return_price = 0; // ถ้าคืนตรงเวลา ไม่คิดค่าใช้จ่าย
@@ -571,7 +578,7 @@ $payment = mysqli_fetch_assoc($result_payment);
 
         if (mysqli_query($con, $sql)) {
             // อัปเดตสถานะการเช่าในตาราง carrent
-            $update_sql = "UPDATE carrent SET carrent_status_id = '$new_status_id' WHERE carrent_id = '$carrent_id'";
+            $update_sql = "UPDATE carrent SET carrent_status = '$new_status_id' WHERE carrent_id = '$carrent_id'";
             if (mysqli_query($con, $update_sql)) {
                 $result = mysqli_query($con, "SELECT * FROM return_carrent WHERE carrent_id = '$carrent_id'");
                 $row = mysqli_fetch_assoc($result);

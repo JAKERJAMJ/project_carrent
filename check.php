@@ -51,7 +51,7 @@ require 'conDB.php';
         $startDate = $_POST['carrent_date'];
         $endDate = $_POST['carrent_return'];
 
-        $sql = "SELECT car.car_id, car.car_name, car.car_picture1, car.car_brand, car.car_price,
+        $sql = "SELECT car.car_id, car.car_name, car.main_picture, car.car_brand, car.car_price,
                    (CASE 
                         WHEN EXISTS (
                             SELECT 1 FROM carrent 
@@ -62,7 +62,8 @@ require 'conDB.php';
                         ) THEN 'ไม่ว่าง'
                         ELSE 'ว่าง'
                     END) AS availability
-                FROM car";
+                FROM car
+                WHERE car.car_status = 'ใช้งาน'";
         $stmt = $con->prepare($sql);
         $stmt->bind_param("ssssss", $startDate, $startDate, $endDate, $endDate, $startDate, $endDate);
         $stmt->execute();
@@ -82,7 +83,7 @@ require 'conDB.php';
             while ($car = $result->fetch_assoc()) {
                 echo '<div class="col-md-3 mb-4">';
                 echo '<div class="card">';
-                echo '<img src="' . str_replace("../img/", "./img/", $car['car_picture1']) . '" class="card-img-top" alt="Car Image" style="width: 100%; height: 250px; object-fit: cover;">';
+                echo '<img src="' . str_replace("../img/", "./img/", $car['main_picture']) . '" class="card-img-top" alt="Car Image" style="width: 100%; height: 250px; object-fit: cover;">';
                 echo '<div class="card-body">';
                 echo '<h5 class="card-title text-success">' . htmlspecialchars($car['car_name']) . '</h5>';
                 echo '<p class="card-text">';

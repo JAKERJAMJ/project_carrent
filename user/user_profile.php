@@ -28,33 +28,33 @@ $limit = 5; // Number of entries to show in a page.
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $start = ($page - 1) * $limit;
 
-$queryTotalInProgress = "SELECT COUNT(*) as total FROM carrent
-                        WHERE MemberID = '$MemberID' AND carrent_status_id IN (1, 2, 3)";
-$resultTotalInProgress = mysqli_query($con, $queryTotalInProgress);
-$totalInProgress = mysqli_fetch_assoc($resultTotalInProgress)['total'];
+// Fetch rentals in progress
+$sqlInProgress = "SELECT car.car_name, carrent.*, payment.payment_status 
+                  FROM carrent 
+                  JOIN car ON carrent.car_id = car.car_id 
+                  LEFT JOIN payment ON carrent.carrent_id = payment.carrent_id 
+                  WHERE carrent.MemberID = '$MemberID' 
+                  AND carrent.carrent_status IN ('กำลังดำเนินการเช่า', 'ดำเนินการเช่าเสร็จสิ้น', 'กำลังใช้งาน') 
+                  LIMIT $start, $limit";
+$resultInProgress = mysqli_query($con, $sqlInProgress);
 
-$queryInProgress = "SELECT carrent.*, car.car_name, carrent_status.status_name FROM carrent
-                    JOIN car ON carrent.car_id = car.car_id
-                    JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
-                    WHERE carrent.MemberID = '$MemberID' AND carrent.carrent_status_id IN (1, 2, 3)
-                    LIMIT $start, $limit";
-$resultInProgress = mysqli_query($con, $queryInProgress);
+// Fetch completed rentals
+$sqlCompleted = "SELECT car.car_name, carrent.*, payment.payment_status 
+                 FROM carrent 
+                 JOIN car ON carrent.car_id = car.car_id 
+                 LEFT JOIN payment ON carrent.carrent_id = payment.carrent_id 
+                 WHERE carrent.MemberID = '$MemberID' 
+                 AND carrent.carrent_status = 'ใช้งานเสร็จสิ้น' 
+                 LIMIT $start, $limit";
+$resultCompleted = mysqli_query($con, $sqlCompleted);
 
-$totalPagesInProgress = ceil($totalInProgress / $limit);
+// Get the total number of records for pagination
+$totalInProgress = mysqli_query($con, "SELECT COUNT(*) FROM carrent WHERE MemberID = '$MemberID' AND carrent_status IN ('กำลังดำเนินการเช่า', 'ดำเนินการเช่าเสร็จสิ้น', 'กำลังใช้งาน')");
+$totalPagesInProgress = ceil(mysqli_fetch_array($totalInProgress)[0] / $limit);
 
-$queryTotalCompleted = "SELECT COUNT(*) as total FROM carrent
-                        WHERE MemberID = '$MemberID' AND carrent_status_id = 4";
-$resultTotalCompleted = mysqli_query($con, $queryTotalCompleted);
-$totalCompleted = mysqli_fetch_assoc($resultTotalCompleted)['total'];
+$totalCompleted = mysqli_query($con, "SELECT COUNT(*) FROM carrent WHERE MemberID = '$MemberID' AND carrent_status = 'ใช้งานเสร็จสิ้น'");
+$totalPagesCompleted = ceil(mysqli_fetch_array($totalCompleted)[0] / $limit);
 
-$queryCompleted = "SELECT carrent.*, car.car_name, carrent_status.status_name FROM carrent
-                   JOIN car ON carrent.car_id = car.car_id
-                   JOIN carrent_status ON carrent.carrent_status_id = carrent_status.carrent_status_id
-                   WHERE carrent.MemberID = '$MemberID' AND carrent.carrent_status_id = 4
-                   LIMIT $start, $limit";
-$resultCompleted = mysqli_query($con, $queryCompleted);
-
-$totalPagesCompleted = ceil($totalCompleted / $limit);
 ?>
 
 <!DOCTYPE html>
@@ -265,13 +265,14 @@ $totalPagesCompleted = ceil($totalCompleted / $limit);
                     <th>วันที่เช่า</th>
                     <th>วันที่คืน</th>
                     <th>สถานะ</th>
+                    <th>สถานะการชำระเงิน</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                 while ($rowInProgress = mysqli_fetch_assoc($resultInProgress)) {
                     $badgeClass = 'bg-warning text-dark';
-                    if ($rowInProgress['carrent_status_id'] == 3) {
+                    if ($rowInProgress['carrent_status'] == 'กำลังใช้งาน') {
                         $badgeClass = 'bg-info text-dark';
                     }
                     echo "<tr>";
@@ -280,7 +281,8 @@ $totalPagesCompleted = ceil($totalCompleted / $limit);
                     echo "<td>{$rowInProgress['type_carrent']}</td>";
                     echo "<td>" . date('d/m/Y', strtotime($rowInProgress['carrent_date'])) . "</td>";
                     echo "<td>" . date('d/m/Y', strtotime($rowInProgress['carrent_return'])) . "</td>";
-                    echo "<td><span class='badge {$badgeClass}'>{$rowInProgress['status_name']}</span></td>";
+                    echo "<td><span class='badge {$badgeClass}'>{$rowInProgress['carrent_status']}</span></td>";
+                    echo "<td>{$rowInProgress['payment_status']}</td>";
                     echo "</tr>";
                 }
                 ?>
@@ -307,6 +309,7 @@ $totalPagesCompleted = ceil($totalCompleted / $limit);
                     <th>วันที่เช่า</th>
                     <th>วันที่คืน</th>
                     <th>สถานะ</th>
+                    <th>สถานะการชำระเงิน</th>
                 </tr>
             </thead>
             <tbody>
@@ -318,7 +321,8 @@ $totalPagesCompleted = ceil($totalCompleted / $limit);
                     echo "<td>{$rowCompleted['type_carrent']}</td>";
                     echo "<td>" . date('d/m/Y', strtotime($rowCompleted['carrent_date'])) . "</td>";
                     echo "<td>" . date('d/m/Y', strtotime($rowCompleted['carrent_return'])) . "</td>";
-                    echo "<td><span class='badge bg-secondary'>{$rowCompleted['status_name']}</span></td>";
+                    echo "<td><span class='badge bg-secondary'>{$rowCompleted['carrent_status']}</span></td>";
+                    echo "<td>{$rowCompleted['payment_status']}</td>";
                     echo "</tr>";
                 }
                 ?>

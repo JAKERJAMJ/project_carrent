@@ -82,7 +82,7 @@ function convertToThaiDate($date) {
                 $package_days = $package['package_date'];
                 $end_date = date('Y-m-d', strtotime($start_date . " + $package_days days"));
 
-                // Query to find cars and their availability status within the selected date range
+                // Query to find cars and their availability status within the selected date range and with car_status = 'ใช้งาน'
                 $sql = "SELECT car.*, carrent.carrent_date, carrent.carrent_return FROM car 
                         LEFT JOIN carrent ON car.car_id = carrent.car_id 
                         AND (
@@ -91,13 +91,14 @@ function convertToThaiDate($date) {
                             OR (carrent.carrent_date BETWEEN '$start_date' AND '$end_date')
                             OR (carrent.carrent_return BETWEEN '$start_date' AND '$end_date')
                         )
+                        WHERE car.car_status = 'ใช้งาน'
                         ORDER BY car.car_id";
                 $result = mysqli_query($con, $sql);
 
                 if ($result) {
                     echo '<div class="row view-car">';
                     while ($row = mysqli_fetch_array($result)) {
-                        $new_url = str_replace("../img/", "./img/", $row['car_picture1']);
+                        $new_url = str_replace("../img/", "./img/", $row['main_picture']);
                         ?>
                         <div class="col-md-3 mb-4">
                             <div class="card">

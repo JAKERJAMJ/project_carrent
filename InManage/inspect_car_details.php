@@ -66,7 +66,7 @@ $car = mysqli_fetch_assoc($result_car);
                     <input class="form-control" type="text" name="carrent_id" id="carrent_id" value="<?= htmlspecialchars($carrent_id) ?>" readonly>
                     <input class="form-control" type="hidden" name="car_id" id="car_id" value="<?= htmlspecialchars($car_id) ?>" readonly>
                     <input class="form-control" type="hidden" name="car_status" id="car_status" value="<?= htmlspecialchars($car_status) ?>" readonly>
-                    <img src="<?= htmlspecialchars($car['car_picture1']) ?>" alt="">
+                    <img src="<?= htmlspecialchars($car['main_picture']) ?>" alt="">
                 </div>
                 <div class="detail_fix" style="display: none;">
                     <div class="box">

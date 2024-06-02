@@ -1,19 +1,29 @@
 // script for delete_car
 
-function deleteCar(carId) {
-    if(confirm('ต้องการยกเลิกการใช้งานรถ ID ' + carId + '?')) {
-    // ส่งคำขอไปยังไฟล์ PHP พร้อมกับ ID ของรถยนต์
-        fetch('delete_car.php?id=' + carId, {
-            method: 'GET'
+function updateCarStatus(carId) {
+    if (confirm('คุณแน่ใจหรือว่าต้องการยกเลิกการใช้งานรถคันนี้?')) {
+        fetch('update_car_status.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ car_id: carId })
         })
-    .then(response => response.text())
-    .then(data => {
-        alert(data); // แสดงข้อความจากการตอบกลับของ PHP
-        window.location.reload(); // โหลดหน้าใหม่เพื่ออัพเดทข้อมูล
-    })
-    .catch(error => console.error('Error:', error));
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('สถานะการใช้งานรถถูกยกเลิกเรียบร้อยแล้ว');
+                window.location.reload();
+            } else {
+                alert('เกิดข้อผิดพลาดในการยกเลิกการใช้งานรถ');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 }
+
 
 
 // js script popup

@@ -13,6 +13,19 @@ $car_id = $_GET['id'];
 $sql = "SELECT * FROM car WHERE car_id = '$car_id'";
 $result = mysqli_query($con, $sql);
 $car = mysqli_fetch_assoc($result);
+
+// Fetch the enum values for car_status
+$enum_values = [];
+$sql_enum = "SHOW COLUMNS FROM car LIKE 'car_status'";
+$result_enum = mysqli_query($con, $sql_enum);
+if ($result_enum) {
+    $row_enum = mysqli_fetch_array($result_enum);
+    $enum_values_str = $row_enum['Type']; // Type column contains the enum values
+    $enum_values_str = str_replace("enum('", "", $enum_values_str);
+    $enum_values_str = str_replace("')", "", $enum_values_str);
+    $enum_values = explode("','", $enum_values_str);
+}
+
 // Fetch rental details
 $carrent_sql = "SELECT * FROM carrent WHERE car_id = '$car_id'";
 $carrent_result = mysqli_query($con, $carrent_sql);
@@ -68,6 +81,7 @@ if (isset($_POST['update'])) {
     $car_vin = $_POST['car_vin'];
     $car_price = $_POST['car_price'];
     $car_detail = $_POST['car_detail'];
+    $car_status = $_POST['car_status'];
 
     $car_picture1 = $car['main_picture'];
 
@@ -77,7 +91,7 @@ if (isset($_POST['update'])) {
         move_uploaded_file($_FILES["main_picture"]["tmp_name"], $main_picture);
     }
 
-    $update_sql = "UPDATE car SET car_name='$car_name', car_brand='$car_brand', car_numplate='$car_numplate', car_vin='$car_vin', car_price='$car_price', car_detail='$car_detail', main_picture='$main_picture' WHERE car_id='$car_id'";
+    $update_sql = "UPDATE car SET car_name='$car_name', car_brand='$car_brand', car_numplate='$car_numplate', car_vin='$car_vin', car_price='$car_price', car_detail='$car_detail', car_status='$car_status', main_picture='$main_picture' WHERE car_id='$car_id'";
 
     if (mysqli_query($con, $update_sql)) {
         echo "<script>alert('อัพเดตข้อมูลสำเร็จ'); window.location.href='car_detail.php?id=$car_id';</script>";
@@ -207,6 +221,10 @@ mysqli_close($con);
             <tr>
                 <th>เลขตัวถัง</th>
                 <td><?= $car['car_vin'] ?></td>
+            </tr>
+            <tr>
+                <th>สถานะ</th>
+                <td><?= $car['car_status'] ?></td>
             </tr>
             <tr>
                 <th>ราคาเช่า</th>
@@ -352,8 +370,16 @@ mysqli_close($con);
                             <textarea class="form-control" id="car_detail" name="car_detail" rows="3"><?= $car['car_detail'] ?></textarea>
                         </div>
                         <div class="mb-3">
+                            <label for="car_status" class="form-label">สถานะของรถ</label>
+                            <select class="form-select" id="car_status" name="car_status">
+                                <?php foreach ($enum_values as $value) : ?>
+                                    <option value="<?= $value ?>" <?= ($car['car_status'] == $value) ? 'selected' : '' ?>><?= $value ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label for="main_picture" class="form-label">รูปภาพ</label>
-                            <input type="file" class="form-control" id="main_picture" name="main_picture" accept="image/*">
+                            <input type="file" class="form-control" id="main_picture" name="main_picture" accept="image/*" >
                         </div>
                         <button type="submit" name="update" class="btn btn-primary">อัพเดต</button>
                     </form>

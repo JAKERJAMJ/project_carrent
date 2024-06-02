@@ -11,6 +11,26 @@ require_once '../conDB.php';
 $sql_member = "SELECT * FROM member";
 $member_result = mysqli_query($con, $sql_member);
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
+    $email = $_POST["Memberemail"];
+    $password = $_POST["Memberpassword"];
+    $name = $_POST["Membername"];
+    $lastname = $_POST["Memberlastname"];
+    $passport = $_POST["Memberpassport"];
+    $address = $_POST["Memberaddress"];
+    $phone = $_POST["Memberphone"];
+
+    $defaultPic = '../img/default.webp';
+
+    $sql = "INSERT INTO member (MemberID, Membername, Memberlastname, Memberaddress, Memberphone, Memberpassport, Memberpassword, Memberemail, Memberpic) 
+            VALUES (NULL, '$name', '$lastname', '$address', '$phone', '$passport', '$password', '$email', '$defaultPic')";
+
+    if ($con->query($sql) === TRUE) {
+        echo "<script>alert('เพิ่มสมาชิกสำเร็จ'); window.location.href='manage_member.php';</script>";
+    } else {
+        echo "Error: " . $sql . "<br>" . $con->error;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -225,16 +245,6 @@ $member_result = mysqli_query($con, $sql_member);
     <script src="../script/manage_member.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script>
-        function formatPhoneNumber(input) {
-            let value = input.value.replace(/\D/g, '');
-            if (value.length > 3 && value.length <= 7) {
-                input.value = value.substring(0, 3) + '-' + value.substring(3);
-            } else if (value.length > 7) {
-                input.value = value.substring(0, 3) + '-' + value.substring(3, 7) + '-' + value.substring(7, 10);
-            } else {
-                input.value = value;
-            }
-        }
 
         function deleteMember(memberID) {
             if (confirm('Are you sure you want to delete this member?')) {
