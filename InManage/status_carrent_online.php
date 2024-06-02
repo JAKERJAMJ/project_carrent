@@ -367,7 +367,7 @@ $payment = mysqli_fetch_assoc($result_payment);
         $id = $_POST['id'];
         $new_status_id = 'กำลังใช้งาน';
 
-        $update_sql = "UPDATE carrent SET carrent_status_id = '$new_status_id' WHERE carrent_id = '$id'";
+        $update_sql = "UPDATE carrent SET carrent_status = '$new_status_id' WHERE carrent_id = '$id'";
 
         if (mysqli_query($con, $update_sql)) {
             echo "<script>document.getElementById('successAlert').style.display = 'block'; setTimeout(function(){ window.location.href = window.location.href; }, 4000);</script>";

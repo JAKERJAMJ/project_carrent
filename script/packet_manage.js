@@ -40,18 +40,27 @@ function hidePopup() {
     popup.style.display = "none";
 }
 
-// delete packet 
-function deletePacket(packet_id) {
-    if(confirm('ต้องการยกเลิกการใช้งานรถ ID ' + packet_id + '?')) {
-    // ส่งคำขอไปยังไฟล์ PHP พร้อมกับ ID ของรถยนต์
-        fetch('delete_packet.php?id=' + packet_id, {
-            method: 'GET'
+// update packet 
+function updatePackageStatus(packageId) {
+    if (confirm('คุณแน่ใจหรือว่าต้องการยกเลิกการใช้งานแพ็คเกจนี้?')) {
+        fetch('update_package_status.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ package_id: packageId })
         })
-    .then(response => response.text())
-    .then(data => {
-        alert(data); // แสดงข้อความจากการตอบกลับของ PHP
-        window.location.reload(); // โหลดหน้าใหม่เพื่ออัพเดทข้อมูล
-    })
-    .catch(error => console.error('Error:', error));
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('สถานะแพ็คเกจถูกยกเลิกเรียบร้อยแล้ว');
+                window.location.reload();
+            } else {
+                alert('เกิดข้อผิดพลาดในการยกเลิกการใช้งานแพ็คเกจ');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 }

@@ -71,7 +71,7 @@ if (!isset($_SESSION['admin'])) {
                             </p>
                             <div class="btn-group">
                                 <a href="package_detail.php?id=<?= $row['package_id'] ?>" class="btn btn-outline-success">รายละเอียด</a>
-                                <button type="button" class="btn btn-outline-danger" onclick="deletePackage(<?= $row['package_id'] ?>)">ลบข้อมูล</button>
+                                <button type="button" class="btn btn-outline-danger" onclick="updatePackageStatus(<?= $row['package_id'] ?>)">ยกเลิกการใช้งาน</button>
                             </div>
                         </div>
                     </div>

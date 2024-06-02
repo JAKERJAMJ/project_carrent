@@ -119,7 +119,10 @@ require '../conDB.php';
                     echo "<td>" . $row['fix_price'] . "</td>";
                     echo "<td style='color: " . $fix_status_color . ";'>" . htmlspecialchars($row['fix_status']) . "</td>";
                     if ($row['fix_status'] == 'ต้องส่งซ่อม') {
-                        echo "<td><button type='button' class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#inspectModal' data-fixid='" . $row['fix_id'] . "'>แก้ไข</button></td>";
+                        echo "<td>
+                                <button type='button' class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#inspectModal' data-fixid='" . $row['fix_id'] . "'>แก้ไข</button>
+                                <button type='button' class='btn btn-danger btn-sm' onclick='deleteFix(" . $row['fix_id'] . ")'>ยกเลิก</button>
+                              </td>";
                     } else {
                         echo "<td></td>";
                     }
@@ -201,6 +204,23 @@ require '../conDB.php';
 
         function filterStatus(status) {
             window.location.href = 'fix_car_success.php?status=' + status;
+        }
+
+        function deleteFix(fixId) {
+            if (confirm('คุณแน่ใจว่าต้องการยกเลิกรายการนี้หรือไม่?')) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'delete_fix_car.php', true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        alert('ยกเลิกรายการสำเร็จ');
+                        window.location.reload();
+                    } else {
+                        alert('เกิดข้อผิดพลาดในการลบรายการ');
+                    }
+                };
+                xhr.send('fix_id=' + fixId);
+            }
         }
     </script>
 </body>

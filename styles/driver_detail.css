@@ -1,0 +1,34 @@
+/* driver_detail.css */
+
+.container {
+    margin-top: 5rem;
+}
+
+.img-fluid {
+    width: 100%;
+    height: auto;
+}
+
+.text-success {
+    margin-bottom: 1rem;
+}
+
+.btn-outline-dark {
+    margin-top: 1rem;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.btn-close {
+    padding: 0.5rem 1rem;
+}

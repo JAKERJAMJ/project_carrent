@@ -50,7 +50,7 @@ mysqli_close($con);
                 <p class="text-muted">ราคา: <?= htmlspecialchars($package['package_price']) ?> บาท</p>
                 <p class="text-muted">ระยะเวลา: <?= htmlspecialchars($package['package_date']) ?> วัน</p>
                 <p><?= nl2br(htmlspecialchars($package['package_detail'])) ?></p>
-                <a href="check_availability.php?package_id=<?= htmlspecialchars($package['package_id']) ?>" class="btn btn-warning">เช่าแพ็คเกจ</a>
+                <a href="check_availability.php?package_id=<?= htmlspecialchars($package['package_id']) ?>" class="btn btn-warning">ซื้อแพ็คเกจ</a>
             </div>
         </div>
         <div class="row mt-5">
